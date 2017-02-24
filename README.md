@@ -14,6 +14,37 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 其事，必先利其器，我们需要掌握以下的技术。
 
 
+## 工具篇
+
+本系列的文章基于的环境是MacOS，但是所使用的工具软件多数都是跨平台的，所以对其他平台的小伙伴也没有影响。
+
+### PPT 文稿演示
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/office_for_mac.png"/>
+
+[Office for Mac 2016 ](http://xclient.info/s/office-for-mac-2016.html)
+
+### Markdown 文章写作
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/nweb_for_mac.png"/>
+
+[MWeb for Mac](http://www.mweb.im/)
+
+### 流程图、类图、时序图等各种图例
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/EdrawMax.png"/>
+
+[EdrawMax](http://xclient.info/s/edraw-max.html)
+
+### 图片处理
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/VideoGIF.png"/>
+
+[VideoGIF](http://xclient.info/s/videogif.html)
+
+
+## 书籍篇
+
 设计模式
 
 推荐这两本书
