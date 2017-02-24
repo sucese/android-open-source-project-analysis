@@ -114,7 +114,7 @@ Gif 图的制作用的是VideoGIF。
 
 ## 书籍篇
 
-站在前辈的肩膀上，我们能看的更远，进步的更快。以下是学习框架与源码一些不错的书籍，
+站在前辈的肩膀上，我们能看的更远，进步的更快。以下是学习框架与源码一些不错的书籍。
 
 [Android 源码设计模式解析与实战](https://item.jd.com/11793928.html)：何红辉，关爱民 著
 
@@ -128,7 +128,7 @@ Gif 图的制作用的是VideoGIF。
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_develop_art_explore.png"/>
 
-好了，以上就是阅读 AOSP 需要做的全部工作，如果你已经对源码产生了兴趣，那么就去[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/blob/master/doc/章节.md)
+好了，以上就是阅读 AOSP 需要做的全部工作了，如果你已经对源码产生了兴趣，那么不妨去[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/blob/master/doc/章节.md)
 里看看后续的写作安排吧。
 
 
