@@ -18,11 +18,11 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 阅读 AOSP（Android Open Source Projec）之前你需要掌握的技术有：
 
 - Java
-    >AOSP 的主要语言，当然是应该掌握的。
+    * AOSP 的主要语言，当然是应该掌握的。
 - Linux
-    >Android 是基于 Linux 内核开发的，如何你需要涉及到内核或者驱动的开发，你需要掌握 Linux 相关技术。
+    * Android 是基于 Linux 内核开发的，如何你需要涉及到内核或者驱动的开发，你需要掌握 Linux 相关技术。
 - Make
-    >AOSP 是用 Make 来编译的，因此要了解常用的 Make 语法。
+    * AOSP 是用 Make 来编译的，因此要了解常用的 Make 语法。
 - Git
     >这是程序员必备技能了吧。
 - C++
