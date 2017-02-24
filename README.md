@@ -20,6 +20,8 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 
 [Android 源码设计模式解析与实战](https://item.jd.com/11793928.html)：何红辉，关爱民 著
 
-<img src=""/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_source_code_design_pattern.png"/>
 
 [Head First设计模式（中文版）](https://item.jd.com/10100236.html)：[美] 弗里曼（Freeman E.） 等 著；UML China 编；OReilly Taiwan公司 译
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/head_first_design_pattern.png"/>
