@@ -13,6 +13,37 @@
 Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精深，所以我们在学习之前，要掌握相关的基本技术，欲工
 其事，必先利其器，我们需要掌握以下的技术。
 
+## 基础篇
+
+阅读 AOSP（Android Open Source Projec）之前你需要掌握的技术有：
+
+- Java
+    AOSP 的主要语言，当然是应该掌握的。
+- Linux
+    Android 是基于 Linux 内核开发的，如何你需要涉及到内核或者驱动的开发，你需要掌握 Linux 相关技术。
+- Make
+    AOSP 是用 Make 来编译的，因此要了解常用的 Make 语法。
+- Git
+    这是程序员必备技能了吧。
+- C++
+    AOSP 一些性能敏感的模块底层都是由C++完成的，当然如果你如果不需要关注底层实现，也可以跳过这一段，可以更多的
+    去关注框架层。
+- 设计模式
+    AOSP里大量的框架都是用了谋者设计模式，比方说观察者模式、工厂模式、复合模式等，如果对设计模式不够了解的会
+    看的云里雾里。
+- 熟练的 Android App 开发技能
+
+阅读源码的思路
+
+>以某一个支线为起点，从上层往底层，不断地追溯，在各个模块、文件、方法之间来回跳转，反复地阅读，理清整个流程的逻辑。
+同时带着思考去看源码，去揣测作者的用意，去理解代码的精妙之处，去思考代码可能存在的缺陷，去总结优秀的代码设计思想。
+
+Android 源码
+
+https://android.googlesource.com/
+
+https://github.com/android
+
 
 ## 工具篇
 
@@ -70,3 +101,9 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 [Android开发艺术探索](https://item.jd.com/11760209.html)：任玉刚 著
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_develop_art_explore.png"/>
+
+
+后续章节更新目录
+
+
+
