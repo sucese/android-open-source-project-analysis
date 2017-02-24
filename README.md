@@ -78,7 +78,7 @@ https://source.android.com/source/index.html
 
 [Understand 4.0.849 代码阅读分析软件](http://xclient.info/s/understand.html)
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/office_for_mac.png"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/understand.png"/>
 
 ### 演示文稿
 
