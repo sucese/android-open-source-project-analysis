@@ -79,7 +79,7 @@
 用法：<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji16.jpg" width="200" height="200"
 
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji7.jpg" width="200" height="200"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji17.jpg" width="200" height="200"/>
 
 用法：<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji17.jpg" width="200" height="200"
 
@@ -103,11 +103,6 @@
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji21.jpg" width="200" height="200"/>
 
 用法：<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji21.jpg"
-
-
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji22.jpg" width="200" height="200"/>
-
-用法：<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji22.jpg"
 
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji23.jpg" width="200" height="200"/>
