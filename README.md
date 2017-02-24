@@ -114,23 +114,11 @@ Gif 图的制作用的是VideoGIF。
 
 ## 书籍篇
 
-###设计模式
-
->欲工其事，必先利其器。
-
-推荐书籍
+站在前辈的肩膀上，我们能看的更远，进步的更快。以下是学习框架与源码一些不错的书籍，
 
 [Android 源码设计模式解析与实战](https://item.jd.com/11793928.html)：何红辉，关爱民 著
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_source_code_design_pattern.png"/>
-
-[Head First设计模式（中文版）](https://item.jd.com/10100236.html)：[美] 弗里曼（Freeman E.） 等 著；UML China 编；OReilly Taiwan公司 译
-
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/head_first_design_pattern.png"/>
-
-### 源码分析
-
-> 它山之石，可以攻玉。
 
 [Android系统源代码情景分析](https://item.jd.com/11838754.html)：罗升阳 著
 
@@ -139,7 +127,6 @@ Gif 图的制作用的是VideoGIF。
 [Android开发艺术探索](https://item.jd.com/11760209.html)：任玉刚 著
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_develop_art_explore.png"/>
-
 
 好了，以上就是阅读 AOSP 需要做的全部工作，如果你已经对源码产生了兴趣，那么就去[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/blob/master/doc/章节.md)
 里看看后续的写作安排吧。
