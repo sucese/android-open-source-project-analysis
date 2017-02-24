@@ -15,6 +15,8 @@
 问题, 请描述清楚并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章,
 关注文章的最新的动态。
 
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg"/>
+
 写在前面
 
 >之前看过很多Android框架层的源码以及分析源码的书籍，但都是零零散散的不成系统，作为一个 Android 开发人员，
@@ -28,12 +30,14 @@
 Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精深，所以我们在学习之前，要掌握相关的基本技术，欲工
 其事，必先利其器，我们需要掌握以下的技术。
 
+代码版本
+
+>本系列文章针对的是最新的 Android 7.0 Nougat 版本源码。
 
 核心思路
 
 >以某一个支线为起点，从上层往底层，不断地追溯，在各个模块、文件、方法之间来回跳转，反复地阅读，理清整个流程的逻辑。
 同时带着思考去看源码，去揣测作者的用意，去理解代码的精妙之处，去思考代码可能存在的缺陷，去总结优秀的代码设计思想。
-
 
 ## 基础篇
 
@@ -68,30 +72,45 @@ https://source.android.com/source/index.html
 
 本系列的文章基于的环境是MacOS，但是所使用的工具软件多数都是跨平台的，所以对其他平台的小伙伴也没有影响。
 
-### PPT 文稿演示
+### 代码阅读
+
+如果在 Windows 下直接上 SourceInsight 就可以了，Mac 下可以用 Understand，功能和 SourceInsight 一样强大。
+
+[Understand 4.0.849 代码阅读分析软件](http://xclient.info/s/understand.html)
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/office_for_mac.png"/>
 
+### 演示文稿
+
+演示文稿还是用 Office 来做了，没有用 Keynote，担心有些同学看不了。
+
 [Office for Mac 2016 ](http://xclient.info/s/office-for-mac-2016.html)
 
-### Markdown 文章写作
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/office_for_mac.png"/>
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/nweb_for_mac.png"/>
+### 文章写作
+
+文章都是用 Markdown 来写的，工具用的是MWeb，一款很强大的 Markdown 编辑工具。
 
 [MWeb for Mac](http://www.mweb.im/)
 
-### 流程图、类图、时序图等各种图例
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/nweb_for_mac.png"/>
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/EdrawMax.png"/>
+### 图例绘制
+
+流程图、类图、时序图、系统架构图等各种图例采用EdrawMax来绘制，Visio 也比较好用，可惜 Mac 下没有。
 
 [EdrawMax](http://xclient.info/s/edraw-max.html)
 
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/EdrawMax.png"/>
+
 ### 图片处理
+
+Gif 图的制作用的是VideoGIF。
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/VideoGIF.png"/>
 
 [VideoGIF](http://xclient.info/s/videogif.html)
-
 
 ## 书籍篇
 
@@ -122,7 +141,8 @@ https://source.android.com/source/index.html
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_develop_art_explore.png"/>
 
 
-好了，以上就是阅读 AOSP 需要做的全部工作，下篇文章会具体说一说后续的[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/blob/master/doc/章节.md)安排。
+好了，以上就是阅读 AOSP 需要做的全部工作，如果你已经对源码产生了兴趣，那么就去[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/blob/master/doc/章节.md)
+里看看后续的写作安排吧。
 
 
 
