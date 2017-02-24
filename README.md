@@ -122,7 +122,7 @@ https://source.android.com/source/index.html
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_develop_art_explore.png"/>
 
 
-好了，以上就是阅读 AOSP 需要做的全部工作，下篇文章会具体说一说后续的章节安排。
+好了，以上就是阅读 AOSP 需要做的全部工作，下篇文章会具体说一说后续的[章节](https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/doc/章节.md)安排。
 
 
 
