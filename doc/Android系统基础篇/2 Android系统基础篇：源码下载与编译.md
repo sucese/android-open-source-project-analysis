@@ -19,12 +19,16 @@
 
 清华大学开源软件镜像站：https://mirror.tuna.tsinghua.edu.cn/help/AOSP/
 
-我的电脑环境
+**源码版本**
+
+[android-7.1.1_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
+
+**电脑环境**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/mac_os.png" width="700" height=""/>
 
 
-# 创建区分大小写磁盘
+## 创建区分大小写磁盘
 
 打开磁盘工具
 
@@ -37,3 +41,61 @@
 设置区分大小写
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="700" height=""/>
+
+## 下载repo工具
+
+```
+mkdir ~/bin
+PATH=~/bin:$PATH
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+chmod a+x ~/bin/repo
+```
+
+如果你没有翻墙，可以使用清华大学的repo镜像：https://mirrors.tuna.tsinghua.edu.cn/help/git-repo/
+
+下载完成后将bin/repo打开，将里面的REPO_URL改成清华大学的镜像：
+
+```
+https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/'
+```
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_1.png" width="700" height=""/>
+
+
+## 下载源码
+
+1 建立工作目录
+
+```
+mkdir WORKING_DIRECTORY
+cd WORKING_DIRECTORY
+```
+
+2 初始化仓库
+
+```
+repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest
+```
+
+
+如果需要某个特定的Android版本，可以在后面指定版本号。
+
+Android系统各版本号：https://source.android.com/source/build-numbers.html#source-code-tags-and-builds
+
+```
+repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-4.0.1_r1
+```
+
+同步源码树，开始下载源码，如果后续下载中断，也可以重复执行这个命令。
+
+```
+repo sync
+```
+
+开始下载
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_2.png" width="700" height=""/>
+
+下载完成
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_3.png" width="700" height=""/>
