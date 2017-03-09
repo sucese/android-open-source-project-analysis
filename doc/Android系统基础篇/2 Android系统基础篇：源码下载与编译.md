@@ -19,14 +19,19 @@
 
 清华大学开源软件镜像站：https://mirror.tuna.tsinghua.edu.cn/help/AOSP/
 
+我的电脑环境
+
 
 # 创建区分大小写磁盘
 
 打开磁盘工具
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_1.png" width="700" height=""/>
 
 创建空白映像
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_2.png" width="700" height=""/>
 
 设置区分大小写
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="700" height=""/>
