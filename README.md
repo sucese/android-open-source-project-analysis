@@ -1,4 +1,4 @@
-# Android Nougat 源码分析
+# Android Open Source Project Analysis
 
 作者: 郭孝星<br/>
 邮箱: guoxiaoxingse@163.com<br/>
