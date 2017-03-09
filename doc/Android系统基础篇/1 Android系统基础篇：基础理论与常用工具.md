@@ -11,9 +11,10 @@
 
 **关于文章**
 
->作者的文章都会同时发布在个人博客和简书博客上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问欢迎发邮件与我交流, 对于交流的
-问题, 请描述清楚并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章,
-关注文章的最新的动态。
+>作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流的问
+题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文
+章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方
+面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
 文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis
 
@@ -111,5 +112,8 @@ Gif图的制作用的是VideoGIF。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_develop_art_explore.png"/>
 
-好了，以上就是阅读 AOSP 需要做的全部工作了，如果你已经对源码产生了兴趣，那么不妨去[章节](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/章节.md)
-里看看后续的写作安排吧。
+本系列文章也提供了一些经典的书籍资源
+
+http://pan.baidu.com/share/link?shareid=1026404461&uk=3444638282
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_book.png"/>
