@@ -32,14 +32,42 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 
 代码版本
 
->本系列文章针对的是最新的 Android 7.0 Nougat 版本源码。
+[android-7.1.1_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
 
 核心思路
 
 >以某一个支线为起点，从上层往底层，不断地追溯，在各个模块、文件、方法之间来回跳转，反复地阅读，理清整个流程的逻辑。
 同时带着思考去看源码，去揣测作者的用意，去理解代码的精妙之处，去思考代码可能存在的缺陷，去总结优秀的代码设计思想。
 
+本系列文章分析的源码版本为：
 
+本系列文章由下至上，从内核层到框架层再到应用层，从内核空间到用户空间，全面的分析内部的实现原理和设计思路，在源码的分析过程中，还会穿插分析源码的
+设计模式与编程思想，以下为后续文章的具体安排。
 
+Android系统架构图
 
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg"/>
+
+Android系统基础篇
+
+>本篇章从Android源码的下载与编译开始，讲述HAL、智能指针
+
+Android系统驱动篇
+
+Android系统应用篇
+
+- 第一章 Andriod 系统架构概述
+- 第二章 Android UI 框架
+- 第三章 Android 应用资源管理框架
+- 第四章 Android 应用程序框架
+- 第五章 Binder 进程间通信
+- 第六章 Logger 日志系统
+- 第七章 Ashmem 匿名共享内存系统
+- 第八章 Webkit
+- 第九章 OpenGL|ES
+- 第十章 Android 多媒体系统
+- 第十一章 Android 定位系统
+- 第十二章 Android 安全机制
+- 第十三章 硬件抽象层
+- 第十四章 ART/Dalvik 虚拟机
 
