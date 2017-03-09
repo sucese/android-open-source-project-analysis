@@ -38,7 +38,7 @@
 
 **Android系统架构图**
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg" width="700" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg" width="700" height="520"/>
 
 **Android系统基础篇**
 
