@@ -41,9 +41,9 @@ https://source.android.com/source/index.html
 
 ### 演示文稿
 
-演示文稿还是用 Office 来做了，没有用 Keynote，担心有些同学看不了。
+演示文稿是用 Keynote 来做的。
 
-[Office for Mac 2016 ](http://xclient.info/s/office-for-mac-2016.html)
+[Keynote](http://xclient.info/s/keynote.html)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/office_for_mac.png"/>
 
