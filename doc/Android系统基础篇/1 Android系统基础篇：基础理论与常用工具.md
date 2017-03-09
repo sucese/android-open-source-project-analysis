@@ -17,6 +17,11 @@
 
 文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis
 
+这是本系列博客的第一篇文章，后续的每篇文章都会配上详尽的类图、时序图、示例代码，每大章节还是设立导读PPT。
+
+Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精深，所以我们在学习之前，要掌握相关的基本技术，欲工
+其事，必先利其器，我们需要掌握以下的技术。
+
 ## 基础篇
 
 阅读 AOSP（Android Open Source Projec）之前你需要掌握的技术有：
