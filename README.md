@@ -15,7 +15,7 @@
 问题, 请描述清楚并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章,
 关注文章的最新的动态。
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg" width="700"/>
 
 **写在前面**
 
@@ -45,7 +45,7 @@ Android 的源码是多名伟大工程师智慧的结晶，不可谓博大而精
 
 **Android系统架构图**
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg" width="700"/>
 
 **Android系统基础篇**
 
