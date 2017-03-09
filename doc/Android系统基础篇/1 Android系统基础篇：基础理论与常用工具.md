@@ -3,20 +3,20 @@
 阅读 AOSP（Android Open Source Projec）之前你需要掌握的技术有：
 
 - Java
-    * AOSP 的主要语言，当然是应该掌握的。
+    * AOSP的主要语言，当然是应该掌握的。
 - Linux
-    * Android 是基于 Linux 内核开发的，如何你需要涉及到内核或者驱动的开发，你需要掌握 Linux 相关技术。
+    * Android是基于Linux内核开发的，如何你需要涉及到内核或者驱动的开发，你需要掌握Linux相关技术。
 - Make
-    * AOSP 是用 Make 来编译的，因此要了解常用的 Make 语法。
+    * AOSP是用Make来编译的，因此要了解常用的Make语法。
 - Git
-    * 这是程序员必备技能了吧。
+    * 程序员必备技能。
 - C++
-    * AOSP 一些性能敏感的模块底层都是由C++完成的，当然如果你如果不需要关注底层实现，也可以跳过这一段，可以更多的
+    * AOSP一些性能敏感的模块底层都是由C++完成的，当然如果你如果不需要关注底层实现，也可以跳过这一段，可以更多的
     去关注框架层。
 - 设计模式
     * AOSP里大量的框架都是用了谋者设计模式，比方说观察者模式、工厂模式、复合模式等，如果对设计模式不够了解的会
     看的云里雾里。
-- 熟练的 Android App 开发技能
+- 熟练的Android App开发技能
 
 
 Android 源码
@@ -33,7 +33,7 @@ https://source.android.com/source/index.html
 
 ### 代码阅读
 
-如果在 Windows 下直接上 SourceInsight 就可以了，Mac 下可以用 Understand，功能和 SourceInsight 一样强大。
+如果在Windows下直接上SourceInsight 就可以了，Mac下可以用Understand，功能和SourceInsight一样强大。
 
 [Understand 4.0.849 代码阅读分析软件](http://xclient.info/s/understand.html)
 
@@ -41,7 +41,7 @@ https://source.android.com/source/index.html
 
 ### 演示文稿
 
-演示文稿是用 Keynote 来做的。
+演示文稿是用Keynote来做的。
 
 [Keynote](http://xclient.info/s/keynote.html)
 
@@ -49,7 +49,7 @@ https://source.android.com/source/index.html
 
 ### 文章写作
 
-文章都是用 Markdown 来写的，工具用的是MWeb，一款很强大的 Markdown 编辑工具。
+文章都是用Markdown来写的，工具用的是MWeb，一款很强大的Markdown编辑工具。
 
 [MWeb for Mac](http://www.mweb.im/)
 
@@ -57,7 +57,7 @@ https://source.android.com/source/index.html
 
 ### 图例绘制
 
-流程图、类图、时序图、系统架构图等各种图例采用EdrawMax来绘制，Visio 也比较好用，可惜 Mac 下没有。
+流程图、类图、时序图、系统架构图等各种图例采用EdrawMax来绘制，Visio也比较好用，可惜Mac下没有。
 
 [EdrawMax](http://xclient.info/s/edraw-max.html)
 
@@ -65,7 +65,7 @@ https://source.android.com/source/index.html
 
 ### 图片处理
 
-Gif 图的制作用的是VideoGIF。
+Gif图的制作用的是VideoGIF。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/VideoGIF.png"/>
 
