@@ -64,7 +64,7 @@ https://source.android.com/source/index.html
 
 [Keynote](http://xclient.info/s/keynote.html)
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/office_for_mac.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/keynote.png"/>
 
 ### 文章写作
 
