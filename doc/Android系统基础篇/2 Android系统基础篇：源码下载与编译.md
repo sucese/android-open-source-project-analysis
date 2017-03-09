@@ -22,6 +22,11 @@
 
 # 创建区分大小写磁盘
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_1.png" width="500" height=""/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_2.png" width="500" height=""/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="500" height=""/>
+打开磁盘工具
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_1.png" width="800" height=""/>
+
+创建空白映像
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_2.png" width="800" height=""/>
+
+设置区分大小写
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="800" height=""/>
