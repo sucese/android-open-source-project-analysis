@@ -22,6 +22,6 @@
 
 # 创建区分大小写磁盘
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_1.png" width="" height=""/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_2.png" width="" height=""/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_1.png" width="1000" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_2.png" width="1000" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/disk_tool_3.png" width="1000" height=""/>
