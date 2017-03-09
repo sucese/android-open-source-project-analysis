@@ -94,6 +94,21 @@ repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-4.0.
 repo sync
 ```
 
+源码的下载会经常中断我们可以写一个脚本自动repo sync，保存成repo.sh，放到WORKING_DIRECTORY目录下，.repo.sh即可执行
+
+```
+#!/bin/bash   
+#FileName  jkYishon.sh  
+PATH=~/bin:$PATH   
+repo init -u git://aosp.tuna.tsinghua.edu.cn/android/platform/manifest -b android-7.1.1_r1 
+repo sync   
+while [ $? = 1 ]; do   
+echo "================sync failed, re-sync again ====="   
+sleep 3   
+repo sync   
+done 
+```
+
 开始下载
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_2.png" width="700" height=""/>
