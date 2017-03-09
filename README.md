@@ -29,7 +29,7 @@
 
 >[android-7.1.1_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
 
-**分析思路**
+**分析思路**<br/>
 
 >以某一个支线为起点，从上层往底层，不断地追溯，在各个模块、文件、方法之间来回跳转，反复地阅读，理清整个流程的逻辑。
 同时带着思考去看源码，去揣测作者的用意，去理解代码的精妙之处，去思考代码可能存在的缺陷，去总结优秀的代码设计思想。
@@ -39,7 +39,7 @@
 
 **Android系统架构图**
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg" width="700" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_architecture.jpg" width="700" height="600"/>
 
 **Android系统基础篇**
 
