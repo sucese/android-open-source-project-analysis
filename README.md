@@ -1,5 +1,7 @@
 # Android Open Source Project Analysis
 
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg" width="1000"/>
+
 作者: 郭孝星<br/>
 邮箱: guoxiaoxingse@163.com<br/>
 博客: https://guoxiaoxing.github.io/<br/>
@@ -15,8 +17,6 @@
 题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文
 章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方
 面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
-
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg" width="700"/>
 
 文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis
 
