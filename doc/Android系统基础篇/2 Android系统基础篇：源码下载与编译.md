@@ -117,3 +117,4 @@ done
 下载完成
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_3.png" width="700" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_4.png" width="700" height=""/>
