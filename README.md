@@ -48,8 +48,8 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 >本篇章从Android源码的下载与编译开始，讲述HAL、智能指针等底层原理。
 
-- [1 Android系统基础篇：基础理论与常用工具](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/1\\Android系统基础篇：基础理论与常用工具.md)
-- [2 Android系统基础篇：源码下载与编译](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/2\\Android系统基础篇：源码下载与编译.md)
+- [1 Android系统基础篇：基础理论与常用工具](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/1Android系统基础篇：基础理论与常用工具.md)
+- [2 Android系统基础篇：源码下载与编译](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/2Android系统基础篇：源码下载与编译.md)
 - 3 Android系统基础篇：硬件抽象层
 - 4 Android系统基础篇：智能指针
 - 4 Android系统基础篇：ART/Dalvik 虚拟机
