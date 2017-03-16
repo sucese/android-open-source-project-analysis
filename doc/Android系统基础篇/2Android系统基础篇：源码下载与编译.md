@@ -85,7 +85,6 @@ $ git config --global user.email "you@example.com"
 repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest
 ```
 
-
 如果需要某个特定的Android版本，可以在后面指定版本号。
 
 Android系统各版本号：https://source.android.com/source/build-numbers.html#source-code-tags-and-builds
