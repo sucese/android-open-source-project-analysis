@@ -74,6 +74,11 @@ mkdir WORKING_DIRECTORY
 cd WORKING_DIRECTORY
 ```
 
+```
+$ git config --global user.name "Your Name"
+$ git config --global user.email "you@example.com"
+```
+
 2 初始化仓库
 
 ```
@@ -95,19 +100,26 @@ repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-4.0.
 repo sync
 ```
 
-源码的下载会经常中断，我们可以写一个脚本自动repo sync，保存成repo.sh，放到WORKING_DIRECTORY目录下，.repo.sh即可执行
+源码的下载会经常中断，我们可以写一个脚本自动repo sync，保存成repo.sh，放到WORKING_DIRECTORY目录下
 
 ```
 #!/bin/bash   
 #FileName  jkYishon.sh  
 PATH=~/bin:$PATH   
-repo init -u git://aosp.tuna.tsinghua.edu.cn/android/platform/manifest -b android-7.1.1_r1 
+repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-7.1.1_r1
 repo sync   
 while [ $? = 1 ]; do   
 echo "================sync failed, re-sync again ====="   
 sleep 3   
 repo sync   
-done 
+done
+```
+
+配置可执行权限，运行即可。
+
+```
+chmod 777 repo.sh
+./repo.sh
 ```
 
 开始下载
@@ -117,4 +129,7 @@ done
 下载完成
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_3.png" width="700" height=""/>
+
+源码目录
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/base/1/repo_download_4.png" width="700" height=""/>
