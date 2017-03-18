@@ -1,9 +1,9 @@
 # Android系统基础篇：基础理论与常用工具
 
-作者: 郭孝星<br/>
-邮箱: guoxiaoxingse@163.com<br/>
-博客: https://guoxiaoxing.github.io/<br/>
-简书: http://www.jianshu.com/users/66a47e04215b/latest_articles<br/>
+作者: 郭孝星  
+邮箱: guoxiaoxingse@163.com  
+博客: http://blog.csdn.net/allenwells   
+简书: http://www.jianshu.com/users/66a47e04215b/latest_articles  
 
 **关于作者**
 
