@@ -16,11 +16,9 @@
 章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方
 面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
-文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis
-
-官方地址：https://source.android.com/index.html
-
-清华大学开源软件镜像站：https://mirror.tuna.tsinghua.edu.cn/help/AOSP/
+文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis  
+官方地址：https://source.android.com/index.html  
+清华大学开源软件镜像站：https://mirror.tuna.tsinghua.edu.cn/help/AOSP/  
 
 **源码版本**
 
