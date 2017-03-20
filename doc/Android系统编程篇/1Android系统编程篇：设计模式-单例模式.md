@@ -63,7 +63,7 @@
 
 ### 懒汉式单例
 
-```javascrpt
+```java
 private static Singleton instance;
 
 private Singleton() {
