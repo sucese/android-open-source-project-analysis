@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android-framework-source-code-analysis.iml" filepath="$PROJECT_DIR$/android-framework-source-code-analysis.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-open-source-project-analysis.iml" filepath="$PROJECT_DIR$/android-open-source-project-analysis.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />

@@ -64,17 +64,21 @@
 ### 懒汉式单例
 
 ```java
-private static Singleton instance;
+public class Singleton {
 
-private Singleton() {
-}
+    private static Singleton instance;
 
-public synchronized static Singleton getInstance() {
-    if (instance == null) {
-        instance = new Singleton();
+    private Singleton() {
     }
-    return instance;
+
+    public synchronized static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
 }
+
 ```
 
 
