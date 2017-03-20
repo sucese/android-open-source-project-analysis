@@ -41,11 +41,16 @@
 优点：
 
 ```
-1. 单例模式只有一个实例，减少类系统开销，避免了对资源的多重占用。
-2.
+1 单例模式只有一个实例，减少类系统开销，避免了对资源的多重占用。
+2 单例模式可以设置全局访问点，优化和共享资源访问。
 ```
 
+缺点：
 
+```
+1 单例一般没有接口，后期做扩展比较困难，只能修改源码。
+2 单例对象如果持有Context，容易引发内存泄漏，所以我们一般传递的是Application Context。
+```
 ## 模式实现
 
 单例模式实现要点：
@@ -233,7 +238,7 @@ private Object readReslove() throws ObjectStreamException {
 }
 ```
 
-好，5种单例的实现方式都讲完了，我们来总结一下，不管是哪种实现方式，要点都在于：
+好了，5种单例的实现方式都讲完了，我们来总结一下，不管是哪种实现方式，要点都在于：
 
 ```
 1 构造函数不对外开放，一般为Private。
@@ -246,3 +251,26 @@ private Object readReslove() throws ObjectStreamException {
 
 ## 模式实践
 
+了解了单例的常见实现，我们来看一下常见的开源项目中都是如何使用单例的。
+
+Android-Universal-Image-Loader：https://github.com/nostra13/Android-Universal-Image-Loader
+
+双层校验锁单例
+
+```java
+public class ImageLoader {
+	private volatile static ImageLoader instance;
+
+	/** Returns singleton class instance */
+	public static ImageLoader getInstance() {
+		if (instance == null) {
+			synchronized (ImageLoader.class) {
+				if (instance == null) {
+					instance = new ImageLoader();
+				}
+			}
+		}
+		return instance;
+	}
+}
+```
