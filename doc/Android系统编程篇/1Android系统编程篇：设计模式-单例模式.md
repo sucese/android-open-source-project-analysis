@@ -62,10 +62,29 @@
 
 
 ### 懒汉式单例
+
+```
+private static Singleton instance;
+
+private Singleton() {
+}
+
+public synchronized static Singleton getInstance() {
+    if (instance == null) {
+        instance = new Singleton();
+    }
+    return instance;
+}
+```
+
 ### 饿汉式单例
+
 ### 双层校验锁单例
+
 ### 静态内部类单例
+
 ### 枚举单例
+
 ### 容器单例
 
 ### 懒汉式，线程安全
