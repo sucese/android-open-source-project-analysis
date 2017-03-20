@@ -1,4 +1,4 @@
-# Android系统编程篇：设计模式-单例模式
+# Android系统编程篇：单例模式
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
