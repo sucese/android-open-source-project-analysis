@@ -63,7 +63,7 @@
 
 ### 懒汉式单例
 
-```java
+```javascrpt
 private static Singleton instance;
 
 private Singleton() {
@@ -76,6 +76,7 @@ public synchronized static Singleton getInstance() {
     return instance;
 }
 ```
+
 
 ### 饿汉式单例
 
