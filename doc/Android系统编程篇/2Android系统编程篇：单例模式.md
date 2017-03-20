@@ -85,8 +85,6 @@ public class LazySingleton {
 
 >注：synchronized，Java语言的关键字，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码。
 
-### 饿汉式单例
-
 ### 双层校验锁单例
 
 ```java
