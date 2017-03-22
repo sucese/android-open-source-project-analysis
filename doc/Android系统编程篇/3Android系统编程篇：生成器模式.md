@@ -34,7 +34,7 @@ ConcreteBuilder：具体的Builder类
 Director：统一组装过程
 ```
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/3/design_pattern_builder.png" width="700" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/design_pattern_builder.png" width="700" height=""/>
 
 
 使用场景
