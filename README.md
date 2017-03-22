@@ -40,7 +40,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **Android系统架构图**
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_structure.png" width="1000"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_system_structure.png" width="700"/>
 
 文章更新中...
 
