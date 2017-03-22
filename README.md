@@ -78,7 +78,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **Android系统编程篇**
 
-- [1Android系统编程篇：单例模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程篇/2Android系统编程篇：单例模式.md)
+- [1Android系统编程篇：单例模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程篇/1Android系统编程篇：单例模式.md)
 - [1Android系统编程篇：生成器模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程篇/2Android系统编程篇：生成器模式.md)
 - Android系统编程篇：原型模式
 - Android系统编程篇：工厂模式
