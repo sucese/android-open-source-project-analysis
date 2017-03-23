@@ -309,19 +309,11 @@ AlertDialog内部调用逻辑
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertDialog.png" width="700" height=""/>
 
-
 AlertController内部调用逻辑
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertController.png" width="700" height=""/>
 
-
 好，我们来看看AlertDialog的具体构建流程。
-
-```java
-public class AlertDialog extends Dialog implements DialogInterface {
-
-}
-```
 
 1 调用Builder，构建参数。
 
@@ -444,6 +436,6 @@ public static class Builder {
 以上便是Android系统中对建造者模式中应用，可以发现该实践中没有抽象产品角色、指挥者角色，这是Android对建造者模式中一种简化，后续在阅读源码的过程总还会发现
 很多这种简化与变通，这也是编程的魅力所在，因地制宜，灵活多变。
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji8.jpg"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji9.jpg"/>
 
 关于Dialog的进一步的内容以及WindowManager等相关原理，我们在这里不再进一步展开，后续的Android源码分析系列文章中会做进一步的详尽分析。
