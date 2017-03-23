@@ -433,8 +433,8 @@ public static class Builder {
 
 ```
 
-以上便是Android系统中对建造者模式中应用，可以发现该实践中没有抽象产品角色、指挥者角色，这是Android对建造者模式中一种简化，后续在阅读源码的过程总还会发现
-很多这种简化与变通，这也是编程的魅力所在，因地制宜，灵活多变。
+以上便是Android系统中对建造者模式的应用，可以发现该实践中并没有抽象产品角色、指挥者角色，这是Android对建造者模式的一种简化，在后续的阅读源码过程中还会发现
+很多这样的简化与变通，并不是刻板的按照标准实现来做，这也正是编程的魅力所在：因地制宜，灵活多变。
 
 <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji9.jpg"/>
 
