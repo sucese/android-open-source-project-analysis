@@ -44,20 +44,10 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 文章更新中...
 
-**Android系统基础篇**
+在正式开始分析源码之前，我们先做一些准备工作。
 
->本篇章从Android源码的下载与编译开始，讲述HAL、智能指针等底层原理。
-
-- [1Android系统基础篇：基础理论与常用工具](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/1Android系统基础篇：基础理论与常用工具.md)
-- [2Android系统基础篇：源码下载与编译](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统基础篇/2Android系统基础篇：源码下载与编译.md)
-- 3 Android系统基础篇：硬件抽象层
-- 4 Android系统基础篇：智能指针
-- 4 Android系统基础篇：ART/Dalvik 虚拟机
-
-**Android系统驱动篇**
-
-- Android系统驱动篇：Binder进程通信系统
-- Android系统驱动篇：Ashmem匿名共享内存系统
+- [1准备工作：基础理论与常用工具](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/准备工作/1准备工作：基础理论与常用工具.md)
+- [2准备工作：源码下载与编译](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/准备工作/2准备工作：源码下载与编译.md)
 
 **Android系统应用篇**
 
@@ -75,6 +65,16 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - Android系统应用篇：Android 多媒体系统
 - Android系统应用篇：Android 定位系统
 - Android系统应用篇：Android 安全机制
+
+**Android系统底层篇**
+
+>本篇章从Android源码的下载与编译开始，讲述HAL、智能指针等底层原理。
+
+- Android系统基础篇：硬件抽象层
+- Android系统基础篇：智能指针
+- Android系统基础篇：ART/Dalvik 虚拟机
+- Android系统驱动篇：Binder进程通信系统
+- Android系统驱动篇：Ashmem匿名共享内存系统
 
 **Android系统编程篇**
 
