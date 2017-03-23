@@ -305,8 +305,15 @@ AlertDialog：内置Builder类，完成参数构建。
 
 AlertController：AlertDialog的代理类，完成具体的构建过程，内置AlertParams类，由Builder类传递过来的参数都会设置到AlertParams中。
 
-AlertDialog有很多参数，按钮文字，监听器什么的，它把这些内容包装到AlertParams类中，再使用AlertDialog内部
-的Builder类进行构建。
+AlertDialog内部调用逻辑
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertDialog.png" width="700" height=""/>
+
+
+AlertController内部调用逻辑
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertController.png" width="700" height=""/>
+
 
 好，我们来看看AlertDialog的具体构建流程。
 
@@ -436,3 +443,7 @@ public static class Builder {
 
 以上便是Android系统中对建造者模式中应用，可以发现该实践中没有抽象产品角色、指挥者角色，这是Android对建造者模式中一种简化，后续在阅读源码的过程总还会发现
 很多这种简化与变通，这也是编程的魅力所在，因地制宜，灵活多变。
+
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/emoji/emoji8.jpg"/>
+
+关于Dialog的进一步的内容以及WindowManager等相关原理，我们在这里不再进一步展开，后续的Android源码分析系列文章中会做进一步的详尽分析。
