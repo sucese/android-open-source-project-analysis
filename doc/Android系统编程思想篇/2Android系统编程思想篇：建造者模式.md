@@ -1,4 +1,4 @@
-# Android系统编程篇：建造者模式
+# Android系统编程思想篇：建造者模式
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
