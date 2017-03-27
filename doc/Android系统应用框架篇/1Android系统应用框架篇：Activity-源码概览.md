@@ -21,9 +21,31 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 从这篇文字开始，我们正式开始系统的去分析Activity相关源码、原理、启动流程等方面。
 
+## 继承体系
 
 [点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.svg)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.svg"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/UMLClassDiagram-app-ActivityGroup.png"/>
+
+我们来介绍下上图中主要的类
+
+- Context：抽象类，应用的全局运行环境。
+- ContextWrapper：继承于Context，Context的代理类。ContextWrapper里的方法都最终调用Context里的方法来实现。
+- ContextThemeWrapper：继承于ContextWrapper，可以进行主题修改。
+- Activity：继承于ContextThemeWrapper，展示在用户面前的类，绘制UI，处理用户交互。
+- ActivityGroup：继承于Activity，一个屏幕可以包含多个Activity。
+
+## 内部结构
+
+我们再来看看在Activity提供各种功能的内部模块。
+
+- Instrumentation
+- IBinder
+- ActivityInfo
+- ActivityThread
+- SearchManager
+- Window
+- WindowManager
+
 
