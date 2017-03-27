@@ -21,8 +21,9 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 关于Activity
 
+- Launcher.startActivitySafely(Intent intent, Object tag)
 
-Launcher.startActivitySafely(Intent intent, Object tag)
+### Launcher.startActivitySafely(Intent intent, Object tag)
 
 ```java
 /**
@@ -70,7 +71,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-Activity.startActivity(Intent intent)
+### Activity.startActivity(Intent intent)
 
 ```java
 public class Activity extends ContextThemeWrapper
@@ -88,7 +89,7 @@ public class Activity extends ContextThemeWrapper
 startActivity()会去调用startActivityForResult(intent, -1)，-1表示不需要知道Activity的执行结果。
 
 
-Activity.startActivity(Intent intent)
+### Activity.startActivityForResult(Intent intent, int requestCode)
 
 ```java
 public class Activity extends ContextThemeWrapper
@@ -137,7 +138,7 @@ ActivityThread：用来描述一个应用进程。
 每当系统启动一个应用进程时，都会启动一个ActivityThread实例，该实例保存在Activity的mThread变量中。
 
 
-Instrumentation.execStartActivity(
+### Instrumentation.execStartActivity(
                         Context who, IBinder contextThread, IBinder token, Activity target,
                         Intent intent, int requestCode)
 
@@ -249,7 +250,7 @@ ActivityManagerNative.getDefault()通过ServiceManager.getService("activity")获
 调用asInterface(b)函数将其封装成一个类型为ApplicationThreadProxy的代理对象，并保存在gDefault静态变量中。ApplicationThreadProxy实现了
 IActivityManager里的相关方法。
 
-ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent,
+### ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent,
                                    String resolvedType, Uri[] grantedUriPermissions, int grantedMode,
                                    IBinder resultTo, String resultWho,
                                    int requestCode, boolean onlyIfNeeded,
