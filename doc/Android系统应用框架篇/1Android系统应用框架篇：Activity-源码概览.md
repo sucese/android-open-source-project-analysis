@@ -23,7 +23,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 ## 继承体系
 
-[点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.svg)
+[点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.png)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.svg"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/UMLClassDiagram-app-ActivityGroup.png"/>
