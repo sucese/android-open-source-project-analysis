@@ -258,6 +258,8 @@ ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent,
 ```java
 class ActivityManagerProxy implements IActivityManager{
 
+    private IBinder mRemote;
+
     public int startActivity(IApplicationThread caller, Intent intent,
             String resolvedType, Uri[] grantedUriPermissions, int grantedMode,
             IBinder resultTo, String resultWho,
@@ -286,3 +288,12 @@ class ActivityManagerProxy implements IActivityManager{
     
 }
 ```
+我们先来看看主要的参数
+
+- IApplicationThread caller：指向Launcher组件所运行在的应用进程的ApplicationThread对象。
+- Intent intent：将要启动的Activity组件的信息。
+- IBinder resultTo：指向ActivityMangerService内部的一个ActivityRecord对象，它保存了Launcher组件的详细信息。
+
+ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
+类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
+
