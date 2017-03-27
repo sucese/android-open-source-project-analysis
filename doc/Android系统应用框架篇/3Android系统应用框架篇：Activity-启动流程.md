@@ -77,7 +77,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-# Activity
+## Activity
 
 ```java
 public class Activity extends ContextThemeWrapper
@@ -301,6 +301,3 @@ class ActivityManagerProxy implements IActivityManager{
 ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
 类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
 
-## Example
-## Example2
-## Third Example
