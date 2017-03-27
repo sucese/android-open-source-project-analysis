@@ -21,4 +21,4 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 从这篇文字开始，我们正式开始系统的去分析Activity相关源码、原理、启动流程等方面。
 
 
-<img src=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/UMLClassDiagram-app-ActivityGroup.svg"/>
