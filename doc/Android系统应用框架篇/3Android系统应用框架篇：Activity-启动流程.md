@@ -26,6 +26,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 1. <a href="#Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
 1. <a href="#Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)">Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)</a>
 1. <a href="#ApplicationThreadProxy.startActivity()">ApplicationThreadProxy.startActivity()</a>
+1. <a href="#使用方法">使用方法</a>
 
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
@@ -301,3 +302,4 @@ class ActivityManagerProxy implements IActivityManager{
 ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
 类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
 
+### 使用方法
