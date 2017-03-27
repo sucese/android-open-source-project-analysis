@@ -24,7 +24,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 <a href="###Launcher.startActivitySafely(Intent intent, Object tag)">Launcher.startActivitySafely(Intent intent, Object tag)</a>
 <a href="###Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
 
-- [Launcher.startActivitySafely(Intent intent, Object tag)](###Activity.startActivityForResult(Intent intent, int requestCode))
+- [Launcher.startActivitySafely(Intent intent, Object tag)](#Activity)
 - Activity.startActivity(Intent intent)
 - Activity.startActivityForResult(Intent intent, int requestCode)
 - Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
@@ -80,7 +80,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-### Activity.startActivity(Intent intent)
+# Activity
 
 ```java
 public class Activity extends ContextThemeWrapper
