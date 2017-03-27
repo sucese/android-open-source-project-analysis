@@ -22,7 +22,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 1. <a href="#Launcher.startActivitySafely(Intent intent, Object tag)">Launcher.startActivitySafely(Intent intent, Object tag)</a>
-1. <a href="#Activity.startActivity(Intent intent)">activity</a>
+1. <a href="#Activity">Activity.startActivity(Intent intent)</a>
 1. <a href="#Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
 1. <a href="#Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)">Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)</a>
 1. <a href="#ApplicationThreadProxy.startActivity()">ApplicationThreadProxy.startActivity()</a>
