@@ -22,6 +22,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 <a href="###Launcher.startActivitySafely(Intent intent, Object tag)">Launcher.startActivitySafely(Intent intent, Object tag)</a>
+<a href="###Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
 
 - [Launcher.startActivitySafely(Intent intent, Object tag)](#jump)
 - Activity.startActivity(Intent intent)
