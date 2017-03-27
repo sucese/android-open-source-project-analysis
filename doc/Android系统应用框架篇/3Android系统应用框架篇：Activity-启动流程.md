@@ -147,8 +147,6 @@ ActivityThread：用来描述一个应用进程。
 
 ### Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
 
-<span id="jump">Hello World</span>
-
 
 ```java
 /**
