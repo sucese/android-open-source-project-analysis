@@ -16,7 +16,8 @@
 star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时
 的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
-文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md
+第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
+更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 单例模式可能是我们最常见的模式之一了，在单例模式中，我们要求一个系统只有一个全局对象存在，这样有利用我们去协调系统的整体行为。比如在某个服
 务器程序中，该服务器的配置信息存放在一个文件中，这些配置数据由一个单例对象统一读取，然后服务进程中的其他对象再通过这个单例对象获取这些配置

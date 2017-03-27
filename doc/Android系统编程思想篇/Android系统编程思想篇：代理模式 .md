@@ -14,7 +14,8 @@
 star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时
 的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
-文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md
+第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
+更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 代理模式属于结构型设计模式的一种，在程序设计中十分常见。代理，顾名思义就是帮别人办事，科学上网中代理上网，上大学的时候上宿舍兄弟帮自己
 带个饭都是代理。
