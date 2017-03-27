@@ -8,7 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.guoxiaoxing.android.framework.demo.MainActivity">
+    tools:context="com.guoxiaoxing.android.framework.demo.application.ApplicationActivity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,26 +17,27 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/btn_application"
+            android:id="@+id/btn_application_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android系统应用框架篇"
+            android:text="Activity"
             android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/btn_system"
+            android:id="@+id/btn_application_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android系统应用框架篇"
+            android:text="Service"
             android:textAllCaps="false" />
-
 
         <Button
-            android:id="@+id/btn_program"
+            android:id="@+id/btn_application_broadcast_receiver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android系统应用框架篇"
+            android:text="BroadcastReceiver"
             android:textAllCaps="false" />
+
 
     </LinearLayout>
+    >
 </ScrollView>
