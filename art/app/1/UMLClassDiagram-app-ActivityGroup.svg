@@ -1,0 +1,759 @@
+<?xml version="1.0"?>
+<svg width="4039" height="7140" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <polygon points="4,7137 4,4 4036,4 4036,7137 4,7137" stroke="#ffffff" fill="#ffffff"/>
+ <polygon points="2300,5859 2300,5655 2788,5655 2788,5859 2300,5859" stroke="#ff0000" fill="#ffffff"/>
+ <polyline points="2300,5675 2788,5675" stroke="#ff0000" fill="none"/>
+ <polyline points="2300,5731 2788,5731" stroke="#ff0000" fill="none"/>
+ <text x="2487" y="5669" fill="#000000" font-family="Arial" font-size="10">android.app.ActivityGroup</text>
+ <text x="2308" y="5689" fill="#000000" font-family="Arial" font-size="10">+ ActivityGroup.PARENT_NON_CONFIG_INSTANCE_KEY: String= &quot;android:parent_non_config_instance&quot;</text>
+ <text x="2308" y="5701" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.mLocalActivityManager: LocalActivityManager</text>
+ <text x="2308" y="5713" fill="#000000" font-family="Arial" font-size="10">- ActivityGroup.STATES_KEY: String= &quot;android:states&quot;</text>
+ <text x="2308" y="5725" fill="#000000" font-family="Arial" font-size="10">- ActivityGroup.TAG: String= &quot;ActivityGroup&quot;</text>
+ <text x="2308" y="5745" fill="#000000" font-family="Arial" font-size="10">+ ActivityGroup.getCurrentActivity () Activity</text>
+ <text x="2308" y="5757" fill="#000000" font-family="Arial" font-size="10">+ ActivityGroup.getLocalActivityManager () LocalActivityManager</text>
+ <text x="2308" y="5769" fill="#000000" font-family="Arial" font-size="10">+ ActivityGroup.onRetainNonConfigurationChildInstances () HashMap</text>
+ <text x="2308" y="5781" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="2308" y="5793" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onDestroy () void</text>
+ <text x="2308" y="5805" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onPause () void</text>
+ <text x="2308" y="5817" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onResume () void</text>
+ <text x="2308" y="5829" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onSaveInstanceState (outState: Bundle ) void</text>
+ <text x="2308" y="5841" fill="#000000" font-family="Arial" font-size="10"># ActivityGroup.onStop () void</text>
+ <text x="2308" y="5853" fill="#000000" font-family="Arial" font-size="10">+ ActivityGroup.dispatchActivityResult (who: String , requestCode: int , resultCode: int , data: Intent ) void</text>
+ <polygon points="1769,5617 1769,2893 3319,2893 3319,5617 1769,5617" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="1769,2913 3319,2913" stroke="#0000ff" fill="none"/>
+ <polyline points="1769,3557 3319,3557" stroke="#0000ff" fill="none"/>
+ <text x="2500" y="2907" fill="#000000" font-family="Arial" font-size="10">android.app.Activity</text>
+ <text x="1777" y="2927" fill="#000000" font-family="Arial" font-size="10">+ Activity.mActivityInfo: ActivityInfo</text>
+ <text x="1777" y="2939" fill="#000000" font-family="Arial" font-size="10">+ Activity.mCalled: boolean</text>
+ <text x="1777" y="2951" fill="#000000" font-family="Arial" font-size="10">+ Activity.mConfigChangeFlags: int</text>
+ <text x="1777" y="2963" fill="#000000" font-family="Arial" font-size="10">+ Activity.mCurrentConfig: Configuration</text>
+ <text x="1777" y="2975" fill="#000000" font-family="Arial" font-size="10">+ Activity.mDecor: View= null</text>
+ <text x="1777" y="2987" fill="#000000" font-family="Arial" font-size="10">+ Activity.mEmbeddedID: String</text>
+ <text x="1777" y="2999" fill="#000000" font-family="Arial" font-size="10">+ Activity.mFinished: boolean</text>
+ <text x="1777" y="3011" fill="#000000" font-family="Arial" font-size="10">+ Activity.mIntent: Intent</text>
+ <text x="1777" y="3023" fill="#000000" font-family="Arial" font-size="10">+ Activity.mLastNonConfigurationChildInstances: HashMap&lt;String,Object&gt;</text>
+ <text x="1777" y="3035" fill="#000000" font-family="Arial" font-size="10">+ Activity.mLastNonConfigurationInstance: Object</text>
+ <text x="1777" y="3047" fill="#000000" font-family="Arial" font-size="10">+ Activity.mMainThread: ActivityThread</text>
+ <text x="1777" y="3059" fill="#000000" font-family="Arial" font-size="10">+ Activity.mParent: Activity</text>
+ <text x="1777" y="3071" fill="#000000" font-family="Arial" font-size="10">+ Activity.mResultCode: int= RESULT_CANCELED</text>
+ <text x="1777" y="3083" fill="#000000" font-family="Arial" font-size="10">+ Activity.mResultData: Intent= null</text>
+ <text x="1777" y="3095" fill="#000000" font-family="Arial" font-size="10">+ Activity.mStartedActivity: boolean</text>
+ <text x="1777" y="3107" fill="#000000" font-family="Arial" font-size="10">+ Activity.mVisibleFromClient: boolean= true</text>
+ <text x="1777" y="3119" fill="#000000" font-family="Arial" font-size="10">+ Activity.mVisibleFromServer: boolean= false</text>
+ <text x="1777" y="3131" fill="#000000" font-family="Arial" font-size="10">+ Activity.mWindowAdded: boolean= false</text>
+ <text x="1777" y="3143" fill="#000000" font-family="Arial" font-size="10">+ Activity.DEFAULT_KEYS_DIALER: int= 1</text>
+ <text x="1777" y="3155" fill="#000000" font-family="Arial" font-size="10">+ Activity.DEFAULT_KEYS_DISABLE: int</text>
+ <text x="1777" y="3167" fill="#000000" font-family="Arial" font-size="10">+ Activity.DEFAULT_KEYS_SEARCH_GLOBAL: int= 4</text>
+ <text x="1777" y="3179" fill="#000000" font-family="Arial" font-size="10">+ Activity.DEFAULT_KEYS_SEARCH_LOCAL: int= 3</text>
+ <text x="1777" y="3191" fill="#000000" font-family="Arial" font-size="10">+ Activity.DEFAULT_KEYS_SHORTCUT: int= 2</text>
+ <text x="1777" y="3203" fill="#000000" font-family="Arial" font-size="10">+ Activity.RESULT_CANCELED: int</text>
+ <text x="1777" y="3215" fill="#000000" font-family="Arial" font-size="10">+ Activity.RESULT_FIRST_USER: int= 1</text>
+ <text x="1777" y="3227" fill="#000000" font-family="Arial" font-size="10">+ Activity.RESULT_OK: int= -1</text>
+ <text x="1777" y="3239" fill="#000000" font-family="Arial" font-size="10"># Activity.FOCUSED_STATE_SET: int[]</text>
+ <text x="1777" y="3251" fill="#000000" font-family="Arial" font-size="10">- Activity.mApplication: Application</text>
+ <text x="1777" y="3263" fill="#000000" font-family="Arial" font-size="10">- Activity.mComponent: ComponentName</text>
+ <text x="1777" y="3275" fill="#000000" font-family="Arial" font-size="10">- Activity.mDefaultKeyMode: int= DEFAULT_KEYS_DISABLE</text>
+ <text x="1777" y="3287" fill="#000000" font-family="Arial" font-size="10">- Activity.mDefaultKeySsb: SpannableStringBuilder= null</text>
+ <text x="1777" y="3299" fill="#000000" font-family="Arial" font-size="10">- Activity.mHandler: Handler= Handler()</text>
+ <text x="1777" y="3311" fill="#000000" font-family="Arial" font-size="10">- Activity.mIdent: int</text>
+ <text x="1777" y="3323" fill="#000000" font-family="Arial" font-size="10">- Activity.mInstrumentation: Instrumentation</text>
+ <text x="1777" y="3335" fill="#000000" font-family="Arial" font-size="10">- Activity.mManagedCursors: ArrayList&lt;ManagedCursor&gt;= ArrayList()</text>
+ <text x="1777" y="3347" fill="#000000" font-family="Arial" font-size="10">- Activity.mManagedDialogs: SparseArray&lt;ManagedDialog&gt;</text>
+ <text x="1777" y="3359" fill="#000000" font-family="Arial" font-size="10">- Activity.mResumed: boolean</text>
+ <text x="1777" y="3371" fill="#000000" font-family="Arial" font-size="10">- Activity.mSearchManager: SearchManager</text>
+ <text x="1777" y="3383" fill="#000000" font-family="Arial" font-size="10">- Activity.mStopped: boolean</text>
+ <text x="1777" y="3395" fill="#000000" font-family="Arial" font-size="10">- Activity.mTitle: CharSequence</text>
+ <text x="1777" y="3407" fill="#000000" font-family="Arial" font-size="10">- Activity.mTitleColor: int</text>
+ <text x="1777" y="3419" fill="#000000" font-family="Arial" font-size="10">- Activity.mTitleReady: boolean= false</text>
+ <text x="1777" y="3431" fill="#000000" font-family="Arial" font-size="10">- Activity.mToken: IBinder</text>
+ <text x="1777" y="3443" fill="#000000" font-family="Arial" font-size="10">- Activity.mUiThread: Thread</text>
+ <text x="1777" y="3455" fill="#000000" font-family="Arial" font-size="10">- Activity.mWindow: Window</text>
+ <text x="1777" y="3467" fill="#000000" font-family="Arial" font-size="10">- Activity.mWindowManager: WindowManager</text>
+ <text x="1777" y="3479" fill="#000000" font-family="Arial" font-size="10">- Activity.SAVED_DIALOGS_TAG: String= &quot;android:savedDialogs&quot;</text>
+ <text x="1777" y="3491" fill="#000000" font-family="Arial" font-size="10">- Activity.SAVED_DIALOG_ARGS_KEY_PREFIX: String= &quot;android:dialog_args_&quot;</text>
+ <text x="1777" y="3503" fill="#000000" font-family="Arial" font-size="10">- Activity.SAVED_DIALOG_IDS_KEY: String= &quot;android:savedDialogIds&quot;</text>
+ <text x="1777" y="3515" fill="#000000" font-family="Arial" font-size="10">- Activity.SAVED_DIALOG_KEY_PREFIX: String= &quot;android:dialog_&quot;</text>
+ <text x="1777" y="3527" fill="#000000" font-family="Arial" font-size="10">- Activity.TAG: String= &quot;Activity&quot;</text>
+ <text x="1777" y="3539" fill="#000000" font-family="Arial" font-size="10">- Activity.WINDOW_HIERARCHY_TAG: String= &quot;android:viewHierarchyState&quot;</text>
+ <text x="1777" y="3551" fill="#000000" font-family="Arial" font-size="10">- Activity.sInstanceCount: long</text>
+ <text x="1777" y="3571" fill="#000000" font-family="Arial" font-size="10">+ Activity.getInstanceCount () long</text>
+ <text x="1777" y="3583" fill="#000000" font-family="Arial" font-size="10">+ Activity.addContentView (view: View , params: ViewGroup.LayoutParams ) void</text>
+ <text x="1777" y="3595" fill="#000000" font-family="Arial" font-size="10">+ Activity.closeContextMenu () void</text>
+ <text x="1777" y="3607" fill="#000000" font-family="Arial" font-size="10">+ Activity.closeOptionsMenu () void</text>
+ <text x="1777" y="3619" fill="#000000" font-family="Arial" font-size="10">+ Activity.createPendingResult (requestCode: int , data: Intent , flags: int ) PendingIntent</text>
+ <text x="1777" y="3631" fill="#000000" font-family="Arial" font-size="10">+ Activity.dismissDialog (id: int ) void</text>
+ <text x="1777" y="3643" fill="#000000" font-family="Arial" font-size="10">+ Activity.dispatchKeyEvent (event: KeyEvent ) boolean</text>
+ <text x="1777" y="3655" fill="#000000" font-family="Arial" font-size="10">+ Activity.dispatchPopulateAccessibilityEvent (event: AccessibilityEvent ) boolean</text>
+ <text x="1777" y="3667" fill="#000000" font-family="Arial" font-size="10">+ Activity.dispatchTouchEvent (ev: MotionEvent ) boolean</text>
+ <text x="1777" y="3679" fill="#000000" font-family="Arial" font-size="10">+ Activity.dispatchTrackballEvent (ev: MotionEvent ) boolean</text>
+ <text x="1777" y="3691" fill="#000000" font-family="Arial" font-size="10">+ Activity.findViewById (id: int ) View</text>
+ <text x="1777" y="3703" fill="#000000" font-family="Arial" font-size="10">+ Activity.finish () void</text>
+ <text x="1777" y="3715" fill="#000000" font-family="Arial" font-size="10">+ Activity.finishActivity (requestCode: int ) void</text>
+ <text x="1777" y="3727" fill="#000000" font-family="Arial" font-size="10">+ Activity.finishActivityFromChild (child: Activity , requestCode: int ) void</text>
+ <text x="1777" y="3739" fill="#000000" font-family="Arial" font-size="10">+ Activity.finishFromChild (child: Activity ) void</text>
+ <text x="1777" y="3751" fill="#000000" font-family="Arial" font-size="10">+ Activity.getApplication () Application</text>
+ <text x="1777" y="3763" fill="#000000" font-family="Arial" font-size="10">+ Activity.getCallingActivity () ComponentName</text>
+ <text x="1777" y="3775" fill="#000000" font-family="Arial" font-size="10">+ Activity.getCallingPackage () String</text>
+ <text x="1777" y="3787" fill="#000000" font-family="Arial" font-size="10">+ Activity.getChangingConfigurations () int</text>
+ <text x="1777" y="3799" fill="#000000" font-family="Arial" font-size="10">+ Activity.getComponentName () ComponentName</text>
+ <text x="1777" y="3811" fill="#000000" font-family="Arial" font-size="10">+ Activity.getCurrentFocus () View</text>
+ <text x="1777" y="3823" fill="#000000" font-family="Arial" font-size="10">+ Activity.getIntent () Intent</text>
+ <text x="1777" y="3835" fill="#000000" font-family="Arial" font-size="10">+ Activity.getLastNonConfigurationInstance () Object</text>
+ <text x="1777" y="3847" fill="#000000" font-family="Arial" font-size="10">+ Activity.getLayoutInflater () LayoutInflater</text>
+ <text x="1777" y="3859" fill="#000000" font-family="Arial" font-size="10">+ Activity.getLocalClassName () String</text>
+ <text x="1777" y="3871" fill="#000000" font-family="Arial" font-size="10">+ Activity.getMenuInflater () MenuInflater</text>
+ <text x="1777" y="3883" fill="#000000" font-family="Arial" font-size="10">+ Activity.getParent () Activity</text>
+ <text x="1777" y="3895" fill="#000000" font-family="Arial" font-size="10">+ Activity.getPreferences (mode: int ) SharedPreferences</text>
+ <text x="1777" y="3907" fill="#000000" font-family="Arial" font-size="10">+ Activity.getRequestedOrientation () int</text>
+ <text x="1777" y="3919" fill="#000000" font-family="Arial" font-size="10">+ Activity.getSystemService (name: String ) Object</text>
+ <text x="1777" y="3931" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTaskId () int</text>
+ <text x="1777" y="3943" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTitle () CharSequence</text>
+ <text x="1777" y="3955" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTitleColor () int</text>
+ <text x="1777" y="3967" fill="#000000" font-family="Arial" font-size="10">+ Activity.getVolumeControlStream () int</text>
+ <text x="1777" y="3979" fill="#000000" font-family="Arial" font-size="10">+ Activity.getWallpaperDesiredMinimumHeight () int</text>
+ <text x="1777" y="3991" fill="#000000" font-family="Arial" font-size="10">+ Activity.getWallpaperDesiredMinimumWidth () int</text>
+ <text x="1777" y="4003" fill="#000000" font-family="Arial" font-size="10">+ Activity.getWindow () Window</text>
+ <text x="1777" y="4015" fill="#000000" font-family="Arial" font-size="10">+ Activity.getWindowManager () WindowManager</text>
+ <text x="1777" y="4027" fill="#000000" font-family="Arial" font-size="10">+ Activity.hasWindowFocus () boolean</text>
+ <text x="1777" y="4039" fill="#000000" font-family="Arial" font-size="10">+ Activity.isChild () boolean</text>
+ <text x="1777" y="4051" fill="#000000" font-family="Arial" font-size="10">+ Activity.isFinishing () boolean</text>
+ <text x="1777" y="4063" fill="#000000" font-family="Arial" font-size="10">+ Activity.isTaskRoot () boolean</text>
+ <text x="1777" y="4075" fill="#000000" font-family="Arial" font-size="10">+ Activity.managedCommitUpdates (c: Cursor ) void</text>
+ <text x="1777" y="4087" fill="#000000" font-family="Arial" font-size="10">+ Activity.managedQuery (uri: Uri , projection: String[] , selection: String , sortOrder: String ) Cursor</text>
+ <text x="1777" y="4099" fill="#000000" font-family="Arial" font-size="10">+ Activity.managedQuery (uri: Uri , projection: String[] , selection: String , selectionArgs: String[] , sortOrder: String ) Cursor</text>
+ <text x="1777" y="4111" fill="#000000" font-family="Arial" font-size="10">+ Activity.moveTaskToBack (nonRoot: boolean ) boolean</text>
+ <text x="1777" y="4123" fill="#000000" font-family="Arial" font-size="10">+ Activity.onAttachedToWindow () void</text>
+ <text x="1777" y="4135" fill="#000000" font-family="Arial" font-size="10">+ Activity.onBackPressed () void</text>
+ <text x="1777" y="4147" fill="#000000" font-family="Arial" font-size="10">+ Activity.onConfigurationChanged (newConfig: Configuration ) void</text>
+ <text x="1777" y="4159" fill="#000000" font-family="Arial" font-size="10">+ Activity.onContentChanged () void</text>
+ <text x="1777" y="4171" fill="#000000" font-family="Arial" font-size="10">+ Activity.onContextItemSelected (item: MenuItem ) boolean</text>
+ <text x="1777" y="4183" fill="#000000" font-family="Arial" font-size="10">+ Activity.onContextMenuClosed (menu: Menu ) void</text>
+ <text x="1777" y="4195" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateContextMenu (menu: ContextMenu , v: View , menuInfo: ContextMenuInfo ) void</text>
+ <text x="1777" y="4207" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateDescription () CharSequence</text>
+ <text x="1777" y="4219" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateOptionsMenu (menu: Menu ) boolean</text>
+ <text x="1777" y="4231" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreatePanelMenu (featureId: int , menu: Menu ) boolean</text>
+ <text x="1777" y="4243" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreatePanelView (featureId: int ) View</text>
+ <text x="1777" y="4255" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateThumbnail (outBitmap: Bitmap , canvas: Canvas ) boolean</text>
+ <text x="1777" y="4267" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateView (name: String , context: Context , attrs: AttributeSet ) View</text>
+ <text x="1777" y="4279" fill="#000000" font-family="Arial" font-size="10">+ Activity.onDetachedFromWindow () void</text>
+ <text x="1777" y="4291" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyDown (keyCode: int , event: KeyEvent ) boolean</text>
+ <text x="1777" y="4303" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyLongPress (keyCode: int , event: KeyEvent ) boolean</text>
+ <text x="1777" y="4315" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyMultiple (keyCode: int , repeatCount: int , event: KeyEvent ) boolean</text>
+ <text x="1777" y="4327" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyUp (keyCode: int , event: KeyEvent ) boolean</text>
+ <text x="1777" y="4339" fill="#000000" font-family="Arial" font-size="10">+ Activity.onLowMemory () void</text>
+ <text x="1777" y="4351" fill="#000000" font-family="Arial" font-size="10">+ Activity.onMenuItemSelected (featureId: int , item: MenuItem ) boolean</text>
+ <text x="1777" y="4363" fill="#000000" font-family="Arial" font-size="10">+ Activity.onMenuOpened (featureId: int , menu: Menu ) boolean</text>
+ <text x="1777" y="4375" fill="#000000" font-family="Arial" font-size="10">+ Activity.onOptionsItemSelected (item: MenuItem ) boolean</text>
+ <text x="1777" y="4387" fill="#000000" font-family="Arial" font-size="10">+ Activity.onOptionsMenuClosed (menu: Menu ) void</text>
+ <text x="1777" y="4399" fill="#000000" font-family="Arial" font-size="10">+ Activity.onPanelClosed (featureId: int , menu: Menu ) void</text>
+ <text x="1777" y="4411" fill="#000000" font-family="Arial" font-size="10">+ Activity.onPrepareOptionsMenu (menu: Menu ) boolean</text>
+ <text x="1777" y="4423" fill="#000000" font-family="Arial" font-size="10">+ Activity.onPreparePanel (featureId: int , view: View , menu: Menu ) boolean</text>
+ <text x="1777" y="4435" fill="#000000" font-family="Arial" font-size="10">+ Activity.onRetainNonConfigurationInstance () Object</text>
+ <text x="1777" y="4447" fill="#000000" font-family="Arial" font-size="10">+ Activity.onSearchRequested () boolean</text>
+ <text x="1777" y="4459" fill="#000000" font-family="Arial" font-size="10">+ Activity.onTouchEvent (event: MotionEvent ) boolean</text>
+ <text x="1777" y="4471" fill="#000000" font-family="Arial" font-size="10">+ Activity.onTrackballEvent (event: MotionEvent ) boolean</text>
+ <text x="1777" y="4483" fill="#000000" font-family="Arial" font-size="10">+ Activity.onUserInteraction () void</text>
+ <text x="1777" y="4495" fill="#000000" font-family="Arial" font-size="10">+ Activity.onWindowAttributesChanged (params: WindowManager.LayoutParams ) void</text>
+ <text x="1777" y="4507" fill="#000000" font-family="Arial" font-size="10">+ Activity.onWindowFocusChanged (hasFocus: boolean ) void</text>
+ <text x="1777" y="4519" fill="#000000" font-family="Arial" font-size="10">+ Activity.openContextMenu (view: View ) void</text>
+ <text x="1777" y="4531" fill="#000000" font-family="Arial" font-size="10">+ Activity.openOptionsMenu () void</text>
+ <text x="1777" y="4543" fill="#000000" font-family="Arial" font-size="10">+ Activity.overridePendingTransition (enterAnim: int , exitAnim: int ) void</text>
+ <text x="1777" y="4555" fill="#000000" font-family="Arial" font-size="10">+ Activity.registerForContextMenu (view: View ) void</text>
+ <text x="1777" y="4567" fill="#000000" font-family="Arial" font-size="10">+ Activity.removeDialog (id: int ) void</text>
+ <text x="1777" y="4579" fill="#000000" font-family="Arial" font-size="10">+ Activity.requestWindowFeature (featureId: int ) boolean</text>
+ <text x="1777" y="4591" fill="#000000" font-family="Arial" font-size="10">+ Activity.runOnUiThread (action: Runnable ) void</text>
+ <text x="1777" y="4603" fill="#000000" font-family="Arial" font-size="10">+ Activity.setContentView (layoutResID: int ) void</text>
+ <text x="1777" y="4615" fill="#000000" font-family="Arial" font-size="10">+ Activity.setContentView (view: View ) void</text>
+ <text x="1777" y="4627" fill="#000000" font-family="Arial" font-size="10">+ Activity.setContentView (view: View , params: ViewGroup.LayoutParams ) void</text>
+ <text x="1777" y="4639" fill="#000000" font-family="Arial" font-size="10">+ Activity.setDefaultKeyMode (mode: int ) void</text>
+ <text x="1777" y="4651" fill="#000000" font-family="Arial" font-size="10">+ Activity.setFeatureDrawable (featureId: int , drawable: Drawable ) void</text>
+ <text x="1777" y="4663" fill="#000000" font-family="Arial" font-size="10">+ Activity.setFeatureDrawableAlpha (featureId: int , alpha: int ) void</text>
+ <text x="1777" y="4675" fill="#000000" font-family="Arial" font-size="10">+ Activity.setFeatureDrawableResource (featureId: int , resId: int ) void</text>
+ <text x="1777" y="4687" fill="#000000" font-family="Arial" font-size="10">+ Activity.setFeatureDrawableUri (featureId: int , uri: Uri ) void</text>
+ <text x="1777" y="4699" fill="#000000" font-family="Arial" font-size="10">+ Activity.setIntent (newIntent: Intent ) void</text>
+ <text x="1777" y="4711" fill="#000000" font-family="Arial" font-size="10">+ Activity.setPersistent (isPersistent: boolean ) void</text>
+ <text x="1777" y="4723" fill="#000000" font-family="Arial" font-size="10">+ Activity.setProgress (progress: int ) void</text>
+ <text x="1777" y="4735" fill="#000000" font-family="Arial" font-size="10">+ Activity.setProgressBarIndeterminate (indeterminate: boolean ) void</text>
+ <text x="1777" y="4747" fill="#000000" font-family="Arial" font-size="10">+ Activity.setProgressBarIndeterminateVisibility (visible: boolean ) void</text>
+ <text x="1777" y="4759" fill="#000000" font-family="Arial" font-size="10">+ Activity.setProgressBarVisibility (visible: boolean ) void</text>
+ <text x="1777" y="4771" fill="#000000" font-family="Arial" font-size="10">+ Activity.setRequestedOrientation (requestedOrientation: int ) void</text>
+ <text x="1777" y="4783" fill="#000000" font-family="Arial" font-size="10">+ Activity.setResult (resultCode: int ) void</text>
+ <text x="1777" y="4795" fill="#000000" font-family="Arial" font-size="10">+ Activity.setResult (resultCode: int , data: Intent ) void</text>
+ <text x="1777" y="4807" fill="#000000" font-family="Arial" font-size="10">+ Activity.setSecondaryProgress (secondaryProgress: int ) void</text>
+ <text x="1777" y="4819" fill="#000000" font-family="Arial" font-size="10">+ Activity.setTitle (title: CharSequence ) void</text>
+ <text x="1777" y="4831" fill="#000000" font-family="Arial" font-size="10">+ Activity.setTitle (titleId: int ) void</text>
+ <text x="1777" y="4843" fill="#000000" font-family="Arial" font-size="10">+ Activity.setTitleColor (textColor: int ) void</text>
+ <text x="1777" y="4855" fill="#000000" font-family="Arial" font-size="10">+ Activity.setVisible (visible: boolean ) void</text>
+ <text x="1777" y="4867" fill="#000000" font-family="Arial" font-size="10">+ Activity.setVolumeControlStream (streamType: int ) void</text>
+ <text x="1777" y="4879" fill="#000000" font-family="Arial" font-size="10">+ Activity.showDialog (id: int ) void</text>
+ <text x="1777" y="4891" fill="#000000" font-family="Arial" font-size="10">+ Activity.showDialog (id: int , args: Bundle ) boolean</text>
+ <text x="1777" y="4903" fill="#000000" font-family="Arial" font-size="10">+ Activity.startActivity (intent: Intent ) void</text>
+ <text x="1777" y="4915" fill="#000000" font-family="Arial" font-size="10">+ Activity.startActivityForResult (intent: Intent , requestCode: int ) void</text>
+ <text x="1777" y="4927" fill="#000000" font-family="Arial" font-size="10">+ Activity.startActivityFromChild (child: Activity , intent: Intent , requestCode: int ) void</text>
+ <text x="1777" y="4939" fill="#000000" font-family="Arial" font-size="10">+ Activity.startActivityIfNeeded (intent: Intent , requestCode: int ) boolean</text>
+ <text x="1777" y="4951" fill="#000000" font-family="Arial" font-size="10">+ Activity.startIntentSender (intent: IntentSender , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
+ <text x="1777" y="4963" fill="#000000" font-family="Arial" font-size="10">+ Activity.startIntentSenderForResult (intent: IntentSender , requestCode: int , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
+ <text x="1777" y="4975" fill="#000000" font-family="Arial" font-size="10">+ Activity.startIntentSenderFromChild (child: Activity , intent: IntentSender , requestCode: int , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
+ <text x="1777" y="4987" fill="#000000" font-family="Arial" font-size="10">+ Activity.startManagingCursor (c: Cursor ) void</text>
+ <text x="1777" y="4999" fill="#000000" font-family="Arial" font-size="10">+ Activity.startNextMatchingActivity (intent: Intent ) boolean</text>
+ <text x="1777" y="5011" fill="#000000" font-family="Arial" font-size="10">+ Activity.startSearch (initialQuery: String , selectInitialQuery: boolean , appSearchData: Bundle , globalSearch: boolean ) void</text>
+ <text x="1777" y="5023" fill="#000000" font-family="Arial" font-size="10">+ Activity.stopManagingCursor (c: Cursor ) void</text>
+ <text x="1777" y="5035" fill="#000000" font-family="Arial" font-size="10">+ Activity.takeKeyEvents (get: boolean ) void</text>
+ <text x="1777" y="5047" fill="#000000" font-family="Arial" font-size="10">+ Activity.triggerSearch (query: String , appSearchData: Bundle ) void</text>
+ <text x="1777" y="5059" fill="#000000" font-family="Arial" font-size="10">+ Activity.unregisterForContextMenu (view: View ) void</text>
+ <text x="1777" y="5071" fill="#000000" font-family="Arial" font-size="10"># Activity.onActivityResult (requestCode: int , resultCode: int , data: Intent ) void</text>
+ <text x="1777" y="5083" fill="#000000" font-family="Arial" font-size="10"># Activity.onApplyThemeResource (theme: Resources.Theme , resid: int , first: boolean ) void</text>
+ <text x="1777" y="5095" fill="#000000" font-family="Arial" font-size="10"># Activity.onChildTitleChanged (childActivity: Activity , title: CharSequence ) void</text>
+ <text x="1777" y="5107" fill="#000000" font-family="Arial" font-size="10"># Activity.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="1777" y="5119" fill="#000000" font-family="Arial" font-size="10"># Activity.onCreateDialog (id: int ) Dialog</text>
+ <text x="1777" y="5131" fill="#000000" font-family="Arial" font-size="10"># Activity.onCreateDialog (id: int , args: Bundle ) Dialog</text>
+ <text x="1777" y="5143" fill="#000000" font-family="Arial" font-size="10"># Activity.onDestroy () void</text>
+ <text x="1777" y="5155" fill="#000000" font-family="Arial" font-size="10"># Activity.onNewIntent (intent: Intent ) void</text>
+ <text x="1777" y="5167" fill="#000000" font-family="Arial" font-size="10"># Activity.onPause () void</text>
+ <text x="1777" y="5179" fill="#000000" font-family="Arial" font-size="10"># Activity.onPostCreate (savedInstanceState: Bundle ) void</text>
+ <text x="1777" y="5191" fill="#000000" font-family="Arial" font-size="10"># Activity.onPostResume () void</text>
+ <text x="1777" y="5203" fill="#000000" font-family="Arial" font-size="10"># Activity.onPrepareDialog (id: int , dialog: Dialog ) void</text>
+ <text x="1777" y="5215" fill="#000000" font-family="Arial" font-size="10"># Activity.onPrepareDialog (id: int , dialog: Dialog , args: Bundle ) void</text>
+ <text x="1777" y="5227" fill="#000000" font-family="Arial" font-size="10"># Activity.onRestart () void</text>
+ <text x="1777" y="5239" fill="#000000" font-family="Arial" font-size="10"># Activity.onRestoreInstanceState (savedInstanceState: Bundle ) void</text>
+ <text x="1777" y="5251" fill="#000000" font-family="Arial" font-size="10"># Activity.onResume () void</text>
+ <text x="1777" y="5263" fill="#000000" font-family="Arial" font-size="10"># Activity.onSaveInstanceState (outState: Bundle ) void</text>
+ <text x="1777" y="5275" fill="#000000" font-family="Arial" font-size="10"># Activity.onStart () void</text>
+ <text x="1777" y="5287" fill="#000000" font-family="Arial" font-size="10"># Activity.onStop () void</text>
+ <text x="1777" y="5299" fill="#000000" font-family="Arial" font-size="10"># Activity.onTitleChanged (title: CharSequence , color: int ) void</text>
+ <text x="1777" y="5311" fill="#000000" font-family="Arial" font-size="10"># Activity.onUserLeaveHint () void</text>
+ <text x="1777" y="5323" fill="#000000" font-family="Arial" font-size="10">- Activity.savedDialogArgsKeyFor (key: int ) String</text>
+ <text x="1777" y="5335" fill="#000000" font-family="Arial" font-size="10">- Activity.savedDialogKeyFor (key: int ) String</text>
+ <text x="1777" y="5347" fill="#000000" font-family="Arial" font-size="10">- Activity.createDialog (dialogId: Integer , state: Bundle , args: Bundle ) Dialog</text>
+ <text x="1777" y="5359" fill="#000000" font-family="Arial" font-size="10">- Activity.ensureSearchManager () void</text>
+ <text x="1777" y="5371" fill="#000000" font-family="Arial" font-size="10">- Activity.missingDialog (id: int ) IllegalArgumentException</text>
+ <text x="1777" y="5383" fill="#000000" font-family="Arial" font-size="10">- Activity.restoreManagedDialogs (savedInstanceState: Bundle ) void</text>
+ <text x="1777" y="5395" fill="#000000" font-family="Arial" font-size="10">- Activity.saveManagedDialogs (outState: Bundle ) void</text>
+ <text x="1777" y="5407" fill="#000000" font-family="Arial" font-size="10">- Activity.startIntentSenderForResultInner (intent: IntentSender , requestCode: int , fillInIntent: Intent , flagsMask: int , flagsValues: int , activity: Activity ) void</text>
+ <text x="1777" y="5419" fill="#000000" font-family="Arial" font-size="10">+ Activity.attach (context: Context , aThread: ActivityThread , instr: Instrumentation , token: IBinder , application: Application , intent: Intent , info: ActivityInfo , title: CharSequence , parent: Activity , id: String , lastNonConfigurationInstance: Object , config: Configuration ) void</text>
+ <text x="1777" y="5431" fill="#000000" font-family="Arial" font-size="10">+ Activity.attach (context: Context , aThread: ActivityThread , instr: Instrumentation , token: IBinder , ident: int , application: Application , intent: Intent , info: ActivityInfo , title: CharSequence , parent: Activity , id: String , lastNonConfigurationInstance: Object , HashMap&lt;String, lastNonConfigurationChildInstances: Object&gt; , config: Configuration ) void</text>
+ <text x="1777" y="5443" fill="#000000" font-family="Arial" font-size="10">+ Activity.dispatchActivityResult (who: String , requestCode: int , resultCode: int , data: Intent ) void</text>
+ <text x="1777" y="5455" fill="#000000" font-family="Arial" font-size="10">+ Activity.getActivityToken () IBinder</text>
+ <text x="1777" y="5467" fill="#000000" font-family="Arial" font-size="10">+ Activity.getLastNonConfigurationChildInstances () HashMap</text>
+ <text x="1777" y="5479" fill="#000000" font-family="Arial" font-size="10">+ Activity.isResumed () boolean</text>
+ <text x="1777" y="5491" fill="#000000" font-family="Arial" font-size="10">+ Activity.makeVisible () void</text>
+ <text x="1777" y="5503" fill="#000000" font-family="Arial" font-size="10">+ Activity.onRetainNonConfigurationChildInstances () HashMap</text>
+ <text x="1777" y="5515" fill="#000000" font-family="Arial" font-size="10">+ Activity.performPause () void</text>
+ <text x="1777" y="5527" fill="#000000" font-family="Arial" font-size="10">+ Activity.performRestart () void</text>
+ <text x="1777" y="5539" fill="#000000" font-family="Arial" font-size="10">+ Activity.performRestoreInstanceState (savedInstanceState: Bundle ) void</text>
+ <text x="1777" y="5551" fill="#000000" font-family="Arial" font-size="10">+ Activity.performResume () void</text>
+ <text x="1777" y="5563" fill="#000000" font-family="Arial" font-size="10">+ Activity.performSaveInstanceState (outState: Bundle ) void</text>
+ <text x="1777" y="5575" fill="#000000" font-family="Arial" font-size="10">+ Activity.performStart () void</text>
+ <text x="1777" y="5587" fill="#000000" font-family="Arial" font-size="10">+ Activity.performStop () void</text>
+ <text x="1777" y="5599" fill="#000000" font-family="Arial" font-size="10">+ Activity.performUserLeaving () void</text>
+ <text x="1777" y="5611" fill="#000000" font-family="Arial" font-size="10">+ Activity.setParent (parent: Activity ) void</text>
+ <polyline points="2544,5655 2544,5652 2544,5650 2544,5647 2544,5644 2544,5641 2544,5639 2544,5636 2544,5633 2544,5630 2544,5627" stroke="#CC0044" fill="none"/>
+ <polygon points="2541,5627 2544,5617 2548,5627 2541,5627" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2294,2855 2294,2699 2794,2699 2794,2855 2294,2855" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2294,2719 2794,2719" stroke="#0000ff" fill="none"/>
+ <polyline points="2294,2775 2794,2775" stroke="#0000ff" fill="none"/>
+ <text x="2463" y="2713" fill="#000000" font-family="Arial" font-size="10">android.view.ContextThemeWrapper</text>
+ <text x="2302" y="2733" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mBase: Context</text>
+ <text x="2302" y="2745" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mInflater: LayoutInflater</text>
+ <text x="2302" y="2757" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mTheme: Resources.Theme</text>
+ <text x="2302" y="2769" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mThemeResource: int</text>
+ <text x="2302" y="2789" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.getSystemService (name: String ) Object</text>
+ <text x="2302" y="2801" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.getTheme () Resources.Theme</text>
+ <text x="2302" y="2813" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.setTheme (resid: int ) void</text>
+ <text x="2302" y="2825" fill="#000000" font-family="Arial" font-size="10"># ContextThemeWrapper.attachBaseContext (newBase: Context ) void</text>
+ <text x="2302" y="2837" fill="#000000" font-family="Arial" font-size="10"># ContextThemeWrapper.onApplyThemeResource (theme: Resources.Theme , resid: int , first: boolean ) void</text>
+ <text x="2302" y="2849" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.initializeTheme () void</text>
+ <polyline points="2544,2893 2544,2890 2544,2887 2544,2884 2544,2881 2544,2879 2544,2876 2544,2873 2544,2871 2544,2868 2544,2866" stroke="#CC0044" fill="none"/>
+ <polygon points="2541,2865 2544,2855 2548,2865 2541,2865" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2084,2661 2084,1725 3005,1725 3005,2661 2084,2661" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2084,1745 3005,1745" stroke="#0000ff" fill="none"/>
+ <polyline points="2084,1765 3005,1765" stroke="#0000ff" fill="none"/>
+ <text x="2472" y="1739" fill="#000000" font-family="Arial" font-size="10">android.content.ContextWrapper</text>
+ <text x="2092" y="1759" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.mBase: Context</text>
+ <text x="2092" y="1779" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.bindService (service: Intent , conn: ServiceConnection , flags: int ) boolean</text>
+ <text x="2092" y="1791" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkCallingOrSelfPermission (permission: String ) int</text>
+ <text x="2092" y="1803" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkCallingOrSelfUriPermission (uri: Uri , modeFlags: int ) int</text>
+ <text x="2092" y="1815" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkCallingPermission (permission: String ) int</text>
+ <text x="2092" y="1827" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkCallingUriPermission (uri: Uri , modeFlags: int ) int</text>
+ <text x="2092" y="1839" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkPermission (permission: String , pid: int , uid: int ) int</text>
+ <text x="2092" y="1851" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkUriPermission (uri: Uri , pid: int , uid: int , modeFlags: int ) int</text>
+ <text x="2092" y="1863" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.checkUriPermission (uri: Uri , readPermission: String , writePermission: String , pid: int , uid: int , modeFlags: int ) int</text>
+ <text x="2092" y="1875" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.clearWallpaper () void</text>
+ <text x="2092" y="1887" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.createPackageContext (packageName: String , flags: int ) Context</text>
+ <text x="2092" y="1899" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.databaseList () String[]</text>
+ <text x="2092" y="1911" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteDatabase (name: String ) boolean</text>
+ <text x="2092" y="1923" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteFile (name: String ) boolean</text>
+ <text x="2092" y="1935" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingOrSelfPermission (permission: String , message: String ) void</text>
+ <text x="2092" y="1947" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingOrSelfUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
+ <text x="2092" y="1959" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingPermission (permission: String , message: String ) void</text>
+ <text x="2092" y="1971" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
+ <text x="2092" y="1983" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforcePermission (permission: String , pid: int , uid: int , message: String ) void</text>
+ <text x="2092" y="1995" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceUriPermission (uri: Uri , pid: int , uid: int , modeFlags: int , message: String ) void</text>
+ <text x="2092" y="2007" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceUriPermission (uri: Uri , readPermission: String , writePermission: String , pid: int , uid: int , modeFlags: int , message: String ) void</text>
+ <text x="2092" y="2019" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.fileList () String[]</text>
+ <text x="2092" y="2031" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getApplicationContext () Context</text>
+ <text x="2092" y="2043" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getApplicationInfo () ApplicationInfo</text>
+ <text x="2092" y="2055" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getAssets () AssetManager</text>
+ <text x="2092" y="2067" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getBaseContext () Context</text>
+ <text x="2092" y="2079" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getCacheDir () File</text>
+ <text x="2092" y="2091" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getClassLoader () ClassLoader</text>
+ <text x="2092" y="2103" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getContentResolver () ContentResolver</text>
+ <text x="2092" y="2115" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDatabasePath (name: String ) File</text>
+ <text x="2092" y="2127" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDir (name: String , mode: int ) File</text>
+ <text x="2092" y="2139" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getExternalCacheDir () File</text>
+ <text x="2092" y="2151" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getExternalFilesDir (type: String ) File</text>
+ <text x="2092" y="2163" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getFileStreamPath (name: String ) File</text>
+ <text x="2092" y="2175" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getFilesDir () File</text>
+ <text x="2092" y="2187" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getMainLooper () Looper</text>
+ <text x="2092" y="2199" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageCodePath () String</text>
+ <text x="2092" y="2211" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageManager () PackageManager</text>
+ <text x="2092" y="2223" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageName () String</text>
+ <text x="2092" y="2235" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageResourcePath () String</text>
+ <text x="2092" y="2247" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getResources () Resources</text>
+ <text x="2092" y="2259" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPreferences (name: String , mode: int ) SharedPreferences</text>
+ <text x="2092" y="2271" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPrefsFile (name: String ) File</text>
+ <text x="2092" y="2283" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSystemService (name: String ) Object</text>
+ <text x="2092" y="2295" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getTheme () Resources.Theme</text>
+ <text x="2092" y="2307" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaper () Drawable</text>
+ <text x="2092" y="2319" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaperDesiredMinimumHeight () int</text>
+ <text x="2092" y="2331" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaperDesiredMinimumWidth () int</text>
+ <text x="2092" y="2343" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.grantUriPermission (toPackage: String , uri: Uri , modeFlags: int ) void</text>
+ <text x="2092" y="2355" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.isRestricted () boolean</text>
+ <text x="2092" y="2367" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileInput (name: String ) FileInputStream</text>
+ <text x="2092" y="2379" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileOutput (name: String , mode: int ) FileOutputStream</text>
+ <text x="2092" y="2391" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openOrCreateDatabase (name: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
+ <text x="2092" y="2403" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.peekWallpaper () Drawable</text>
+ <text x="2092" y="2415" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter ) Intent</text>
+ <text x="2092" y="2427" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter , broadcastPermission: String , scheduler: Handler ) Intent</text>
+ <text x="2092" y="2439" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.removeStickyBroadcast (intent: Intent ) void</text>
+ <text x="2092" y="2451" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.revokeUriPermission (uri: Uri , modeFlags: int ) void</text>
+ <text x="2092" y="2463" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendBroadcast (intent: Intent ) void</text>
+ <text x="2092" y="2475" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendBroadcast (intent: Intent , receiverPermission: String ) void</text>
+ <text x="2092" y="2487" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendOrderedBroadcast (intent: Intent , receiverPermission: String ) void</text>
+ <text x="2092" y="2499" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendOrderedBroadcast (intent: Intent , receiverPermission: String , resultReceiver: BroadcastReceiver , scheduler: Handler , initialCode: int , initialData: String , initialExtras: Bundle ) void</text>
+ <text x="2092" y="2511" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendStickyBroadcast (intent: Intent ) void</text>
+ <text x="2092" y="2523" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.sendStickyOrderedBroadcast (intent: Intent , resultReceiver: BroadcastReceiver , scheduler: Handler , initialCode: int , initialData: String , initialExtras: Bundle ) void</text>
+ <text x="2092" y="2535" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.setTheme (resid: int ) void</text>
+ <text x="2092" y="2547" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.setWallpaper (bitmap: Bitmap ) void</text>
+ <text x="2092" y="2559" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.setWallpaper (data: InputStream ) void</text>
+ <text x="2092" y="2571" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startActivity (intent: Intent ) void</text>
+ <text x="2092" y="2583" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startInstrumentation (className: ComponentName , profileFile: String , arguments: Bundle ) boolean</text>
+ <text x="2092" y="2595" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startIntentSender (intent: IntentSender , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
+ <text x="2092" y="2607" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startService (service: Intent ) ComponentName</text>
+ <text x="2092" y="2619" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.stopService (name: Intent ) boolean</text>
+ <text x="2092" y="2631" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.unbindService (conn: ServiceConnection ) void</text>
+ <text x="2092" y="2643" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.unregisterReceiver (receiver: BroadcastReceiver ) void</text>
+ <text x="2092" y="2655" fill="#000000" font-family="Arial" font-size="10"># ContextWrapper.attachBaseContext (base: Context ) void</text>
+ <polyline points="2544,2699 2544,2696 2544,2694 2544,2691 2544,2688 2544,2685 2544,2683 2544,2680 2544,2677 2544,2674 2544,2671" stroke="#CC0044" fill="none"/>
+ <polygon points="2541,2671 2544,2661 2548,2671 2541,2671" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2103,1687 2103,211 2986,211 2986,1687 2103,1687" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2103,231 2986,231" stroke="#0000ff" fill="none"/>
+ <polyline points="2103,731 2986,731" stroke="#0000ff" fill="none"/>
+ <text x="2491" y="225" fill="#000000" font-family="Arial" font-size="10">android.content.Context</text>
+ <text x="2111" y="245" fill="#000000" font-family="Arial" font-size="10">+ Context.ACCESSIBILITY_SERVICE: String= &quot;accessibility&quot;</text>
+ <text x="2111" y="257" fill="#000000" font-family="Arial" font-size="10">+ Context.ACCOUNT_SERVICE: String= &quot;account&quot;</text>
+ <text x="2111" y="269" fill="#000000" font-family="Arial" font-size="10">+ Context.ACTIVITY_SERVICE: String= &quot;activity&quot;</text>
+ <text x="2111" y="281" fill="#000000" font-family="Arial" font-size="10">+ Context.ALARM_SERVICE: String= &quot;alarm&quot;</text>
+ <text x="2111" y="293" fill="#000000" font-family="Arial" font-size="10">+ Context.APPWIDGET_SERVICE: String= &quot;appwidget&quot;</text>
+ <text x="2111" y="305" fill="#000000" font-family="Arial" font-size="10">+ Context.AUDIO_SERVICE: String= &quot;audio&quot;</text>
+ <text x="2111" y="317" fill="#000000" font-family="Arial" font-size="10">+ Context.BACKUP_SERVICE: String= &quot;backup&quot;</text>
+ <text x="2111" y="329" fill="#000000" font-family="Arial" font-size="10">+ Context.BIND_AUTO_CREATE: int= 0x0001</text>
+ <text x="2111" y="341" fill="#000000" font-family="Arial" font-size="10">+ Context.BIND_DEBUG_UNBIND: int= 0x0002</text>
+ <text x="2111" y="353" fill="#000000" font-family="Arial" font-size="10">+ Context.BIND_NOT_FOREGROUND: int= 0x0004</text>
+ <text x="2111" y="365" fill="#000000" font-family="Arial" font-size="10">+ Context.CLIPBOARD_SERVICE: String= &quot;clipboard&quot;</text>
+ <text x="2111" y="377" fill="#000000" font-family="Arial" font-size="10">+ Context.CONNECTIVITY_SERVICE: String= &quot;connectivity&quot;</text>
+ <text x="2111" y="389" fill="#000000" font-family="Arial" font-size="10">+ Context.CONTEXT_IGNORE_SECURITY: int= 0x00000002</text>
+ <text x="2111" y="401" fill="#000000" font-family="Arial" font-size="10">+ Context.CONTEXT_INCLUDE_CODE: int= 0x00000001</text>
+ <text x="2111" y="413" fill="#000000" font-family="Arial" font-size="10">+ Context.CONTEXT_RESTRICTED: int= 0x00000004</text>
+ <text x="2111" y="425" fill="#000000" font-family="Arial" font-size="10">+ Context.DEVICE_POLICY_SERVICE: String= &quot;device_policy&quot;</text>
+ <text x="2111" y="437" fill="#000000" font-family="Arial" font-size="10">+ Context.DOWNLOAD_SERVICE: String= &quot;download&quot;</text>
+ <text x="2111" y="449" fill="#000000" font-family="Arial" font-size="10">+ Context.DROPBOX_SERVICE: String= &quot;dropbox&quot;</text>
+ <text x="2111" y="461" fill="#000000" font-family="Arial" font-size="10">+ Context.INPUT_METHOD_SERVICE: String= &quot;input_method&quot;</text>
+ <text x="2111" y="473" fill="#000000" font-family="Arial" font-size="10">+ Context.KEYGUARD_SERVICE: String= &quot;keyguard&quot;</text>
+ <text x="2111" y="485" fill="#000000" font-family="Arial" font-size="10">+ Context.LAYOUT_INFLATER_SERVICE: String= &quot;layout_inflater&quot;</text>
+ <text x="2111" y="497" fill="#000000" font-family="Arial" font-size="10">+ Context.LOCATION_SERVICE: String= &quot;location&quot;</text>
+ <text x="2111" y="509" fill="#000000" font-family="Arial" font-size="10">+ Context.MODE_APPEND: int= 0x8000</text>
+ <text x="2111" y="521" fill="#000000" font-family="Arial" font-size="10">+ Context.MODE_PRIVATE: int= 0x0000</text>
+ <text x="2111" y="533" fill="#000000" font-family="Arial" font-size="10">+ Context.MODE_WORLD_READABLE: int= 0x0001</text>
+ <text x="2111" y="545" fill="#000000" font-family="Arial" font-size="10">+ Context.MODE_WORLD_WRITEABLE: int= 0x0002</text>
+ <text x="2111" y="557" fill="#000000" font-family="Arial" font-size="10">+ Context.NETWORKMANAGEMENT_SERVICE: String= &quot;network_management&quot;</text>
+ <text x="2111" y="569" fill="#000000" font-family="Arial" font-size="10">+ Context.NOTIFICATION_SERVICE: String= &quot;notification&quot;</text>
+ <text x="2111" y="581" fill="#000000" font-family="Arial" font-size="10">+ Context.POWER_SERVICE: String= &quot;power&quot;</text>
+ <text x="2111" y="593" fill="#000000" font-family="Arial" font-size="10">+ Context.SEARCH_SERVICE: String= &quot;search&quot;</text>
+ <text x="2111" y="605" fill="#000000" font-family="Arial" font-size="10">+ Context.SENSOR_SERVICE: String= &quot;sensor&quot;</text>
+ <text x="2111" y="617" fill="#000000" font-family="Arial" font-size="10">+ Context.SIP_SERVICE: String= &quot;sip&quot;</text>
+ <text x="2111" y="629" fill="#000000" font-family="Arial" font-size="10">+ Context.STATUS_BAR_SERVICE: String= &quot;statusbar&quot;</text>
+ <text x="2111" y="641" fill="#000000" font-family="Arial" font-size="10">+ Context.STORAGE_SERVICE: String= &quot;storage&quot;</text>
+ <text x="2111" y="653" fill="#000000" font-family="Arial" font-size="10">+ Context.TELEPHONY_SERVICE: String= &quot;phone&quot;</text>
+ <text x="2111" y="665" fill="#000000" font-family="Arial" font-size="10">+ Context.THROTTLE_SERVICE: String= &quot;throttle&quot;</text>
+ <text x="2111" y="677" fill="#000000" font-family="Arial" font-size="10">+ Context.UI_MODE_SERVICE: String= &quot;uimode&quot;</text>
+ <text x="2111" y="689" fill="#000000" font-family="Arial" font-size="10">+ Context.VIBRATOR_SERVICE: String= &quot;vibrator&quot;</text>
+ <text x="2111" y="701" fill="#000000" font-family="Arial" font-size="10">+ Context.WALLPAPER_SERVICE: String= &quot;wallpaper&quot;</text>
+ <text x="2111" y="713" fill="#000000" font-family="Arial" font-size="10">+ Context.WIFI_SERVICE: String= &quot;wifi&quot;</text>
+ <text x="2111" y="725" fill="#000000" font-family="Arial" font-size="10">+ Context.WINDOW_SERVICE: String= &quot;window&quot;</text>
+ <text x="2111" y="745" fill="#000000" font-family="Arial" font-size="10">+ Context.getString (resId: int ) String</text>
+ <text x="2111" y="757" fill="#000000" font-family="Arial" font-size="10">+ Context.getString (resId: int , formatArgs: Object... ) String</text>
+ <text x="2111" y="769" fill="#000000" font-family="Arial" font-size="10">+ Context.getText (resId: int ) CharSequence</text>
+ <text x="2111" y="781" fill="#000000" font-family="Arial" font-size="10">+ Context.isRestricted () boolean</text>
+ <text x="2111" y="793" fill="#000000" font-family="Arial" font-size="10">+ Context.obtainStyledAttributes (attrs: int[] ) TypedArray</text>
+ <text x="2111" y="805" fill="#000000" font-family="Arial" font-size="10">+ Context.obtainStyledAttributes (resid: int , attrs: int[] ) TypedArray</text>
+ <text x="2111" y="817" fill="#000000" font-family="Arial" font-size="10">+ Context.obtainStyledAttributes (set: AttributeSet , attrs: int[] ) TypedArray</text>
+ <text x="2111" y="829" fill="#000000" font-family="Arial" font-size="10">+ Context.obtainStyledAttributes (set: AttributeSet , attrs: int[] , defStyleAttr: int , defStyleRes: int ) TypedArray</text>
+ <text x="2111" y="841" fill="#000000" font-family="Arial" font-size="10">+ Context.bindService (service: Intent , conn: ServiceConnection , flags: int ) boolean</text>
+ <text x="2111" y="853" fill="#000000" font-family="Arial" font-size="10">+ Context.checkCallingOrSelfPermission (permission: String ) int</text>
+ <text x="2111" y="865" fill="#000000" font-family="Arial" font-size="10">+ Context.checkCallingOrSelfUriPermission (uri: Uri , modeFlags: int ) int</text>
+ <text x="2111" y="877" fill="#000000" font-family="Arial" font-size="10">+ Context.checkCallingPermission (permission: String ) int</text>
+ <text x="2111" y="889" fill="#000000" font-family="Arial" font-size="10">+ Context.checkCallingUriPermission (uri: Uri , modeFlags: int ) int</text>
+ <text x="2111" y="901" fill="#000000" font-family="Arial" font-size="10">+ Context.checkPermission (permission: String , pid: int , uid: int ) int</text>
+ <text x="2111" y="913" fill="#000000" font-family="Arial" font-size="10">+ Context.checkUriPermission (uri: Uri , pid: int , uid: int , modeFlags: int ) int</text>
+ <text x="2111" y="925" fill="#000000" font-family="Arial" font-size="10">+ Context.checkUriPermission (uri: Uri , readPermission: String , writePermission: String , pid: int , uid: int , modeFlags: int ) int</text>
+ <text x="2111" y="937" fill="#000000" font-family="Arial" font-size="10">+ Context.clearWallpaper () void</text>
+ <text x="2111" y="949" fill="#000000" font-family="Arial" font-size="10">+ Context.createPackageContext (packageName: String , flags: int ) Context</text>
+ <text x="2111" y="961" fill="#000000" font-family="Arial" font-size="10">+ Context.databaseList () String[]</text>
+ <text x="2111" y="973" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteDatabase (name: String ) boolean</text>
+ <text x="2111" y="985" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteFile (name: String ) boolean</text>
+ <text x="2111" y="997" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingOrSelfPermission (permission: String , message: String ) void</text>
+ <text x="2111" y="1009" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingOrSelfUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
+ <text x="2111" y="1021" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingPermission (permission: String , message: String ) void</text>
+ <text x="2111" y="1033" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
+ <text x="2111" y="1045" fill="#000000" font-family="Arial" font-size="10">+ Context.enforcePermission (permission: String , pid: int , uid: int , message: String ) void</text>
+ <text x="2111" y="1057" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceUriPermission (uri: Uri , pid: int , uid: int , modeFlags: int , message: String ) void</text>
+ <text x="2111" y="1069" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceUriPermission (uri: Uri , readPermission: String , writePermission: String , pid: int , uid: int , modeFlags: int , message: String ) void</text>
+ <text x="2111" y="1081" fill="#000000" font-family="Arial" font-size="10">+ Context.fileList () String[]</text>
+ <text x="2111" y="1093" fill="#000000" font-family="Arial" font-size="10">+ Context.getApplicationContext () Context</text>
+ <text x="2111" y="1105" fill="#000000" font-family="Arial" font-size="10">+ Context.getApplicationInfo () ApplicationInfo</text>
+ <text x="2111" y="1117" fill="#000000" font-family="Arial" font-size="10">+ Context.getAssets () AssetManager</text>
+ <text x="2111" y="1129" fill="#000000" font-family="Arial" font-size="10">+ Context.getCacheDir () File</text>
+ <text x="2111" y="1141" fill="#000000" font-family="Arial" font-size="10">+ Context.getClassLoader () ClassLoader</text>
+ <text x="2111" y="1153" fill="#000000" font-family="Arial" font-size="10">+ Context.getContentResolver () ContentResolver</text>
+ <text x="2111" y="1165" fill="#000000" font-family="Arial" font-size="10">+ Context.getDatabasePath (name: String ) File</text>
+ <text x="2111" y="1177" fill="#000000" font-family="Arial" font-size="10">+ Context.getDir (name: String , mode: int ) File</text>
+ <text x="2111" y="1189" fill="#000000" font-family="Arial" font-size="10">+ Context.getExternalCacheDir () File</text>
+ <text x="2111" y="1201" fill="#000000" font-family="Arial" font-size="10">+ Context.getExternalFilesDir (type: String ) File</text>
+ <text x="2111" y="1213" fill="#000000" font-family="Arial" font-size="10">+ Context.getFileStreamPath (name: String ) File</text>
+ <text x="2111" y="1225" fill="#000000" font-family="Arial" font-size="10">+ Context.getFilesDir () File</text>
+ <text x="2111" y="1237" fill="#000000" font-family="Arial" font-size="10">+ Context.getMainLooper () Looper</text>
+ <text x="2111" y="1249" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageCodePath () String</text>
+ <text x="2111" y="1261" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageManager () PackageManager</text>
+ <text x="2111" y="1273" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageName () String</text>
+ <text x="2111" y="1285" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageResourcePath () String</text>
+ <text x="2111" y="1297" fill="#000000" font-family="Arial" font-size="10">+ Context.getResources () Resources</text>
+ <text x="2111" y="1309" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPreferences (name: String , mode: int ) SharedPreferences</text>
+ <text x="2111" y="1321" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPrefsFile (name: String ) File</text>
+ <text x="2111" y="1333" fill="#000000" font-family="Arial" font-size="10">+ Context.getSystemService (name: String ) Object</text>
+ <text x="2111" y="1345" fill="#000000" font-family="Arial" font-size="10">+ Context.getTheme () Resources.Theme</text>
+ <text x="2111" y="1357" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaper () Drawable</text>
+ <text x="2111" y="1369" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaperDesiredMinimumHeight () int</text>
+ <text x="2111" y="1381" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaperDesiredMinimumWidth () int</text>
+ <text x="2111" y="1393" fill="#000000" font-family="Arial" font-size="10">+ Context.grantUriPermission (toPackage: String , uri: Uri , modeFlags: int ) void</text>
+ <text x="2111" y="1405" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileInput (name: String ) FileInputStream</text>
+ <text x="2111" y="1417" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileOutput (name: String , mode: int ) FileOutputStream</text>
+ <text x="2111" y="1429" fill="#000000" font-family="Arial" font-size="10">+ Context.openOrCreateDatabase (name: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
+ <text x="2111" y="1441" fill="#000000" font-family="Arial" font-size="10">+ Context.peekWallpaper () Drawable</text>
+ <text x="2111" y="1453" fill="#000000" font-family="Arial" font-size="10">+ Context.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter ) Intent</text>
+ <text x="2111" y="1465" fill="#000000" font-family="Arial" font-size="10">+ Context.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter , broadcastPermission: String , scheduler: Handler ) Intent</text>
+ <text x="2111" y="1477" fill="#000000" font-family="Arial" font-size="10">+ Context.removeStickyBroadcast (intent: Intent ) void</text>
+ <text x="2111" y="1489" fill="#000000" font-family="Arial" font-size="10">+ Context.revokeUriPermission (uri: Uri , modeFlags: int ) void</text>
+ <text x="2111" y="1501" fill="#000000" font-family="Arial" font-size="10">+ Context.sendBroadcast (intent: Intent ) void</text>
+ <text x="2111" y="1513" fill="#000000" font-family="Arial" font-size="10">+ Context.sendBroadcast (intent: Intent , receiverPermission: String ) void</text>
+ <text x="2111" y="1525" fill="#000000" font-family="Arial" font-size="10">+ Context.sendOrderedBroadcast (intent: Intent , receiverPermission: String ) void</text>
+ <text x="2111" y="1537" fill="#000000" font-family="Arial" font-size="10">+ Context.sendOrderedBroadcast (intent: Intent , receiverPermission: String , resultReceiver: BroadcastReceiver , scheduler: Handler , initialCode: int , initialData: String , initialExtras: Bundle ) void</text>
+ <text x="2111" y="1549" fill="#000000" font-family="Arial" font-size="10">+ Context.sendStickyBroadcast (intent: Intent ) void</text>
+ <text x="2111" y="1561" fill="#000000" font-family="Arial" font-size="10">+ Context.sendStickyOrderedBroadcast (intent: Intent , resultReceiver: BroadcastReceiver , scheduler: Handler , initialCode: int , initialData: String , initialExtras: Bundle ) void</text>
+ <text x="2111" y="1573" fill="#000000" font-family="Arial" font-size="10">+ Context.setTheme (resid: int ) void</text>
+ <text x="2111" y="1585" fill="#000000" font-family="Arial" font-size="10">+ Context.setWallpaper (bitmap: Bitmap ) void</text>
+ <text x="2111" y="1597" fill="#000000" font-family="Arial" font-size="10">+ Context.setWallpaper (data: InputStream ) void</text>
+ <text x="2111" y="1609" fill="#000000" font-family="Arial" font-size="10">+ Context.startActivity (intent: Intent ) void</text>
+ <text x="2111" y="1621" fill="#000000" font-family="Arial" font-size="10">+ Context.startInstrumentation (className: ComponentName , profileFile: String , arguments: Bundle ) boolean</text>
+ <text x="2111" y="1633" fill="#000000" font-family="Arial" font-size="10">+ Context.startIntentSender (intent: IntentSender , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
+ <text x="2111" y="1645" fill="#000000" font-family="Arial" font-size="10">+ Context.startService (service: Intent ) ComponentName</text>
+ <text x="2111" y="1657" fill="#000000" font-family="Arial" font-size="10">+ Context.stopService (service: Intent ) boolean</text>
+ <text x="2111" y="1669" fill="#000000" font-family="Arial" font-size="10">+ Context.unbindService (conn: ServiceConnection ) void</text>
+ <text x="2111" y="1681" fill="#000000" font-family="Arial" font-size="10">+ Context.unregisterReceiver (receiver: BroadcastReceiver ) void</text>
+ <polyline points="2544,1725 2544,1722 2544,1719 2544,1717 2544,1714 2544,1711 2544,1708 2544,1705 2544,1703 2544,1700 2544,1697" stroke="#CC0044" fill="none"/>
+ <polygon points="2541,1697 2544,1687 2548,1697 2541,1697" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2448,173 2448,5 2640,5 2640,173 2448,173" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2448,25 2640,25" stroke="#0000ff" fill="none"/>
+ <polyline points="2448,45 2640,45" stroke="#0000ff" fill="none"/>
+ <text x="2508" y="19" fill="#000000" font-family="Arial" font-size="10">java.lang.Object</text>
+ <text x="2543" y="39" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="2456" y="59" fill="#000000" font-family="Arial" font-size="10">+ Object.getClass () Class</text>
+ <text x="2456" y="71" fill="#000000" font-family="Arial" font-size="10">+ Object.hashCode () int</text>
+ <text x="2456" y="83" fill="#000000" font-family="Arial" font-size="10">+ Object.notify () void</text>
+ <text x="2456" y="95" fill="#000000" font-family="Arial" font-size="10">+ Object.notifyAll () void</text>
+ <text x="2456" y="107" fill="#000000" font-family="Arial" font-size="10">+ Object.wait (time: long , frac: int ) void</text>
+ <text x="2456" y="119" fill="#000000" font-family="Arial" font-size="10">+ Object.equals (o: Object ) boolean</text>
+ <text x="2456" y="131" fill="#000000" font-family="Arial" font-size="10">+ Object.toString () String</text>
+ <text x="2456" y="143" fill="#000000" font-family="Arial" font-size="10">+ Object.wait () void</text>
+ <text x="2456" y="155" fill="#000000" font-family="Arial" font-size="10">+ Object.wait (time: long ) void</text>
+ <text x="2456" y="167" fill="#000000" font-family="Arial" font-size="10"># Object.finalize () void</text>
+ <polyline points="2544,211 2544,208 2544,205 2544,202 2544,199 2544,197 2544,194 2544,191 2544,188 2544,186 2544,183" stroke="#CC0044" fill="none"/>
+ <polygon points="2541,183 2544,173 2548,183 2541,183" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2128,6167 2128,5975 2513,5975 2513,6167 2128,6167" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2128,5995 2513,5995" stroke="#0000ff" fill="none"/>
+ <polyline points="2128,6039 2513,6039" stroke="#0000ff" fill="none"/>
+ <text x="2268" y="5989" fill="#000000" font-family="Arial" font-size="10">android.app.TabActivity</text>
+ <text x="2136" y="6009" fill="#000000" font-family="Arial" font-size="10">- TabActivity.mDefaultTab: String= null</text>
+ <text x="2136" y="6021" fill="#000000" font-family="Arial" font-size="10">- TabActivity.mDefaultTabIndex: int= -1</text>
+ <text x="2136" y="6033" fill="#000000" font-family="Arial" font-size="10">- TabActivity.mTabHost: TabHost</text>
+ <text x="2136" y="6053" fill="#000000" font-family="Arial" font-size="10">+ TabActivity.getTabHost () TabHost</text>
+ <text x="2136" y="6065" fill="#000000" font-family="Arial" font-size="10">+ TabActivity.getTabWidget () TabWidget</text>
+ <text x="2136" y="6077" fill="#000000" font-family="Arial" font-size="10">+ TabActivity.onContentChanged () void</text>
+ <text x="2136" y="6089" fill="#000000" font-family="Arial" font-size="10">+ TabActivity.setDefaultTab (tag: String ) void</text>
+ <text x="2136" y="6101" fill="#000000" font-family="Arial" font-size="10">+ TabActivity.setDefaultTab (index: int ) void</text>
+ <text x="2136" y="6113" fill="#000000" font-family="Arial" font-size="10"># TabActivity.onChildTitleChanged (childActivity: Activity , title: CharSequence ) void</text>
+ <text x="2136" y="6125" fill="#000000" font-family="Arial" font-size="10"># TabActivity.onPostCreate (icicle: Bundle ) void</text>
+ <text x="2136" y="6137" fill="#000000" font-family="Arial" font-size="10"># TabActivity.onRestoreInstanceState (state: Bundle ) void</text>
+ <text x="2136" y="6149" fill="#000000" font-family="Arial" font-size="10"># TabActivity.onSaveInstanceState (outState: Bundle ) void</text>
+ <text x="2136" y="6161" fill="#000000" font-family="Arial" font-size="10">- TabActivity.ensureTabHost () void</text>
+ <polyline points="2388,5975 2396,5965 2403,5954 2411,5943 2419,5932 2427,5922 2434,5911 2442,5900 2450,5889 2457,5878 2465,5868" stroke="#CC0044" fill="none"/>
+ <polygon points="2463,5865 2471,5859 2468,5869 2463,5865" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="3,6739 3,6679 261,6679 261,6739 3,6739" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="3,6699 261,6699" stroke="#0000ff" fill="none"/>
+ <polyline points="3,6719 261,6719" stroke="#0000ff" fill="none"/>
+ <text x="39" y="6693" fill="#000000" font-family="Arial" font-size="10">android.app.activity.LaunchpadTabActivity</text>
+ <text x="131" y="6713" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="12" y="6733" fill="#000000" font-family="Arial" font-size="10">+ LaunchpadTabActivity.onCreate (icicle: Bundle ) void</text>
+ <polyline points="131,6679 132,6651 134,6617 138,6577 144,6534 154,6489 167,6443 184,6397 207,6354 235,6316 269,6282 342,6249 469,6219 638,6192 840,6168 1063,6146 1296,6127 1529,6112 1751,6098 1950,6088 2117,6080" stroke="#CC0044" fill="none"/>
+ <polygon points="2117,6077 2127,6080 2118,6084 2117,6077" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="279,7135 279,6283 744,6283 744,7135 279,7135" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="279,6303 744,6303" stroke="#0000ff" fill="none"/>
+ <polyline points="279,6887 744,6887" stroke="#0000ff" fill="none"/>
+ <text x="391" y="6297" fill="#000000" font-family="Arial" font-size="10">com.android.settings.applications.ManageApplications</text>
+ <text x="287" y="6317" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.mColorBar: LinearColorBar</text>
+ <text x="287" y="6329" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.mFreeStorageText: TextView</text>
+ <text x="287" y="6341" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.mRunningProcessesAvail: Runnable</text>
+ <text x="287" y="6353" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.mStorageChartLabel: TextView</text>
+ <text x="287" y="6365" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.mUsedStorageText: TextView</text>
+ <text x="287" y="6377" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.DEBUG: boolean= false</text>
+ <text x="287" y="6389" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.TAB_ALL: String= &quot;All&quot;</text>
+ <text x="287" y="6401" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.TAB_DOWNLOADED: String= &quot;Downloaded&quot;</text>
+ <text x="287" y="6413" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.TAB_RUNNING: String= &quot;Running&quot;</text>
+ <text x="287" y="6425" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.TAB_SDCARD: String= &quot;OnSdCard&quot;</text>
+ <text x="287" y="6437" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.TAG: String= &quot;ManageApplications&quot;</text>
+ <text x="287" y="6449" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.VIEW_LIST: int= 1</text>
+ <text x="287" y="6461" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.VIEW_NOTHING: int</text>
+ <text x="287" y="6473" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.VIEW_RUNNING: int= 2</text>
+ <text x="287" y="6485" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.APP_CHG: String= &quot;chg&quot;</text>
+ <text x="287" y="6497" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.FILTER_APPS_ALL: int</text>
+ <text x="287" y="6509" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.FILTER_APPS_SDCARD: int= 2</text>
+ <text x="287" y="6521" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.FILTER_APPS_THIRD_PARTY: int= 1</text>
+ <text x="287" y="6533" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.SHOW_BACKGROUND_PROCESSES: int= 7</text>
+ <text x="287" y="6545" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.SHOW_RUNNING_SERVICES: int= 6</text>
+ <text x="287" y="6557" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.SORT_ORDER_ALPHA: int= 4</text>
+ <text x="287" y="6569" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.SORT_ORDER_SIZE: int= 5</text>
+ <text x="287" y="6581" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mActivityResumed: boolean</text>
+ <text x="287" y="6593" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mApplicationsAdapter: ApplicationsAdapter</text>
+ <text x="287" y="6605" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mApplicationsState: ApplicationsState</text>
+ <text x="287" y="6617" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mComputingSizeStr: CharSequence</text>
+ <text x="287" y="6629" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mCreatedRunning: boolean</text>
+ <text x="287" y="6641" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mCurView: int</text>
+ <text x="287" y="6653" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mCurrentPkgName: String</text>
+ <text x="287" y="6665" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mDataFileStats: StatFs</text>
+ <text x="287" y="6677" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mFilterApps: int= FILTER_APPS_THIRD_PARTY</text>
+ <text x="287" y="6689" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mInflater: LayoutInflater</text>
+ <text x="287" y="6701" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mInvalidSizeStr: CharSequence</text>
+ <text x="287" y="6713" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mLastAppStorage: long</text>
+ <text x="287" y="6725" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mLastFreeStorage: long</text>
+ <text x="287" y="6737" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mLastShowedInternalStorage: boolean= true</text>
+ <text x="287" y="6749" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mLastUsedStorage: long</text>
+ <text x="287" y="6761" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mListContainer: View</text>
+ <text x="287" y="6773" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mListView: ListView</text>
+ <text x="287" y="6785" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mLoadingContainer: View</text>
+ <text x="287" y="6797" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mNonConfigInstance: Object</text>
+ <text x="287" y="6809" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mResumedRunning: boolean</text>
+ <text x="287" y="6821" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mRootView: View</text>
+ <text x="287" y="6833" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mRunningProcessesView: RunningProcessesView</text>
+ <text x="287" y="6845" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mSDCardFileStats: StatFs</text>
+ <text x="287" y="6857" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.mSortOrder: int= SORT_ORDER_ALPHA</text>
+ <text x="287" y="6869" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.INSTALLED_APP_DETAILS: int= 1</text>
+ <text x="287" y="6881" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.MENU_OPTIONS_BASE: int</text>
+ <text x="287" y="6901" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.createTabContent (tag: String ) View</text>
+ <text x="287" y="6913" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onCancel (dialog: DialogInterface ) void</text>
+ <text x="287" y="6925" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onCreateOptionsMenu (menu: Menu ) boolean</text>
+ <text x="287" y="6937" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onItemClick (parent: AdapterView&lt;?&gt; , view: View , position: int , id: long ) void</text>
+ <text x="287" y="6949" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onKeyUp (keyCode: int , event: KeyEvent ) boolean</text>
+ <text x="287" y="6961" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onOptionsItemSelected (item: MenuItem ) boolean</text>
+ <text x="287" y="6973" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onPrepareOptionsMenu (menu: Menu ) boolean</text>
+ <text x="287" y="6985" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onRetainNonConfigurationInstance () Object</text>
+ <text x="287" y="6997" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onStart () void</text>
+ <text x="287" y="7009" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.onTabChanged (tabId: String ) void</text>
+ <text x="287" y="7021" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.showCurrentTab () void</text>
+ <text x="287" y="7033" fill="#000000" font-family="Arial" font-size="10"># ManageApplications.onActivityResult (requestCode: int , resultCode: int , data: Intent ) void</text>
+ <text x="287" y="7045" fill="#000000" font-family="Arial" font-size="10"># ManageApplications.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="287" y="7057" fill="#000000" font-family="Arial" font-size="10"># ManageApplications.onPause () void</text>
+ <text x="287" y="7069" fill="#000000" font-family="Arial" font-size="10"># ManageApplications.onResume () void</text>
+ <text x="287" y="7081" fill="#000000" font-family="Arial" font-size="10"># ManageApplications.onSaveInstanceState (outState: Bundle ) void</text>
+ <text x="287" y="7093" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.selectView (which: int ) void</text>
+ <text x="287" y="7105" fill="#000000" font-family="Arial" font-size="10">- ManageApplications.startApplicationDetailsActivity () void</text>
+ <text x="287" y="7117" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.handleRunningProcessesAvail () void</text>
+ <text x="287" y="7129" fill="#000000" font-family="Arial" font-size="10">+ ManageApplications.updateStorageUsage () void</text>
+ <polyline points="744,6289 745,6288 746,6287 747,6287 748,6286 749,6285 749,6284 750,6284 751,6283 752,6283 753,6282 834,6241 943,6205 1074,6175 1221,6150 1378,6129 1539,6112 1700,6099 1853,6089 1994,6082 2117,6077" stroke="#CC0044" fill="none"/>
+ <polygon points="2117,6074 2127,6077 2117,6081 2117,6074" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="762,6817 762,6601 1266,6601 1266,6817 762,6817" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="762,6621 1266,6621" stroke="#0000ff" fill="none"/>
+ <polyline points="762,6725 1266,6725" stroke="#0000ff" fill="none"/>
+ <text x="890" y="6615" fill="#000000" font-family="Arial" font-size="10">com.android.browser.CombinedBookmarkHistoryActivity</text>
+ <text x="770" y="6635" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.BOOKMARKS_TAB: String= &quot;bookmark&quot;</text>
+ <text x="770" y="6647" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.HISTORY_TAB: String= &quot;history&quot;</text>
+ <text x="770" y="6659" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.STARTING_TAB: String= &quot;tab&quot;</text>
+ <text x="770" y="6671" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.VISITED_TAB: String= &quot;visited&quot;</text>
+ <text x="770" y="6683" fill="#000000" font-family="Arial" font-size="10">- CombinedBookmarkHistoryActivity.mExtraData: String</text>
+ <text x="770" y="6695" fill="#000000" font-family="Arial" font-size="10">- CombinedBookmarkHistoryActivity.mResultCode: int</text>
+ <text x="770" y="6707" fill="#000000" font-family="Arial" font-size="10">- CombinedBookmarkHistoryActivity.mResultData: Intent</text>
+ <text x="770" y="6719" fill="#000000" font-family="Arial" font-size="10">- CombinedBookmarkHistoryActivity.sIconListenerSet: IconListenerSet</text>
+ <text x="770" y="6739" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.getIconListenerSet () IconListenerSet</text>
+ <text x="770" y="6751" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.finish () void</text>
+ <text x="770" y="6763" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.onTabChanged (tabId: String ) void</text>
+ <text x="770" y="6775" fill="#000000" font-family="Arial" font-size="10"># CombinedBookmarkHistoryActivity.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="770" y="6787" fill="#000000" font-family="Arial" font-size="10">- CombinedBookmarkHistoryActivity.createTab (intent: Intent , labelResId: int , iconResId: int , tab: String ) void</text>
+ <text x="770" y="6799" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.removeParentChildRelationShips () void</text>
+ <text x="770" y="6811" fill="#000000" font-family="Arial" font-size="10">+ CombinedBookmarkHistoryActivity.setResultFromChild (resultCode: int , data: Intent ) void</text>
+ <polyline points="1051,6601 1064,6570 1079,6537 1096,6503 1115,6468 1136,6434 1160,6399 1185,6367 1213,6336 1243,6307 1275,6282 1324,6255 1389,6230 1466,6206 1553,6184 1647,6164 1745,6146 1844,6130 1941,6116 2033,6103 2117,6093" stroke="#CC0044" fill="none"/>
+ <polygon points="2117,6090 2127,6092 2118,6097 2117,6090" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="1284,6895 1284,6523 1822,6523 1822,6895 1284,6895" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="1284,6543 1822,6543" stroke="#0000ff" fill="none"/>
+ <polyline points="1284,6695 1822,6695" stroke="#0000ff" fill="none"/>
+ <text x="1469" y="6537" fill="#000000" font-family="Arial" font-size="10">com.android.contacts.DialtactsActivity</text>
+ <text x="1292" y="6557" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.EXTRA_IGNORE_STATE: String= &quot;ignore-state&quot;</text>
+ <text x="1292" y="6569" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.mDialUri: Uri</text>
+ <text x="1292" y="6581" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.mFilterText: String</text>
+ <text x="1292" y="6593" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.mTabHost: TabHost</text>
+ <text x="1292" y="6605" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.FAVORITES_ENTRY_COMPONENT: String= &quot;com.android.contacts.DialtactsFavoritesEntryActivity&quot;</text>
+ <text x="1292" y="6617" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.PREF_FAVORITES_AS_CONTACTS: String= &quot;favorites_as_contacts&quot;</text>
+ <text x="1292" y="6629" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.PREF_FAVORITES_AS_CONTACTS_DEFAULT: boolean= false</text>
+ <text x="1292" y="6641" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.TAB_INDEX_CALL_LOG: int= 1</text>
+ <text x="1292" y="6653" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.TAB_INDEX_CONTACTS: int= 2</text>
+ <text x="1292" y="6665" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.TAB_INDEX_DIALER: int</text>
+ <text x="1292" y="6677" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.TAB_INDEX_FAVORITES: int= 3</text>
+ <text x="1292" y="6689" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.TAG: String= &quot;Dailtacts&quot;</text>
+ <text x="1292" y="6709" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.getAndClearDialUri () Uri</text>
+ <text x="1292" y="6721" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.getAndClearFilterText () String</text>
+ <text x="1292" y="6733" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.onBackPressed () void</text>
+ <text x="1292" y="6745" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.onNewIntent (newIntent: Intent ) void</text>
+ <text x="1292" y="6757" fill="#000000" font-family="Arial" font-size="10">+ DialtactsActivity.onTabChanged (tabId: String ) void</text>
+ <text x="1292" y="6769" fill="#000000" font-family="Arial" font-size="10"># DialtactsActivity.onCreate (icicle: Bundle ) void</text>
+ <text x="1292" y="6781" fill="#000000" font-family="Arial" font-size="10"># DialtactsActivity.onPause () void</text>
+ <text x="1292" y="6793" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.isDialIntent (intent: Intent ) boolean</text>
+ <text x="1292" y="6805" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.phoneIsInUse () boolean</text>
+ <text x="1292" y="6817" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setCurrentTab (intent: Intent ) void</text>
+ <text x="1292" y="6829" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupCallLogTab () void</text>
+ <text x="1292" y="6841" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupContactsTab () void</text>
+ <text x="1292" y="6853" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupDialUri (intent: Intent ) void</text>
+ <text x="1292" y="6865" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupDialerTab () void</text>
+ <text x="1292" y="6877" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupFavoritesTab () void</text>
+ <text x="1292" y="6889" fill="#000000" font-family="Arial" font-size="10">- DialtactsActivity.setupFilterText (intent: Intent ) void</text>
+ <polyline points="1642,6523 1657,6498 1672,6473 1689,6447 1706,6422 1725,6397 1744,6372 1765,6348 1786,6325 1808,6303 1831,6282 1857,6262 1884,6242 1912,6224 1941,6207 1970,6192 2000,6177 2030,6163 2060,6151 2089,6139 2118,6129" stroke="#CC0044" fill="none"/>
+ <polygon points="2117,6125 2127,6125 2119,6132 2117,6125" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="1841,6739 1841,6679 2098,6679 2098,6739 1841,6739" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="1841,6699 2098,6699" stroke="#0000ff" fill="none"/>
+ <polyline points="1841,6719 2098,6719" stroke="#0000ff" fill="none"/>
+ <text x="1885" y="6693" fill="#000000" font-family="Arial" font-size="10">android.app.cts.LaunchpadTabActivity</text>
+ <text x="1968" y="6713" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="1849" y="6733" fill="#000000" font-family="Arial" font-size="10">+ LaunchpadTabActivity.onCreate (icicle: Bundle ) void</text>
+ <polyline points="1973,6679 1977,6654 1983,6623 1991,6587 2001,6547 2013,6504 2027,6459 2043,6414 2061,6368 2082,6324 2106,6282 2113,6270 2121,6259 2130,6248 2139,6236 2148,6225 2157,6215 2167,6204 2176,6194 2186,6184 2196,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2193,6171 2203,6167 2198,6176 2193,6171" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2116,6811 2116,6607 2525,6607 2525,6811 2116,6811" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2116,6627 2525,6627" stroke="#0000ff" fill="none"/>
+ <polyline points="2116,6731 2525,6731" stroke="#0000ff" fill="none"/>
+ <text x="2249" y="6621" fill="#000000" font-family="Arial" font-size="10">android.app.cts.MockTabActivity</text>
+ <text x="2124" y="6641" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.isOnChildTitleChangedCalled: boolean</text>
+ <text x="2124" y="6653" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.isOnContentChangedCalled: boolean</text>
+ <text x="2124" y="6665" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.isOnPostCreateCalled: boolean</text>
+ <text x="2124" y="6677" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.isOnSaveInstanceStateCalled: boolean</text>
+ <text x="2124" y="6689" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.isOnRestoreInstanceStateCalled: boolean</text>
+ <text x="2124" y="6701" fill="#000000" font-family="Arial" font-size="10">- MockTabActivity.TAB1: String= &quot;tab1&quot;</text>
+ <text x="2124" y="6713" fill="#000000" font-family="Arial" font-size="10">- MockTabActivity.TAB2: String= &quot;tab2&quot;</text>
+ <text x="2124" y="6725" fill="#000000" font-family="Arial" font-size="10">- MockTabActivity.TAB3: String= &quot;tab3&quot;</text>
+ <text x="2124" y="6745" fill="#000000" font-family="Arial" font-size="10">+ MockTabActivity.onContentChanged () void</text>
+ <text x="2124" y="6757" fill="#000000" font-family="Arial" font-size="10"># MockTabActivity.onChildTitleChanged (childActivity: Activity , title: CharSequence ) void</text>
+ <text x="2124" y="6769" fill="#000000" font-family="Arial" font-size="10"># MockTabActivity.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="2124" y="6781" fill="#000000" font-family="Arial" font-size="10"># MockTabActivity.onPostCreate (icicle: Bundle ) void</text>
+ <text x="2124" y="6793" fill="#000000" font-family="Arial" font-size="10"># MockTabActivity.onRestoreInstanceState (state: Bundle ) void</text>
+ <text x="2124" y="6805" fill="#000000" font-family="Arial" font-size="10"># MockTabActivity.onSaveInstanceState (outState: Bundle ) void</text>
+ <polyline points="2320,6607 2320,6570 2320,6528 2320,6485 2320,6439 2320,6393 2320,6346 2320,6300 2320,6256 2320,6215 2320,6177" stroke="#CC0044" fill="none"/>
+ <polygon points="2317,6177 2320,6167 2324,6177 2317,6177" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2543,6751 2543,6667 2865,6667 2865,6751 2543,6751" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2543,6687 2865,6687" stroke="#0000ff" fill="none"/>
+ <polyline points="2543,6731 2865,6731" stroke="#0000ff" fill="none"/>
+ <text x="2618" y="6681" fill="#000000" font-family="Arial" font-size="10">android.widget.cts.TabHostStubActivity</text>
+ <text x="2551" y="6701" fill="#000000" font-family="Arial" font-size="10">+ TabHostStubActivity.INITIAL_TAB_LABEL: String= &quot;initial label&quot;</text>
+ <text x="2551" y="6713" fill="#000000" font-family="Arial" font-size="10">+ TabHostStubActivity.INITIAL_TAB_TAG: String= &quot;initial tag&quot;</text>
+ <text x="2551" y="6725" fill="#000000" font-family="Arial" font-size="10">+ TabHostStubActivity.INITIAL_VIEW_TEXT: String= &quot;initial view text&quot;</text>
+ <text x="2551" y="6745" fill="#000000" font-family="Arial" font-size="10">+ TabHostStubActivity.onCreate (savedInstanceState: Bundle ) void</text>
+ <polyline points="2694,6667 2686,6640 2677,6609 2666,6573 2652,6534 2637,6493 2620,6450 2601,6407 2580,6364 2558,6322 2533,6282 2525,6271 2517,6259 2508,6248 2499,6237 2490,6226 2480,6215 2471,6204 2461,6194 2451,6184 2441,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2438,6177 2434,6167 2443,6172 2438,6177" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2884,6787 2884,6631 3223,6631 3223,6787 2884,6787" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2884,6651 3223,6651" stroke="#0000ff" fill="none"/>
+ <polyline points="2884,6683 3223,6683" stroke="#0000ff" fill="none"/>
+ <text x="2961" y="6645" fill="#000000" font-family="Arial" font-size="10">com.android.apps.tag.TagBrowserActivity</text>
+ <text x="2892" y="6665" fill="#000000" font-family="Arial" font-size="10">- TagBrowserActivity.DIALOG_NFC_OFF: int= 1</text>
+ <text x="2892" y="6677" fill="#000000" font-family="Arial" font-size="10">- TagBrowserActivity.PREF_KEY_SHOW_INTRO: String= &quot;showintro&quot;</text>
+ <text x="2892" y="6697" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onClick (dialog: DialogInterface , which: int ) void</text>
+ <text x="2892" y="6709" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="2892" y="6721" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onCreateDialog (dialogId: int , args: Bundle ) Dialog</text>
+ <text x="2892" y="6733" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onCreateOptionsMenu (menu: Menu ) boolean</text>
+ <text x="2892" y="6745" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onOptionsItemSelected (item: MenuItem ) boolean</text>
+ <text x="2892" y="6757" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onResume () void</text>
+ <text x="2892" y="6769" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onStart () void</text>
+ <text x="2892" y="6781" fill="#000000" font-family="Arial" font-size="10">+ TagBrowserActivity.onStop () void</text>
+ <polyline points="3044,6631 3039,6599 3031,6565 3022,6528 3010,6489 2995,6451 2978,6412 2957,6375 2933,6341 2906,6309 2874,6282 2851,6270 2820,6263 2784,6259 2743,6258 2701,6258 2658,6259 2617,6259 2579,6257 2547,6253 2521,6246 2509,6241 2498,6235 2487,6228 2475,6221 2465,6214 2454,6207 2443,6199 2433,6191 2423,6182 2414,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2411,6176 2406,6167 2416,6171 2411,6176" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="3241,6739 3241,6679 3494,6679 3494,6739 3241,6739" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="3241,6699 3494,6699" stroke="#0000ff" fill="none"/>
+ <polyline points="3241,6719 3494,6719" stroke="#0000ff" fill="none"/>
+ <text x="3283" y="6693" fill="#000000" font-family="Arial" font-size="10">com.example.android.apis.view.Tabs1</text>
+ <text x="3366" y="6713" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="3249" y="6733" fill="#000000" font-family="Arial" font-size="10"># Tabs1.onCreate (savedInstanceState: Bundle ) void</text>
+ <polyline points="3368,6679 3368,6651 3366,6617 3363,6577 3357,6533 3348,6488 3335,6441 3317,6396 3294,6353 3266,6315 3231,6282 3198,6270 3140,6263 3064,6259 2975,6257 2880,6257 2784,6257 2695,6257 2617,6256 2557,6253 2521,6246 2509,6241 2497,6235 2486,6229 2474,6222 2463,6215 2452,6207 2442,6199 2431,6191 2422,6182 2412,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2409,6176 2404,6167 2414,6171 2409,6176" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="3512,6745 3512,6673 3765,6673 3765,6745 3512,6745" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="3512,6693 3765,6693" stroke="#0000ff" fill="none"/>
+ <polyline points="3512,6713 3765,6713" stroke="#0000ff" fill="none"/>
+ <text x="3554" y="6687" fill="#000000" font-family="Arial" font-size="10">com.example.android.apis.view.Tabs2</text>
+ <text x="3637" y="6707" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="3520" y="6727" fill="#000000" font-family="Arial" font-size="10">+ Tabs2.createTabContent (tag: String ) View</text>
+ <text x="3520" y="6739" fill="#000000" font-family="Arial" font-size="10"># Tabs2.onCreate (savedInstanceState: Bundle ) void</text>
+ <polyline points="3639,6673 3639,6644 3637,6609 3633,6569 3627,6526 3617,6482 3604,6436 3587,6392 3564,6351 3536,6314 3502,6282 3456,6266 3376,6257 3271,6253 3148,6252 3017,6254 2885,6257 2761,6259 2653,6259 2571,6255 2521,6246 2509,6241 2497,6235 2486,6229 2474,6222 2463,6215 2452,6207 2442,6199 2431,6191 2422,6183 2412,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2409,6177 2404,6167 2414,6172 2409,6177" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="3783,6739 3783,6679 4036,6679 4036,6739 3783,6739" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="3783,6699 4036,6699" stroke="#0000ff" fill="none"/>
+ <polyline points="3783,6719 4036,6719" stroke="#0000ff" fill="none"/>
+ <text x="3825" y="6693" fill="#000000" font-family="Arial" font-size="10">com.example.android.apis.view.Tabs3</text>
+ <text x="3908" y="6713" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="3791" y="6733" fill="#000000" font-family="Arial" font-size="10"># Tabs3.onCreate (savedInstanceState: Bundle ) void</text>
+ <polyline points="3910,6679 3910,6651 3909,6617 3905,6577 3899,6533 3890,6487 3877,6441 3860,6396 3837,6353 3808,6315 3773,6282 3714,6262 3613,6251 3478,6247 3322,6247 3154,6251 2986,6256 2828,6260 2690,6261 2585,6257 2521,6246 2509,6241 2497,6235 2486,6229 2474,6222 2463,6215 2452,6207 2441,6199 2431,6191 2421,6183 2411,6174" stroke="#CC0044" fill="none"/>
+ <polygon points="2409,6176 2404,6167 2413,6171 2409,6176" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="2531,6245 2531,5897 3006,5897 3006,6245 2531,6245" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="2531,5917 3006,5917" stroke="#0000ff" fill="none"/>
+ <polyline points="2531,6069 3006,6069" stroke="#0000ff" fill="none"/>
+ <text x="2661" y="5911" fill="#000000" font-family="Arial" font-size="10">android.app.cts.LocalActivityManagerTestHelper</text>
+ <text x="2539" y="5931" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_CREATE: String= &quot;dispatchCreate&quot;</text>
+ <text x="2539" y="5943" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_DESTROY: String= &quot;dispatchDestroy&quot;</text>
+ <text x="2539" y="5955" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_PAUSE_FALSE: String= &quot;dispatchPauseFalse&quot;</text>
+ <text x="2539" y="5967" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_PAUSE_TRUE: String= &quot;dispatchPauseTrue&quot;</text>
+ <text x="2539" y="5979" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_RESUME: String= &quot;dispatchResume&quot;</text>
+ <text x="2539" y="5991" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_DISPATCH_STOP: String= &quot;dispatchStop&quot;</text>
+ <text x="2539" y="6003" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_REMOVE_ALL_ACTIVITY: String= &quot;removeAllActivities&quot;</text>
+ <text x="2539" y="6015" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_SAVE_INSTANCE_STATE: String= &quot;saveInstanceState&quot;</text>
+ <text x="2539" y="6027" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.ACTION_START_ACTIIVTY: String= &quot;startActivity&quot;</text>
+ <text x="2539" y="6039" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.mCurrentAction: String</text>
+ <text x="2539" y="6051" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.mLocalActivityManager: LocalActivityManager</text>
+ <text x="2539" y="6063" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.sResult: CTSResult</text>
+ <text x="2539" y="6083" fill="#000000" font-family="Arial" font-size="10">+ LocalActivityManagerTestHelper.setResult (cr: CTSResult ) void</text>
+ <text x="2539" y="6095" fill="#000000" font-family="Arial" font-size="10"># LocalActivityManagerTestHelper.onCreate (savedInstanceState: Bundle ) void</text>
+ <text x="2539" y="6107" fill="#000000" font-family="Arial" font-size="10"># LocalActivityManagerTestHelper.onResume () void</text>
+ <text x="2539" y="6119" fill="#000000" font-family="Arial" font-size="10"># LocalActivityManagerTestHelper.onStart () void</text>
+ <text x="2539" y="6131" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.fail () void</text>
+ <text x="2539" y="6143" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchCreate () void</text>
+ <text x="2539" y="6155" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchDestroy () void</text>
+ <text x="2539" y="6167" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchPauseFalse () void</text>
+ <text x="2539" y="6179" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchPauseTrue () void</text>
+ <text x="2539" y="6191" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchResume () void</text>
+ <text x="2539" y="6203" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testDispatchStop () void</text>
+ <text x="2539" y="6215" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testRemoveAllActivity () void</text>
+ <text x="2539" y="6227" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testSaveInstanceState () void</text>
+ <text x="2539" y="6239" fill="#000000" font-family="Arial" font-size="10">- LocalActivityManagerTestHelper.testStartActivity () void</text>
+ <polyline points="2644,5897 2642,5894 2639,5891 2637,5888 2635,5885 2633,5882 2631,5879 2629,5876 2627,5873 2625,5870 2623,5867" stroke="#CC0044" fill="none"/>
+ <polygon points="2620,5869 2617,5859 2625,5865 2620,5869" stroke="#CC0044" fill="#CC0044"/>
+</svg>

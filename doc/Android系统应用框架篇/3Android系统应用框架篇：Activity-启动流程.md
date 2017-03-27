@@ -18,3 +18,4 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md
 
+关于Activity
