@@ -21,7 +21,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 关于Activity
 
-- [Launcher.startActivitySafely(Intent intent, Object tag)](#Launcher)
+- [Launcher.startActivitySafely(Intent intent, Object tag)](#jump)
 - Activity.startActivity(Intent intent)
 - Activity.startActivityForResult(Intent intent, int requestCode)
 - Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
@@ -146,7 +146,7 @@ ActivityThread：用来描述一个应用进程。
 
 ### Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
 
-<span id="Launcher">Hello World</span>
+<span id="jump">Hello World</span>
 
 
 ```java
