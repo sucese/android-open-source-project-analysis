@@ -22,7 +22,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 # Table of Contents
-1. [Example](#Activity)
+1. [Activity](#activity)
 
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
