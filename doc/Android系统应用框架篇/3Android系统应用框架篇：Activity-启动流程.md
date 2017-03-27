@@ -25,7 +25,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 - Activity.startActivity(Intent intent)
 - Activity.startActivityForResult(Intent intent, int requestCode)
 - Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
-- 
+- ApplicationThreadProxy.startActivity()
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
 
@@ -252,7 +252,7 @@ ActivityManagerNative.getDefault()通过ServiceManager.getService("activity")获
 调用asInterface(b)函数将其封装成一个类型为ApplicationThreadProxy的代理对象，并保存在gDefault静态变量中。ApplicationThreadProxy实现了
 IActivityManager里的相关方法。
 
-### ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug) 
+### ApplicationThreadProxy.startActivity()
 
 ```java
 class ActivityManagerProxy implements IActivityManager{
