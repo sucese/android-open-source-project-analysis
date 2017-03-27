@@ -25,7 +25,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 1. <a href="#Activity">Activity.startActivity(Intent intent)</a>
 1. <a href="#Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
 1. <a href="#Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)">Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)</a>
-1. <a href="#ApplicationThreadProxy.startActivity()">ApplicationThreadProxy.startActivity()</a>
+1. <a href="#ApplicationThreadProxy">ApplicationThreadProxy</a>
 1. <a href="#使用方法">使用方法</a>
 
 
@@ -256,7 +256,7 @@ ActivityManagerNative.getDefault()通过ServiceManager.getService("activity")获
 调用asInterface(b)函数将其封装成一个类型为ApplicationThreadProxy的代理对象，并保存在gDefault静态变量中。ApplicationThreadProxy实现了
 IActivityManager里的相关方法。
 
-### ApplicationThreadProxy.startActivity()
+### ApplicationThreadProxy
 
 ```java
 class ActivityManagerProxy implements IActivityManager{
