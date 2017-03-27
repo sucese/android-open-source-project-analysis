@@ -22,6 +22,10 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 - Launcher.startActivitySafely(Intent intent, Object tag)
+- Activity.startActivity(Intent intent)
+- Activity.startActivityForResult(Intent intent, int requestCode)
+- Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
+- 
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
 
@@ -138,9 +142,7 @@ ActivityThread：用来描述一个应用进程。
 每当系统启动一个应用进程时，都会启动一个ActivityThread实例，该实例保存在Activity的mThread变量中。
 
 
-### Instrumentation.execStartActivity(
-                        Context who, IBinder contextThread, IBinder token, Activity target,
-                        Intent intent, int requestCode)
+### Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
 
 ```java
 /**
@@ -250,11 +252,7 @@ ActivityManagerNative.getDefault()通过ServiceManager.getService("activity")获
 调用asInterface(b)函数将其封装成一个类型为ApplicationThreadProxy的代理对象，并保存在gDefault静态变量中。ApplicationThreadProxy实现了
 IActivityManager里的相关方法。
 
-### ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent,
-                                   String resolvedType, Uri[] grantedUriPermissions, int grantedMode,
-                                   IBinder resultTo, String resultWho,
-                                   int requestCode, boolean onlyIfNeeded,
-                                   boolean debug) 
+### ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug) 
 
 ```java
 class ActivityManagerProxy implements IActivityManager{
