@@ -21,12 +21,11 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 关于Activity
 
-1. <a href="#Launcher.startActivitySafely(Intent intent, Object tag)">Launcher.startActivitySafely(Intent intent, Object tag)</a>
-1. <a href="#Activity">Activity.startActivity(Intent intent)</a>
-1. <a href="#Activity.startActivityForResult(Intent intent, int requestCode)">Activity.startActivityForResult(Intent intent, int requestCode)</a>
-1. <a href="#Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)">Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)</a>
-1. <a href="#ApplicationThrdProxy">ApplicationThrdProxy</a>
-1. <a href="#使用方法">使用方法</a>
+1. auncher.startActivitySafely(Intent intent, Object tag)
+2. Activity.startActivity(Intent intent)
+3. Activity.startActivityForResult(Intent intent, int requestCode)
+4. Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
+5. ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
 
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
@@ -78,7 +77,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-### Activity
+### Activity.startActivity(Intent intent)
 
 ```java
 public class Activity extends ContextThemeWrapper
@@ -146,6 +145,8 @@ ActivityThread：用来描述一个应用进程。
 
 
 ### Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
+
+<span id="jump">Hello World</span>
 
 
 ```java
@@ -256,7 +257,7 @@ ActivityManagerNative.getDefault()通过ServiceManager.getService("activity")获
 调用asInterface(b)函数将其封装成一个类型为ApplicationThreadProxy的代理对象，并保存在gDefault静态变量中。ApplicationThreadProxy实现了
 IActivityManager里的相关方法。
 
-### ApplicationThrdProxy
+### ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
 
 ```java
 class ActivityManagerProxy implements IActivityManager{
@@ -300,4 +301,3 @@ class ActivityManagerProxy implements IActivityManager{
 ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
 类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
 
-### 使用方法
