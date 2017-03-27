@@ -75,7 +75,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-## 使用方法
+### 使用方法
 
 ```java
 public class Activity extends ContextThemeWrapper
