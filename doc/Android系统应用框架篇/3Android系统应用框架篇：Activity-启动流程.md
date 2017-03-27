@@ -29,7 +29,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
 
-<span id = "Launcher"></span>
+
 
 ```java
 /**
@@ -145,6 +145,8 @@ ActivityThread：用来描述一个应用进程。
 
 
 ### Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
+
+<span id = "Launcher"></span>
 
 ```java
 /**
