@@ -22,7 +22,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 # Table of Contents
-1. [Activity](#activity)
+1. [文字](#文字)
 
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
@@ -75,7 +75,7 @@ public final class Launcher extends Activity
 并为每一个包含该信息的Activity组件创建一个快捷图标，由此两者便建立了联系。关于Android应用的安装和启动流程，我们后续还有详细的文章做分析。
 
 
-## Activity
+## 文字
 
 ```java
 public class Activity extends ContextThemeWrapper
