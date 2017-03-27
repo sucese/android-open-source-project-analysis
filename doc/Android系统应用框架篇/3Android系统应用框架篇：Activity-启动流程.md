@@ -22,11 +22,10 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 关于Activity
 
 # Table of Contents
-1. [Example](#Activity)
+1. [Example](#example)
+2. [Example2](#example2)
+3. [Third Example](#third-example)
 
-## Example
-## Example2
-## Third Example
 
 ### Launcher.startActivitySafely(Intent intent, Object tag)
 
@@ -302,3 +301,6 @@ class ActivityManagerProxy implements IActivityManager{
 ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
 类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
 
+## Example
+## Example2
+## Third Example
