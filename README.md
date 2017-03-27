@@ -46,8 +46,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 在正式开始分析源码之前，我们先做一些准备工作。
 
-- [1准备工作：基础理论与常用工具](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/准备工作/1准备工作：基础理论与常用工具.md)
-- [2准备工作：源码下载与编译](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/准备工作/2准备工作：源码下载与编译.md)
+- [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
 
 **Android系统应用框架篇**
 
