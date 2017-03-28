@@ -1010,7 +1010,7 @@ public class ActivityStack {
                 if (mService.mCurTask <= 0) {
                     mService.mCurTask = 1;
                 }
-                //创建专属任务，并保存在r.task中。newTask置为tru
+                //创建专属任务，并保存在r.task中。newTask置为true
                 r.task = new TaskRecord(mService.mCurTask, r.info, intent,
                         (r.info.flags&ActivityInfo.FLAG_CLEAR_TASK_ON_LAUNCH) != 0);
                 if (DEBUG_TASKS) Slog.v(TAG, "Starting new activity " + r
@@ -1091,7 +1091,7 @@ public class ActivityStack {
                 EventLog.writeEvent(EventLogTags.AM_CREATE_TASK, r.task.taskId);
             }
             logStartActivity(EventLogTags.AM_CREATE_ACTIVITY, r, r.task);
-            //调用重载函数进一步执行Activity启动操作
+            //调用重载函数startActivityLocked(r, newTask, doResume)进一步执行Activity启动操作
             startActivityLocked(r, newTask, doResume);
             return START_SUCCESS;
         }
@@ -1121,7 +1121,7 @@ public class ActivityStack {
 launchMode为ActivityInfo.LAUNCH_SINGLE_INSTANCE、ActivityInfo.LAUNCH_SINGLE_TASK、ActivityInfo.LAUNCH_SINGLE_INSTANCE
 ```
 
->注：Intent的flag采用非常巧妙的十六进制表示法，每个位置上包含一个flag，关于flag的详细信息可以参见[Android系统应用框架篇：Activity启动模式与标识位]()
+>注：Intent的flag采用非常巧妙的十六进制表示法，每个位置上包含一个flag，关于flag的详细信息可以参见[Android系统应用框架篇：Activity启动模式与标识位]()。
 
 任务栈是如果被创建的？
 
@@ -1130,3 +1130,11 @@ ActivityManagerService在为目标Activity创建的任务栈有可能是一个�
 该属性描述了Activity的专属任务。如果该专属任务已经存在，则将目标Activity添加到该任务中，如果不存在，则先去创建该专属任务，再将目标Activity添加到该
 任务中。
 ```
+
+我们再来来看看代码里具体是怎么实现。
+
+```
+1 addingToTask置为false，addingToTask初始化为false，检查这个专属任务是否已经存在，如果存在则addingToTask置为true
+2 创建专属任务，并保存在r.task中。newTask置为true，新建的专属任务交由ActivityManagerService处理。
+```
+3 调用重载函数startActivityLocked(r, newTask, doResume)进一步执行Activity启动操作。
