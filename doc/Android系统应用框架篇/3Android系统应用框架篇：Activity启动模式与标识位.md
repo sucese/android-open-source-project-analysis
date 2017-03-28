@@ -19,15 +19,26 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
 更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
 
-|flag|vaule|meaning|
-|---|:----:|-----|
-|  FLAG_GRANT_READ_URI_PERMISSION  |  0x00000001   |     |
+|flag                              |vaule                 |meaning                                  |
+|----------------------------------|:--------------------|:-----------------------------------------|
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_WRITE_URI_PERMISSION   |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
 
 
  // ---------------------------------------------------------------------
