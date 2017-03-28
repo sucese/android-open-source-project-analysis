@@ -1,4 +1,4 @@
-# Android系统应用框架篇：Activity启动流程(一)
+# Android系统应用框架篇：Activity启动流程
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
