@@ -735,7 +735,7 @@ ActivityRecord r：执行启动Activity组件操作的目标Activity信息。
 4 以上述创建的变量为参数，调用startActivityUncheckedLocked()，进一步执行启动操作。
 ```
 
-### 9 ActivityStack.startActivityUncheckedLocked(ActivityRecord r, ActivityRecord sourceRecord, Uri[] grantedUriPermissions, int grantedMode, boolean onlyIfNeeded, boolean doResume) 
+### 9 ActivityStack.3(ActivityRecord r, ActivityRecord sourceRecord, Uri[] grantedUriPermissions, int grantedMode, boolean onlyIfNeeded, boolean doResume) 
 
 ```java
 public class ActivityStack {
@@ -746,8 +746,10 @@ public class ActivityStack {
             final Intent intent = r.intent;
             final int callingUid = r.launchedFromUid;
             
+            //获取Activity启动标志位，保存在launchFlags中
             int launchFlags = intent.getFlags();
             
+            //一个按位与操作，检测launchFlags的Intent.FLAG_ACTIVITY_NO_USER_ACTION位是否等于1，
             // We'll invoke onUserLeaving before onPause only if the launching
             // activity did not explicitly state that this is an automated launch.
             mUserLeaving = (launchFlags&Intent.FLAG_ACTIVITY_NO_USER_ACTION) == 0;
@@ -812,7 +814,10 @@ public class ActivityStack {
                 r.resultTo = null;
             }
     
+            //addingToTask初始化为false，表示要为目标Activity创建一个专属任务。
             boolean addingToTask = false;
+            
+            //检查这个专属任务是否已经存在，如果存在则addingToTask置为true
             if (((launchFlags&Intent.FLAG_ACTIVITY_NEW_TASK) != 0 &&
                     (launchFlags&Intent.FLAG_ACTIVITY_MULTIPLE_TASK) == 0)
                     || r.launchMode == ActivityInfo.LAUNCH_SINGLE_TASK
@@ -1005,12 +1010,14 @@ public class ActivityStack {
                 if (mService.mCurTask <= 0) {
                     mService.mCurTask = 1;
                 }
+                //创建专属任务，并保存在r.task中。newTask置为tru
                 r.task = new TaskRecord(mService.mCurTask, r.info, intent,
                         (r.info.flags&ActivityInfo.FLAG_CLEAR_TASK_ON_LAUNCH) != 0);
                 if (DEBUG_TASKS) Slog.v(TAG, "Starting new activity " + r
                         + " in new task " + r.task);
                 newTask = true;
                 if (mMainStack) {
+                    //新建的专属任务交由ActivityManagerService处理
                     mService.addRecentTaskLocked(r.task);
                 }
                 
@@ -1084,10 +1091,42 @@ public class ActivityStack {
                 EventLog.writeEvent(EventLogTags.AM_CREATE_TASK, r.task.taskId);
             }
             logStartActivity(EventLogTags.AM_CREATE_ACTIVITY, r, r.task);
+            //调用重载函数进一步执行Activity启动操作
             startActivityLocked(r, newTask, doResume);
             return START_SUCCESS;
         }
  
 }
 ```
-         
+我们来分析一下这个函数做了那个事情。
+
+1 获取intent里的flag，并保存在launchFlags中，从最开始的调用我们知道，此时launchFlags里只有Intent.FLAG_ACTIVITY_NEW_TASK被设置为1，其他位均为0.
+然后再去检查Intent.FLAG_ACTIVITY_NO_USER_ACTION是否为1：
+
+如果为1：则说明目标Activity不是用户手动启动的。
+如果为0：则说明目标Activity是用户手动启动的，mUserLeaving置为true，表示后面要向源Activity发送一个用户离开的通知。
+
+2 检查Activity的启动模式与启动标志位，最终决定Activity会被分配到那个任务栈中，下面分析一下具体的判断流程。
+
+如果Intent.FLAG_ACTIVITY_NEW_TASK被设置为1，且源Activity不需要知道目标Activity的运行结果，那么ActivityManagerService就会将目标Activity运行在
+另一个任务栈里。
+
+两个问题：
+
+除了手动添加Intent.FLAG_ACTIVITY_NEW_TASK，哪些情况下还会自动添加Intent.FLAG_ACTIVITY_NEW_TASK？
+
+```
+以下情况下，会自动向launchFlags中通添加Intent.FLAG_ACTIVITY_NEW_TASK。
+启动Activity的Context是一个non-activity的Context
+launchMode为ActivityInfo.LAUNCH_SINGLE_INSTANCE、ActivityInfo.LAUNCH_SINGLE_TASK、ActivityInfo.LAUNCH_SINGLE_INSTANCE
+```
+
+>注：Intent的flag采用非常巧妙的十六进制表示法，每个位置上包含一个flag，关于flag的详细信息可以参见[Android系统应用框架篇：Activity启动模式与标识位]()
+
+任务栈是如果被创建的？
+
+```
+ActivityManagerService在为目标Activity创建的任务栈有可能是一个新的任务栈也有可能是已经存在的任务在，这取决于Activity的android:taskAffinity属性。
+该属性描述了Activity的专属任务。如果该专属任务已经存在，则将目标Activity添加到该任务中，如果不存在，则先去创建该专属任务，再将目标Activity添加到该
+任务中。
+```
