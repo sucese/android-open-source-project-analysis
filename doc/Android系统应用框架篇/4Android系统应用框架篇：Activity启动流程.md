@@ -57,7 +57,7 @@ Activity组件的启动流程分为3种情况：
 
 3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
 
-好了，让我们开始吧。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/emoji_kaixin2.png" width="30" height="30"/>
+好了，让我们开始吧。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30"/>
 
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)
 
