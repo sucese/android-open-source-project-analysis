@@ -3046,6 +3046,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         ProcessRecord app;
         if (pid != MY_PID && pid >= 0) {
             synchronized (mPidsSelfLocked) {
+                //通过新进程的pid取出对应的ProcessRecord对象，并保存在ProcessRecord app中。
                 app = mPidsSelfLocked.get(pid);
             }
         } else if (mStartingProcesses.size() > 0) {
@@ -3102,6 +3103,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         app.foregroundServices = false;
         app.debugging = false;
 
+        //新进程已经在规定时间内创建，移除PROC_START_TIMEOUT_MSG消息
         mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
 
         boolean normalMode = mProcessesReady || isAllowedWhileBooting(app.info);
@@ -3170,12 +3172,15 @@ public final class ActivityManagerService extends ActivityManagerNative
         boolean badApp = false;
         boolean didSomething = false;
 
+        //查看栈顶Activity（也就是我们要启动的目标Activity）是否将要在当前进程中启动。
         // See if the top visible activity is waiting to run in this process...
         ActivityRecord hr = mMainStack.topRunningActivityLocked(null);
         if (hr != null && normalMode) {
+            //检查目标Activity的用户ID与进程名称与app所描述的应用进程的用户ID与进程名称是否一致。
             if (hr.app == null && app.info.uid == hr.info.applicationInfo.uid
                     && processName.equals(hr.processName)) {
                 try {
+                    //如果一致，则继续执行目标Activity启动操作。
                     if (mMainStack.realStartActivityLocked(hr, app, true, true)) {
                         didSomething = true;
                     }
@@ -3260,14 +3265,156 @@ public final class ActivityManagerService extends ActivityManagerNative
     
 }
 ```
+该函数做了以下事情：
 
+1 通过新进程的pid取出对应的ProcessRecord对象，并保存在ProcessRecord app中。
+2 新进程已经在规定时间内创建，移除PROC_START_TIMEOUT_MSG消息.
+3 查看栈顶Activity（也就是我们要启动的目标Activity）是否将要在当前进程中启动。这个主要检查目标Activity的用户ID与进程名称与app所描述的应用进程的用户ID与进程名称是否一致。
+
+如果一致，则继续调用mMainStack.realStartActivityLocked(hr, app, true, true)，执行目标Activity启动操作。
 
 ### 28
 
 ```java
-public final class ActivityManagerProxy{
+public class ActivityStack{
 
+  final boolean realStartActivityLocked(ActivityRecord r,
+            ProcessRecord app, boolean andResume, boolean checkConfig)
+            throws RemoteException {
 
+        r.startFreezingScreenLocked(app, 0);
+        mService.mWindowManager.setAppVisibility(r, true);
+
+        // Have the window manager re-evaluate the orientation of
+        // the screen based on the new activity order.  Note that
+        // as a result of this, it can call back into the activity
+        // manager with a new orientation.  We don't care about that,
+        // because the activity is not currently running so we are
+        // just restarting it anyway.
+        if (checkConfig) {
+            Configuration config = mService.mWindowManager.updateOrientationFromAppTokens(
+                    mService.mConfiguration,
+                    r.mayFreezeScreenLocked(app) ? r : null);
+            mService.updateConfigurationLocked(config, r);
+        }
+
+        //表示它描述的Activity组件是在参数app描述的应用进程中启动。
+        r.app = app;
+
+        if (localLOGV) Slog.v(TAG, "Launching: " + r);
+
+        int idx = app.activities.indexOf(r);
+        if (idx < 0) {
+            //将目标Activity组件添加到该应用进程中。
+            app.activities.add(r);
+        }
+        mService.updateLruProcessLocked(app, true, true);
+
+        try {
+            if (app.thread == null) {
+                throw new RemoteException();
+            }
+            List<ResultInfo> results = null;
+            List<Intent> newIntents = null;
+            if (andResume) {
+                results = r.results;
+                newIntents = r.newIntents;
+            }
+            if (DEBUG_SWITCH) Slog.v(TAG, "Launching: " + r
+                    + " icicle=" + r.icicle
+                    + " with results=" + results + " newIntents=" + newIntents
+                    + " andResume=" + andResume);
+            if (andResume) {
+                EventLog.writeEvent(EventLogTags.AM_RESTART_ACTIVITY,
+                        System.identityHashCode(r),
+                        r.task.taskId, r.shortComponentName);
+            }
+            if (r.isHomeActivity) {
+                mService.mHomeProcess = app;
+            }
+            mService.ensurePackageDexOpt(r.intent.getComponent().getPackageName());
+            
+            //通知前面创建的应用进程
+            app.thread.scheduleLaunchActivity(new Intent(r.intent), r,
+                    System.identityHashCode(r),
+                    r.info, r.icicle, results, newIntents, !andResume,
+                    mService.isNextTransitionForward());
+            
+            if ((app.info.flags&ApplicationInfo.FLAG_CANT_SAVE_STATE) != 0) {
+                // This may be a heavy-weight process!  Note that the package
+                // manager will ensure that only activity can run in the main
+                // process of the .apk, which is the only thing that will be
+                // considered heavy-weight.
+                if (app.processName.equals(app.info.packageName)) {
+                    if (mService.mHeavyWeightProcess != null
+                            && mService.mHeavyWeightProcess != app) {
+                        Log.w(TAG, "Starting new heavy weight process " + app
+                                + " when already running "
+                                + mService.mHeavyWeightProcess);
+                    }
+                    mService.mHeavyWeightProcess = app;
+                    Message msg = mService.mHandler.obtainMessage(
+                            ActivityManagerService.POST_HEAVY_NOTIFICATION_MSG);
+                    msg.obj = r;
+                    mService.mHandler.sendMessage(msg);
+                }
+            }
+            
+        } catch (RemoteException e) {
+            if (r.launchFailed) {
+                // This is the second time we failed -- finish activity
+                // and give up.
+                Slog.e(TAG, "Second failure launching "
+                      + r.intent.getComponent().flattenToShortString()
+                      + ", giving up", e);
+                mService.appDiedLocked(app, app.pid, app.thread);
+                requestFinishActivityLocked(r, Activity.RESULT_CANCELED, null,
+                        "2nd-crash");
+                return false;
+            }
+
+            // This is the first time we failed -- restart process and
+            // retry.
+            app.activities.remove(r);
+            throw e;
+        }
+
+        r.launchFailed = false;
+        if (updateLRUListLocked(r)) {
+            Slog.w(TAG, "Activity " + r
+                  + " being launched, but already in LRU list");
+        }
+
+        if (andResume) {
+            // As part of the process of launching, ActivityThread also performs
+            // a resume.
+            r.state = ActivityState.RESUMED;
+            r.icicle = null;
+            r.haveState = false;
+            r.stopped = false;
+            mResumedActivity = r;
+            r.task.touchActiveTime();
+            completeResumeLocked(r);
+            pauseIfSleepingLocked();                
+        } else {
+            // This activity is not starting in the resumed state... which
+            // should look like we asked it to pause+stop (but remain visible),
+            // and it has done so and reported back the current icicle and
+            // other state.
+            r.state = ActivityState.STOPPED;
+            r.stopped = true;
+        }
+
+        // Launch the new version setup screen if needed.  We do this -after-
+        // launching the initial activity (that is, home), so that it can have
+        // a chance to initialize itself while in the background, making the
+        // switch back to it faster and look better.
+        if (mMainStack) {
+            mService.startSetupActivityLocked();
+        }
+        
+        return true;
+    }
 }
 ```
 
