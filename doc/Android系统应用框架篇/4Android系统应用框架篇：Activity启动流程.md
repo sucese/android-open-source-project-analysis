@@ -70,7 +70,7 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
 12 ApplicationThreadProxy。schedulePauseActivity(prev, prev.finishing, userLeaving, prev.configChangeFlags)
 ```
-在Launcher中执行主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
+在Launcher中执行，主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
 
 ```
 13 ActivityThread.schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges)
@@ -80,11 +80,30 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 17 ActivityManagerProxy.activityPaused(IBinder token, Bundle state)
 ```
 
-在ActivityManagerService中运行，主要用来处理发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求
+在ActivityManagerService中执行，主要用来处理Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求
+
+```
+18 ActivityManagerService.activityPaused(IBinder token, Bundle icicle)
+19 ActivityStack.activityPaused(IBinder token, Bundle icicle, boolean timeout)
+20 ActivityStack.completePauseLocked()
+21 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
+22 ActivityStack.startSpecificActivityLocked(ActivityRecord r, boolean andResume, boolean checkConfig)
+23 ActivityManagerService.startProcessLocked(String processName, ApplicationInfo info, boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName, boolean allowWhileBooting)
+```
+
+在新创建的进程中执行
+
+```
+24 ActivityThread.main(String[] args)
+25 ActivityManagerProxy.attachApplication(IApplicationThread app)
+```
+
+在ActivityManagerService中执行，主要用来处理新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求
 
 ```
 
 ```
+
 
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)
 
@@ -2282,7 +2301,7 @@ public class ActivityStack{
 ```
 mPausingActivity置为null，表示当前正在终止的Activity组件已经进入Paused状态了，调用resumeTopActivityLocked(prev)启动位于栈顶的Activity组件。
 
-### 20 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
+### 21 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
 
 ```java
 public class ActivityStack{
@@ -2608,6 +2627,8 @@ public class ActivityStack{
 接下来调用startSpecificActivityLocked(next, true, false)，执行目标Activity启动操作。
 
 
+### 22 ActivityStack.startSpecificActivityLocked(ActivityRecord r, boolean andResume, boolean checkConfig)
+
 ```java
 public class ActivityStack{
 
@@ -2660,6 +2681,8 @@ ActivityManagerService在启动Activity时会用它的用户ID和进程名称来
 如果不存在，则用该Activity的用户ID和进程名称创建一个新的应用进程，再由该进程将该Activity启动起来。
 
 我们这里的目标Activity是第一次启动，所以它会调用startProcessLocked()为目标Activity创建一个新的进程。
+
+### 23 ActivityManagerService.startProcessLocked(String processName, ApplicationInfo info, boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName, boolean allowWhileBooting)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -2901,4 +2924,371 @@ public final class ActivityManagerService extends ActivityManagerNative
 2 向ActivityManagerService所在线程发送一个PROC_START_TIMEOUT_MSG消息，该消息要求PROC_START_TIMEOUT时间内被处理，也就是说新的进必须在PROC_START_TIMEOUT,
 时间内完成启动，并向ActivityManagerService发送一个启动通知，以便ActivityManagerService去启动Activity组件，否则ActivityManagerService则任务进程创建超时，则
 无法启动Activity。
+```
+
+上述函数调用Process.start()来启动一个新的应用进程，指定该进程的进入函数为android.app.ActivityThread的静态成员函数main.
+
+```
+int pid = Process.start("android.app.ActivityThread",
+            mSimpleProcessManagement ? app.processName : null, uid, uid,
+            gids, debugFlags, null);
+```
+
+好了，我们接着看看进程是怎么创建的吧。
+
+### 24 ActivityThread.main(String[] args)
+
+```java
+public final class ActivityThread {
+
+    public static final void main(String[] args) {
+        SamplingProfilerIntegration.start();
+
+        Process.setArgV0("<pre-initialized>");
+
+        //创建消息循环，并使当前进程进入该消息循环。
+        Looper.prepareMainLooper();
+        if (sMainThreadHandler == null) {
+            sMainThreadHandler = new Handler();
+        }
+        
+        //创建ActivityThread对象
+        ActivityThread thread = new ActivityThread();
+        //向ActivityManagerService发送一个启动完成通知
+        thread.attach(false);
+
+        if (false) {
+            Looper.myLooper().setMessageLogging(new
+                    LogPrinter(Log.DEBUG, "ActivityThread"));
+        }
+
+        Looper.loop();
+
+        if (Process.supportsProcesses()) {
+            throw new RuntimeException("Main thread loop unexpectedly exited");
+        }
+
+        thread.detach();
+        String name = (thread.mInitialApplication != null)
+            ? thread.mInitialApplication.getPackageName()
+            : "<unknown>";
+        Slog.i(TAG, "Main thread of " + name + " is now exiting");
+    }
+    
+}
+```
+
+新的应用进程启动时主要做两件事情：
+
+1 在进程中创建ActivityThread对象，创建ActivityThread对象时，会同时在其内部创建一个ApplicationThread对象，该对象是一个Binder本地对象，ActivityManagerService就是
+通过它和应用进程通信的。
+
+2 调用thread.attach(false)向ctivityManagerService发送启动完成通知。
+
+3 调用Looper.prepareMainLooper()创建一个消息循环，并使当前进程进入到该消息循环中，
+
+thread.attach(false)最终会去调用ActivityManagerProxy.attachApplication(IApplicationThread app)发送一个进程间通信请求。
+
+
+### 25 ActivityManagerProxy.attachApplication(IApplicationThread app)
+
+```java
+public final class ActivityManagerProxy{
+
+   public void attachApplication(IApplicationThread app) throws RemoteException{
+       Parcel data = Parcel.obtain();
+       Parcel reply = Parcel.obtain();
+       data.writeInterfaceToken(IActivityManager.descriptor);
+       data.writeStrongBinder(app.asBinder());
+       mRemote.transact(ATTACH_APPLICATION_TRANSACTION, data, reply, 0);
+       reply.readException();
+       data.recycle();
+       reply.recycle();
+   }
+}
+```
+
+将传递过来的参数包装成一个Parcel对象，并发起一个ATTACH_APPLICATION_TRANSACTION进程通信请求。
+
+
+### 26 ActivityManagerService.attachApplication(IApplicationThread thread)
+
+```java
+public final class ActivityManagerService extends ActivityManagerNative
+        implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
+        
+    public final void attachApplication(IApplicationThread thread) {
+        synchronized (this) {
+            int callingPid = Binder.getCallingPid();
+            final long origId = Binder.clearCallingIdentity();
+            attachApplicationLocked(thread, callingPid);
+            Binder.restoreCallingIdentity(origId);
+        }
+    }
+}
+```
+attachApplication(IApplicationThread thread)接收到了新应用进程发送过来的ATTACH_APPLICATION_TRANSACTION进程通信请求之后，它就知道
+新的应用进程已经创建，接着调用ActivityManagerService.attachApplicationLocked(IApplicationThread thread, int pid)继续执行Activity
+的启动操作。
+
+### 27 ActivityManagerService.attachApplicationLocked(IApplicationThread thread, int pid)
+
+```java
+public final class ActivityManagerService extends ActivityManagerNative
+        implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
+
+ private final boolean attachApplicationLocked(IApplicationThread thread,
+            int pid) {
+
+        // Find the application record that is being attached...  either via
+        // the pid if we are running in multiple processes, or just pull the
+        // next app record if we are emulating process with anonymous threads.
+        ProcessRecord app;
+        if (pid != MY_PID && pid >= 0) {
+            synchronized (mPidsSelfLocked) {
+                app = mPidsSelfLocked.get(pid);
+            }
+        } else if (mStartingProcesses.size() > 0) {
+            app = mStartingProcesses.remove(0);
+            app.setPid(pid);
+        } else {
+            app = null;
+        }
+
+        if (app == null) {
+            Slog.w(TAG, "No pending application record for pid " + pid
+                    + " (IApplicationThread " + thread + "); dropping process");
+            EventLog.writeEvent(EventLogTags.AM_DROP_PROCESS, pid);
+            if (pid > 0 && pid != MY_PID) {
+                Process.killProcess(pid);
+            } else {
+                try {
+                    thread.scheduleExit();
+                } catch (Exception e) {
+                    // Ignore exceptions.
+                }
+            }
+            return false;
+        }
+
+        // If this application record is still attached to a previous
+        // process, clean it up now.
+        if (app.thread != null) {
+            handleAppDiedLocked(app, true);
+        }
+
+        // Tell the process all about itself.
+
+        if (localLOGV) Slog.v(
+                TAG, "Binding process pid " + pid + " to record " + app);
+
+        String processName = app.processName;
+        try {
+            thread.asBinder().linkToDeath(new AppDeathRecipient(
+                    app, pid, thread), 0);
+        } catch (RemoteException e) {
+            app.resetPackageList();
+            startProcessLocked(app, "link fail", processName);
+            return false;
+        }
+
+        EventLog.writeEvent(EventLogTags.AM_PROC_BOUND, app.pid, app.processName);
+        
+        app.thread = thread;
+        app.curAdj = app.setAdj = -100;
+        app.curSchedGroup = Process.THREAD_GROUP_DEFAULT;
+        app.setSchedGroup = Process.THREAD_GROUP_BG_NONINTERACTIVE;
+        app.forcingToForeground = null;
+        app.foregroundServices = false;
+        app.debugging = false;
+
+        mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
+
+        boolean normalMode = mProcessesReady || isAllowedWhileBooting(app.info);
+        List providers = normalMode ? generateApplicationProvidersLocked(app) : null;
+
+        if (!normalMode) {
+            Slog.i(TAG, "Launching preboot mode app: " + app);
+        }
+        
+        if (localLOGV) Slog.v(
+            TAG, "New app record " + app
+            + " thread=" + thread.asBinder() + " pid=" + pid);
+        try {
+            int testMode = IApplicationThread.DEBUG_OFF;
+            if (mDebugApp != null && mDebugApp.equals(processName)) {
+                testMode = mWaitForDebugger
+                    ? IApplicationThread.DEBUG_WAIT
+                    : IApplicationThread.DEBUG_ON;
+                app.debugging = true;
+                if (mDebugTransient) {
+                    mDebugApp = mOrigDebugApp;
+                    mWaitForDebugger = mOrigWaitForDebugger;
+                }
+            }
+            
+            // If the app is being launched for restore or full backup, set it up specially
+            boolean isRestrictedBackupMode = false;
+            if (mBackupTarget != null && mBackupAppName.equals(processName)) {
+                isRestrictedBackupMode = (mBackupTarget.backupMode == BackupRecord.RESTORE)
+                        || (mBackupTarget.backupMode == BackupRecord.BACKUP_FULL);
+            }
+            
+            ensurePackageDexOpt(app.instrumentationInfo != null
+                    ? app.instrumentationInfo.packageName
+                    : app.info.packageName);
+            if (app.instrumentationClass != null) {
+                ensurePackageDexOpt(app.instrumentationClass.getPackageName());
+            }
+            if (DEBUG_CONFIGURATION) Slog.v(TAG, "Binding proc "
+                    + processName + " with config " + mConfiguration);
+            thread.bindApplication(processName, app.instrumentationInfo != null
+                    ? app.instrumentationInfo : app.info, providers,
+                    app.instrumentationClass, app.instrumentationProfileFile,
+                    app.instrumentationArguments, app.instrumentationWatcher, testMode, 
+                    isRestrictedBackupMode || !normalMode,
+                    mConfiguration, getCommonServicesLocked());
+            updateLruProcessLocked(app, false, true);
+            app.lastRequestedGc = app.lastLowMemory = SystemClock.uptimeMillis();
+        } catch (Exception e) {
+            // todo: Yikes!  What should we do?  For now we will try to
+            // start another process, but that could easily get us in
+            // an infinite loop of restarting processes...
+            Slog.w(TAG, "Exception thrown during bind!", e);
+
+            app.resetPackageList();
+            startProcessLocked(app, "bind fail", processName);
+            return false;
+        }
+
+        // Remove this record from the list of starting applications.
+        mPersistentStartingProcesses.remove(app);
+        if (DEBUG_PROCESSES && mProcessesOnHold.contains(app)) Slog.v(TAG,
+                "Attach application locked removing on hold: " + app);
+        mProcessesOnHold.remove(app);
+
+        boolean badApp = false;
+        boolean didSomething = false;
+
+        // See if the top visible activity is waiting to run in this process...
+        ActivityRecord hr = mMainStack.topRunningActivityLocked(null);
+        if (hr != null && normalMode) {
+            if (hr.app == null && app.info.uid == hr.info.applicationInfo.uid
+                    && processName.equals(hr.processName)) {
+                try {
+                    if (mMainStack.realStartActivityLocked(hr, app, true, true)) {
+                        didSomething = true;
+                    }
+                } catch (Exception e) {
+                    Slog.w(TAG, "Exception in new application when starting activity "
+                          + hr.intent.getComponent().flattenToShortString(), e);
+                    badApp = true;
+                }
+            } else {
+                mMainStack.ensureActivitiesVisibleLocked(hr, null, processName, 0);
+            }
+        }
+
+        // Find any services that should be running in this process...
+        if (!badApp && mPendingServices.size() > 0) {
+            ServiceRecord sr = null;
+            try {
+                for (int i=0; i<mPendingServices.size(); i++) {
+                    sr = mPendingServices.get(i);
+                    if (app.info.uid != sr.appInfo.uid
+                            || !processName.equals(sr.processName)) {
+                        continue;
+                    }
+
+                    mPendingServices.remove(i);
+                    i--;
+                    realStartServiceLocked(sr, app);
+                    didSomething = true;
+                }
+            } catch (Exception e) {
+                Slog.w(TAG, "Exception in new application when starting service "
+                      + sr.shortName, e);
+                badApp = true;
+            }
+        }
+
+        // Check if the next broadcast receiver is in this process...
+        BroadcastRecord br = mPendingBroadcast;
+        if (!badApp && br != null && br.curApp == app) {
+            try {
+                mPendingBroadcast = null;
+                processCurBroadcastLocked(br, app);
+                didSomething = true;
+            } catch (Exception e) {
+                Slog.w(TAG, "Exception in new application when starting receiver "
+                      + br.curComponent.flattenToShortString(), e);
+                badApp = true;
+                logBroadcastReceiverDiscardLocked(br);
+                finishReceiverLocked(br.receiver, br.resultCode, br.resultData,
+                        br.resultExtras, br.resultAbort, true);
+                scheduleBroadcastsLocked();
+                // We need to reset the state if we fails to start the receiver.
+                br.state = BroadcastRecord.IDLE;
+            }
+        }
+
+        // Check whether the next backup agent is in this process...
+        if (!badApp && mBackupTarget != null && mBackupTarget.appInfo.uid == app.info.uid) {
+            if (DEBUG_BACKUP) Slog.v(TAG, "New app is backup target, launching agent for " + app);
+            ensurePackageDexOpt(mBackupTarget.appInfo.packageName);
+            try {
+                thread.scheduleCreateBackupAgent(mBackupTarget.appInfo, mBackupTarget.backupMode);
+            } catch (Exception e) {
+                Slog.w(TAG, "Exception scheduling backup agent creation: ");
+                e.printStackTrace();
+            }
+        }
+
+        if (badApp) {
+            // todo: Also need to kill application to deal with all
+            // kinds of exceptions.
+            handleAppDiedLocked(app, false);
+            return false;
+        }
+
+        if (!didSomething) {
+            updateOomAdjLocked();
+        }
+
+        return true;
+    }
+    
+}
+```
+
+
+### 28
+
+```java
+public final class ActivityManagerProxy{
+
+
+}
+```
+
+
+
+### 29
+
+```java
+public final class ActivityManagerProxy{
+
+
+}
+```
+
+
+
+### 30
+
+```java
+public final class ActivityManagerProxy{
+
+
+}
 ```
