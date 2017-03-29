@@ -20,7 +20,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 从这篇文章开始，我们来详细地分析Activity的启动流程，在分析的过程中会有各种各样的角色参与进来，例如：ActivityServiceManager、ActivityStack、ActivityRecord等，涉及的
-流程与代码也会比较长，但是莫慌，老司机带你轻松看源码。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30" align="bottom"/>
+流程与代码也会比较长，但是莫慌，老司机带你轻松看源码。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30" align="bottom" />
 
 在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的
 协同，参数的包装与处理，只要我们抓住核心原理，所有的问题就都迎刃而解。
@@ -28,27 +28,15 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 笔者在分析的过程中，也会为读者提供各种结构图、时序图来辅助理解，每个小节完成后，也会再次做小节汇总，力求让读者看得明白，记得深刻。另外，Android四大组件的启动流程有异曲同工
 之处我们掌握了Activity，后面各组件以及其他系统都可以举一反三，触类旁通。
 
-好了，让我们开始吧。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30" align="bottom"/>
-
-Activity的启动流程一共分为35个小步骤，主要在5个组件中运行。
-
-Launcher
-
-1. auncher.startActivitySafely(Intent intent, Object tag)
-2. Activity.startActivity(Intent intent)
-3. Activity.startActivityForResult(Intent intent, int requestCode)
-4. Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
-5. ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
-
-ActivityManagerService
-
-注意，由于本文篇幅比较长，正式开始本篇文章前，先说明一下文章中经常出现的名词的含义。
+由于本文篇幅比较长，正式开始本篇文章前，先说明一下文章中经常出现的名词的含义。
 
 ```
 源Activity：执行启动操作的Activity组件
 目标Activity：将要启动的Activity组件。
 Launcher：如果目标Activity是应用的Launcher Activity，那么当用户点击应用图标后，由Launcher组件来进行启动启动。
 ```
+
+好了，让我们开始吧。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30" align="bottom"/>
 
 Activity组件的启动流程分为3种情况：
 
@@ -59,6 +47,34 @@ Activity组件的启动流程分为3种情况：
 ```
 
 3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
+
+Activity的启动流程一共分为35个小步骤，主要在5个组件中运行。
+
+在Launcher中执行
+
+```
+1 auncher.startActivitySafely(Intent intent, Object tag)
+2 Activity.startActivity(Intent intent)
+3 Activity.startActivityForResult(Intent intent, int requestCode)
+4 Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
+5 ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
+```
+在ActivityManagerService中执行，主要用来处理Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。
+
+```
+6 ActivityManagerService.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
+7 ActivityStack.startActivityMayWait(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded,  boolean debug, WaitResult outResult, Configuration config)
+8 ActivityStack.startActivityLocked(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, ActivityInfo aInfo, IBinder resultTo, String resultWho, int requestCode, int callingPid, int callingUid, boolean onlyIfNeeded, boolean componentSpecified)
+9 ActivityStack.startActivityUncheckedLocked(ActivityRecord r, ActivityRecord sourceRecord, Uri[] grantedUriPermissions, int grantedMode, boolean onlyIfNeeded, boolean doResume) 
+10 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
+11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
+12 ApplicationThreadProxy。schedulePauseActivity(prev, prev.finishing, userLeaving, prev.configChangeFlags)
+```
+在Launcher中执行主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
+
+```
+
+```
 
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)
 
@@ -1665,7 +1681,7 @@ mLastPausingActivity：正在被终止的Activity组件。
 
 3 调用startPausingLocked(userLeaving, false)，暂停当前Activity，是栈顶Activity进入resume状态。
 
-### 11 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
+### 11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
 
 ```java
 public class ActivityStack {
@@ -1805,3 +1821,255 @@ mRemote：ApplicationThreadProxy内部的一个Binder代理对象，用来做跨
 
 将传递过来的数据写入到Parcel对象中，并用mRemote向Launcher所在进程发送一个类型为SCHEDULE_PAUSE_ACTIVITY_TRANSACTION的进程间通信请求
 ，该请求是异步的，ActivityManagerService发送了该请求后立即返回。
+
+### 13 ActivityThread.schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges)
+
+```java
+
+public final class ActivityThread {
+
+    public final void schedulePauseActivity(IBinder token, boolean finished,
+            boolean userLeaving, int configChanges) {
+        queueOrSendMessage(
+                finished ? H.PAUSE_ACTIVITY_FINISHING : H.PAUSE_ACTIVITY,
+                token,
+                (userLeaving ? 1 : 0),
+                configChanges);
+    }
+
+}
+```
+我们先来看看该函数的参数含义：
+
+```
+boolean finished:传递过来的值为false。
+boolean userLeaving：传递过来的值为true。
+IBinder token：Binder代理对象，指向了ActivityManagerService中与Launcher对应的一个ActivityRecordd对象。
+```
+
+schedulePauseActivity()会调用queueOrSendMessage()准备向Launcher所在的主线程消息队列发送一个类型为PAUSE_ACTIVITY的消息。
+
+### 14 ActivityThread.queueOrSendMessage(int what, Object obj, int arg1, int arg2)
+
+```java
+
+public final class ActivityThread {
+
+    final H mH = new H();
+    
+    private final void queueOrSendMessage(int what, Object obj, int arg1, int arg2) {
+        synchronized (this) {
+            if (DEBUG_MESSAGES) Slog.v(
+                TAG, "SCHEDULE " + what + " " + mH.codeToString(what)
+                + ": " + arg1 + " / " + obj);
+            Message msg = Message.obtain();
+            msg.what = what;
+            msg.obj = obj;
+            msg.arg1 = arg1;
+            msg.arg2 = arg2;
+            mH.sendMessage(msg);
+        }
+    }
+
+}
+```
+```
+H：继承于Handler，用来发送和处理消息。
+```
+
+将schedulePauseActivity()传递过来的参数包装成一个Message对象，将消息PAUSE_ACTIVITY发送给Launcher的主线程的消息队列。
+
+### 15 H.handleMessage(Message msg)
+
+```java
+private final class H extends Handler{
+
+     public void handleMessage(Message msg) {
+                if (DEBUG_MESSAGES) Slog.v(TAG, ">>> handling: " + msg.what);
+                switch (msg.what) {
+                    case LAUNCH_ACTIVITY: {
+                        ActivityClientRecord r = (ActivityClientRecord)msg.obj;
+    
+                        r.packageInfo = getPackageInfoNoCheck(
+                                r.activityInfo.applicationInfo);
+                        handleLaunchActivity(r, null);
+                    } break;
+                    case RELAUNCH_ACTIVITY: {
+                        ActivityClientRecord r = (ActivityClientRecord)msg.obj;
+                        handleRelaunchActivity(r, msg.arg1);
+                    } break;
+                    //处理PAUSE_ACTIVITY消息
+                    case PAUSE_ACTIVITY:
+                        handlePauseActivity((IBinder)msg.obj, false, msg.arg1 != 0, msg.arg2);
+                        maybeSnapshot();
+                        break;
+                    case PAUSE_ACTIVITY_FINISHING:
+                        handlePauseActivity((IBinder)msg.obj, true, msg.arg1 != 0, msg.arg2);
+                        break;
+                    case STOP_ACTIVITY_SHOW:
+                        handleStopActivity((IBinder)msg.obj, true, msg.arg2);
+                        break;
+                    case STOP_ACTIVITY_HIDE:
+                        handleStopActivity((IBinder)msg.obj, false, msg.arg2);
+                        break;
+                    case SHOW_WINDOW:
+                        handleWindowVisibility((IBinder)msg.obj, true);
+                        break;
+                    case HIDE_WINDOW:
+                        handleWindowVisibility((IBinder)msg.obj, false);
+                        break;
+                    case RESUME_ACTIVITY:
+                        handleResumeActivity((IBinder)msg.obj, true,
+                                msg.arg1 != 0);
+                        break;
+                    case SEND_RESULT:
+                        handleSendResult((ResultData)msg.obj);
+                        break;
+                    case DESTROY_ACTIVITY:
+                        handleDestroyActivity((IBinder)msg.obj, msg.arg1 != 0,
+                                msg.arg2, false);
+                        break;
+                    case BIND_APPLICATION:
+                        AppBindData data = (AppBindData)msg.obj;
+                        handleBindApplication(data);
+                        break;
+                    case EXIT_APPLICATION:
+                        if (mInitialApplication != null) {
+                            mInitialApplication.onTerminate();
+                        }
+                        Looper.myLooper().quit();
+                        break;
+                    case NEW_INTENT:
+                        handleNewIntent((NewIntentData)msg.obj);
+                        break;
+                    case RECEIVER:
+                        handleReceiver((ReceiverData)msg.obj);
+                        maybeSnapshot();
+                        break;
+                    case CREATE_SERVICE:
+                        handleCreateService((CreateServiceData)msg.obj);
+                        break;
+                    case BIND_SERVICE:
+                        handleBindService((BindServiceData)msg.obj);
+                        break;
+                    case UNBIND_SERVICE:
+                        handleUnbindService((BindServiceData)msg.obj);
+                        break;
+                    case SERVICE_ARGS:
+                        handleServiceArgs((ServiceArgsData)msg.obj);
+                        break;
+                    case STOP_SERVICE:
+                        handleStopService((IBinder)msg.obj);
+                        maybeSnapshot();
+                        break;
+                    case REQUEST_THUMBNAIL:
+                        handleRequestThumbnail((IBinder)msg.obj);
+                        break;
+                    case CONFIGURATION_CHANGED:
+                        handleConfigurationChanged((Configuration)msg.obj);
+                        break;
+                    case CLEAN_UP_CONTEXT:
+                        ContextCleanupInfo cci = (ContextCleanupInfo)msg.obj;
+                        cci.context.performFinalCleanup(cci.who, cci.what);
+                        break;
+                    case GC_WHEN_IDLE:
+                        scheduleGcIdler();
+                        break;
+                    case DUMP_SERVICE:
+                        handleDumpService((DumpServiceInfo)msg.obj);
+                        break;
+                    case LOW_MEMORY:
+                        handleLowMemory();
+                        break;
+                    case ACTIVITY_CONFIGURATION_CHANGED:
+                        handleActivityConfigurationChanged((IBinder)msg.obj);
+                        break;
+                    case PROFILER_CONTROL:
+                        handleProfilerControl(msg.arg1 != 0, (ProfilerControlData)msg.obj);
+                        break;
+                    case CREATE_BACKUP_AGENT:
+                        handleCreateBackupAgent((CreateBackupAgentData)msg.obj);
+                        break;
+                    case DESTROY_BACKUP_AGENT:
+                        handleDestroyBackupAgent((CreateBackupAgentData)msg.obj);
+                        break;
+                    case SUICIDE:
+                        Process.killProcess(Process.myPid());
+                        break;
+                    case REMOVE_PROVIDER:
+                        completeRemoveProvider((IContentProvider)msg.obj);
+                        break;
+                    case ENABLE_JIT:
+                        ensureJitEnabled();
+                        break;
+                    case DISPATCH_PACKAGE_BROADCAST:
+                        handleDispatchPackageBroadcast(msg.arg1, (String[])msg.obj);
+                        break;
+                    case SCHEDULE_CRASH:
+                        throw new RemoteServiceException((String)msg.obj);
+                }
+                if (DEBUG_MESSAGES) Slog.v(TAG, "<<< done: " + msg.what);
+            }
+    
+}
+
+```
+
+可以看出H的handleMessage()方法处理了很多消息，其中就有PAUSE_ACTIVITY消息。
+
+```java
+private final class H extends Handler{
+
+    final HashMap<IBinder, ActivityClientRecord> mActivities
+            = new HashMap<IBinder, ActivityClientRecord>();
+
+    private final void handlePauseActivity(IBinder token, boolean finished,
+            boolean userLeaving, int configChanges) {
+        ActivityClientRecord r = mActivities.get(token);
+        if (r != null) {
+        
+            //向Launcher组件发送一个用户离开事件的通知
+            //Slog.v(TAG, "userLeaving=" + userLeaving + " handling pause of " + r);
+            if (userLeaving) {
+                performUserLeavingActivity(r);
+            }
+
+            r.activity.mConfigChangeFlags |= configChanges;
+            //向Launcher组件发送一个终止事件的通知
+            Bundle state = performPauseActivity(token, finished, true);
+
+             //等待Launcher组件完成所有的写入操作，以便Launcher组件重新进入onResumed状态时
+             //可以恢复到之前的状态
+            // Make sure any pending writes are now committed.
+            QueuedWork.waitToFinish();
+            
+            // Tell the activity manager we have paused.
+            try {
+                ActivityManagerNative.getDefault().activityPaused(token, state);
+            } catch (RemoteException ex) {
+            }
+        }
+    }
+
+}
+```
+   
+不同的组件中用不同的类来描述Activity对象，我们先来看看它们的对象关系：
+
+```
+在ActivityThread中：Activity组件->ActivityClientRecord
+在ActivityManagerService中：Activity组件->ActivityRecord
+```
+
+描述Activity组件的ActivityClientRecord对象都保存在mActivities中，ActivityClientRecord r = mActivities.get(token)是为了在mActivities找打一个
+用来描述Launcher组件的ActivityClientRecord对象。
+
+我们看看这个函数做了哪些事情：
+
+```
+1 调用performUserLeavingActivity(r)向Launcher组件发送一个用户离开事件的通知
+2 调用performPauseActivity(token, finished, true)向Launcher组件发送一个终止事件的通知
+3 调用QueuedWork.waitToFinish()等待Launcher组件完成所有的写入操作，以便Launcher组件重新进入onResumed状态时可以恢复到之前的状态
+```
+
+自此，Launcher组件正式进入Paused状态，可算把你暂停了<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_erha.png" width="30" height="30" align="bottom"/>
