@@ -31,7 +31,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 好了，让我们开始吧。
 
 <p align="center">
-<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="100%" />
+<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30" />
 </p>
 
 Activity的启动流程一共分为35个小步骤，主要在5个组件中运行。
