@@ -19,7 +19,6 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
 更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-
 从这篇文章开始，我们来详细地分析Activity的启动流程，在分析的过程中会有各种各样的角色参与进来，例如：ActivityServiceManager、ActivityStack、ActivityRecord等，涉及的
 流程与代码也会比较长，但是莫慌，老司机带你轻松看源码。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30"/>
 
@@ -29,7 +28,7 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 笔者在分析的过程中，也会为读者提供各种结构图、时序图来辅助理解，每个小节完成后，也会再次做小节汇总，力求让读者看得明白，记得深刻。另外，Android四大组件的启动流程有异曲同工
 之处我们掌握了Activity，后面各组件以及其他系统都可以举一反三，触类旁通。
 
-好了，让我们开始吧。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30"/>
+好了，让我们开始吧。   <img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_xixi.png" width="30" height="30" align="center"/>
 
 Activity的启动流程一共分为35个小步骤，主要在5个组件中运行。
 
