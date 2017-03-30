@@ -55,15 +55,15 @@ Activity的启动流程一共分为7大步，35小步，5个进程通信，在10
 Activity启动的过程中牵扯到了哪些组件？
 
 ```
-Launcher：
-Activity：
-Instrumentation：
-ActivityManagerProxy：
-ActivityManagerService：
-ActivityStack：
-ApplicationThreadProxy：
-ApplicationThread：
-ActivityThread：
+Launcher：Launcher继承于Activity，它也是一个Activity。它就是我们手机的桌面，负责启动应用，显示桌面菜单等。
+Activity：所有页面的基类。
+Instrumentation：应用监控器，监控应用与系统的交互行为，还可以定义一些用于探测和分析应用性能呢等相关的类（Instrumentation测试框架）。
+ActivityManagerProxy：实现了IActivityManager，ActivityManagerService的代理对象。
+ActivityManagerService：继承于ActivityManagerNative，用来管理系统的四大组件Activity、ervice、Brocast Receiver与Content Provider。
+ActivityStack：Activity栈，用来控制Activity的出栈与入栈。
+ApplicationThreadProxy：ApplicationThreadd的代理对象。
+ApplicationThread：它是ActivityThread的一个内部类，
+ActivityThread：用来描述一个应用进程。
 
 ```
 
@@ -263,9 +263,6 @@ ActivityThread：用来描述一个应用进程。
 
 
 ### 4 Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
-
-<span id="jump">Hello World</span>
-
 
 ```java
 /**
