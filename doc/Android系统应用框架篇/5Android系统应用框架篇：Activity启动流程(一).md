@@ -50,7 +50,7 @@ Activity组件的启动流程分为3种情况：
 
 Activity的启动流程一共分为7大步，35小步，主要在5个组件中运行。我们先来看看整个启动流程的时序图，先对整个流程有个大致印象。
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/app/1/aactivity_start_flow.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_flow.png"/>
 
 一 在Launcher中执行
 
