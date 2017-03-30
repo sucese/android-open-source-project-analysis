@@ -18,8 +18,9 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
 更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
-
-从这篇文字开始，我们正式开始系统的去分析Activity相关源码、原理、启动流程等方面。
+>
+从这篇文章开始，我们正式开始系统的去分析Activity相关源码、原理、启动流程等方面。这一系列文章可能是东半球最全面(捂脸:>逃~)的讲解Activity的系列文章。
+<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30" align="bottom"/>
 
 ## 继承体系
 
