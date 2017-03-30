@@ -48,9 +48,35 @@ Activity组件的启动流程分为3种情况：
 
 3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
 
-Activity的启动流程一共分为7大步，35小步，主要在5个组件中运行。我们先来看看整个启动流程的时序图，先对整个流程有个大致印象。
+Activity的启动流程一共分为7大步，35小步，5个进程通信，在10个组件中执行。我们先来看看整个启动流程的时序图，先对整个流程有个大致印象。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_flow.png"/>
+
+Activity启动的过程中牵扯到了哪些组件？
+
+```
+Launcher：
+Activity：
+Instrumentation：
+ActivityManagerProxy：
+ActivityManagerService：
+ActivityStack：
+ApplicationThreadProxy：
+ApplicationThread：
+ActivityThread：
+
+```
+
+在这些组件的交互中，有哪些跨进程通信，这些进程通信都是为了完成什么工作？
+
+```
+START_ACTIVITY_TRANSACTION：
+SCHEDULE_PAUSE_ACTIVITY_TRANSACTION：
+ACTIVITY_PAUSED_TRANSACTION：
+ATTACH_APPLICATION_TRANSACTION：
+SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：
+```
+
 
 一 在Launcher中执行
 
