@@ -18,8 +18,6 @@
 star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时
 的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
-文章目录：https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md
-
 **写在前面**
 
 >作者曾经看过很多关于Android源码分析的文章与书籍，这些前辈都写的很好，给Android技术的普及带来了很大的推动作用，随着Android技术的更
@@ -44,7 +42,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 文章更新中...
 
-在正式开始分析源码之前，我们先做一些准备工作。
+在正式阅读本系列文章之前，请先阅读导读相关内容，这会帮助你更加快捷的理解文章内容。
 
 - [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
 
