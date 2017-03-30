@@ -62,7 +62,7 @@ ActivityManagerProxy：实现了IActivityManager，ActivityManagerService的代�
 ActivityManagerService：继承于ActivityManagerNative，用来管理系统的四大组件Activity、ervice、Brocast Receiver与Content Provider。
 ActivityStack：Activity栈，用来控制Activity的出栈与入栈。
 ApplicationThreadProxy：ApplicationThreadd的代理对象。
-ApplicationThread：它是ActivityThread的一个内部类，
+ApplicationThread：它是ActivityThread的一个内部类，继承与ApplicationThreadNative，本质上是一个Binder对象，用于进程间通信。
 ActivityThread：用来描述一个应用进程。
 
 ```
@@ -70,13 +70,12 @@ ActivityThread：用来描述一个应用进程。
 在这些组件的交互中，有哪些跨进程通信，这些进程通信都是为了完成什么工作？
 
 ```
-START_ACTIVITY_TRANSACTION：
-SCHEDULE_PAUSE_ACTIVITY_TRANSACTION：
-ACTIVITY_PAUSED_TRANSACTION：
-ATTACH_APPLICATION_TRANSACTION：
-SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：
+START_ACTIVITY_TRANSACTION：Launcher发出，ActivityManagerService处理，启动Activity。
+SCHEDULE_PAUSE_ACTIVITY_TRANSACTION：ActivityManagerService发出，Launcher处理，要求终止源Activity。
+ACTIVITY_PAUSED_TRANSACTION：Launcher发出，ActivityManagerService处理，通知ActivityManagerService源Activity以及终止。
+ATTACH_APPLICATION_TRANSACTION：新创建的应用进程发出，ActivityManagerService处理，通知ActivityManagerService新进程已经创建，可以开始目标Activity创建工作。
+SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建应用进程处理，ActivityManagerService通知新建应用进程创建目标Activity。
 ```
-
 
 一 在Launcher中执行
 
@@ -413,7 +412,7 @@ class ActivityManagerProxy implements IActivityManager{
 - Intent intent：将要启动的Activity组件的信息。
 - IBinder resultTo：指向ActivityMangerService内部的一个ActivityRecord对象，它保存了Launcher组件的详细信息。
 
-ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象总，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
+ActivityManagerProxy.startActivity()将传递过来的参数写入Parcel对象中，并通过ActivityManagerProxy内部的Binder对象mRemote发起一个
 类型为START_ACTIVITY_TRANSACTION的进程间通信请求。
 
 
