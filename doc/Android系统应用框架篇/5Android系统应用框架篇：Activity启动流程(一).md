@@ -48,9 +48,9 @@ Activity组件的启动流程分为3种情况：
 
 3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
 
-Activity的启动流程一共分为35个小步骤，主要在5个组件中运行。
+Activity的启动流程一共分为7大步，35小步，主要在5个组件中运行。
 
-在Launcher中执行
+一 在Launcher中执行
 
 ```
 1 auncher.startActivitySafely(Intent intent, Object tag)
@@ -59,7 +59,7 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 4 Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
 5 ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
 ```
-在ActivityManagerService中执行，主要用来处理Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。
+二 在ActivityManagerService中执行，主要用来处理Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。
 
 ```
 6 ActivityManagerService.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
@@ -70,7 +70,7 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
 12 ApplicationThreadProxy。schedulePauseActivity(prev, prev.finishing, userLeaving, prev.configChangeFlags)
 ```
-在Launcher中执行，主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
+三 在Launcher中执行，主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
 
 ```
 13 ActivityThread.schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges)
@@ -80,7 +80,7 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 17 ActivityManagerProxy.activityPaused(IBinder token, Bundle state)
 ```
 
-在ActivityManagerService中执行，主要用来处理Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求
+四 在ActivityManagerService中执行，主要用来处理Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求
 
 ```
 18 ActivityManagerService.activityPaused(IBinder token, Bundle icicle)
@@ -91,14 +91,14 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 23 ActivityManagerService.startProcessLocked(String processName, ApplicationInfo info, boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName, boolean allowWhileBooting)
 ```
 
-在新创建的进程中执行
+五 在新创建的进程中执行
 
 ```
 24 ActivityThread.main(String[] args)
 25 ActivityManagerProxy.attachApplication(IApplicationThread app)
 ```
 
-在ActivityManagerService中执行，主要用来处理新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求
+六 在ActivityManagerService中执行，主要用来处理新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求
 
 ```
 26 ActivityManagerService.attachApplication(IApplicationThread thread)
@@ -107,10 +107,15 @@ Activity的启动流程一共分为35个小步骤，主要在5个组件中运行
 29 ApplicationThreadProxy.scheduleLaunchActivity(Intent intent, IBinder token, int ident, ActivityInfo info, Bundle state, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, boolean notResumed, boolean isForward)
 ```
 
-在新进程中执行，主要用来处理ActivityManagerService发出的SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求
+七 在新进程中执行，主要用来处理ActivityManagerService发出的SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求
 
 ```
-
+30 ActivityThread.scheduleRelaunchActivity(IBinder token, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, int configChanges, boolean notResumed, Configuration config)
+31 ActivityThread.queueOrSendMessage(int what, Object obj)
+32 H.handleMessage(Message msg)
+33 ActivityThread.handleLaunchActivity(ActivityClientRecord r, Intent customIntent) 
+34 ActivityThread.performLaunchActivity(ActivityClientRecord r, Intent customIntent)
+35 Activity.onCreate(Bundle savedInstanceState) 
 ```
 
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)

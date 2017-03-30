@@ -1416,7 +1416,7 @@ public final class ActivityThread{
 
 将上一步传递过来的ActivityClientRecord对象封装成一个Message对象，并将消息LAUNCH_ACTIVITY发送。
 
-### 32 
+### 32 H.handleMessage(Message msg)
 
 ```java
 public final class H extends Handler{
@@ -1821,7 +1821,7 @@ public class Instrumentation {
 
 可以看到该函数最终调用了Activity的onCreate()方法。
 
-### 35 
+### 35 Activity.onCreate(Bundle savedInstanceState) 
 
 ```java
 public class Activity extends ContextThemeWrapper
