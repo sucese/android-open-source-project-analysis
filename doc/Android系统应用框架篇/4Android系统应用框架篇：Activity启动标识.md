@@ -19,288 +19,116 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
 更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+### FLAG_ACTIVITY_BROUGHT_TO_FRONT 
 
-|flag                              |vaule                 |meaning                                  |
-|----------------------------------|:--------------------|:-----------------------------------------|
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_WRITE_URI_PERMISSION   |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
-|FLAG_GRANT_READ_URI_PERMISSION    |0x00000001            |                                         |
+```
+这个标志一般不是由程序代码设置的，如在launchMode中设置singleTask模式时系统帮你设定。
+```
 
+### FLAG_ACTIVITY_CLEAR_TOP
 
- // ---------------------------------------------------------------------
-    // ---------------------------------------------------------------------
-    // Intent flags (see mFlags variable).
+```
+如果设置，并且这个Activity已经在当前的Task中运行，因此，不再是重新启动一个这个Activity的实例，而是在这个Activity上方的所有Activity都将关闭，然后这个Intent会作为一个新的Intent投递到老
+的Activity（现在位于顶端）中。
+```
+例如:
 
-    /**
-     * If set, the recipient of this Intent will be granted permission to
-     * perform read operations on the Uri in the Intent's data.
-     */
-    public static final int FLAG_GRANT_READ_URI_PERMISSION = 0x00000001;
-    /**
-     * If set, the recipient of this Intent will be granted permission to
-     * perform write operations on the Uri in the Intent's data.
-     */
-    public static final int FLAG_GRANT_WRITE_URI_PERMISSION = 0x00000002;
-    /**
-     * Can be set by the caller to indicate that this Intent is coming from
-     * a background operation, not from direct user interaction.
-     */
-    public static final int FLAG_FROM_BACKGROUND = 0x00000004;
-    /**
-     * A flag you can enable for debugging: when set, log messages will be
-     * printed during the resolution of this intent to show you what has
-     * been found to create the final resolved list.
-     */
-    public static final int FLAG_DEBUG_LOG_RESOLUTION = 0x00000008;
+假设一个Task中包含这些Activity：A，B，C，D。如果D调用了startActivity()，并且包含一个指向Activity B的Intent，那么，C和D都将结束，然后B接收到这个Intent，因此，目前stack的状况是：A，B。
+上例中正在运行的Activity B既可以在onNewIntent()中接收到这个新的Intent，也可以把自己关闭然后重新启动来接收这个Intent。如果它的启动模式声明为 “multiple”(默认值)，并且你没有在这个Intent中
+设置FLAG_ACTIVITY_SINGLE_TOP标志，那么它将关闭然后重新创建；对于其它的启动模式，或者在这个Intent中设置FLAG_ACTIVITY_SINGLE_TOP标志，都将把这个Intent投递到当前这个实例的onNewIntent()中。
+这个启动模式还可以与FLAG_ACTIVITY_NEW_TASK结合起来使用：用于启动一个Task中的根Activity，它会把那个Task中任何运行的实例带入前台，然后清除它直到根Activity。这非常有用，例如，当从Notification Manager处
+启动一个Activity。
 
-    /**
-     * If set, the new activity is not kept in the history stack.  As soon as
-     * the user navigates away from it, the activity is finished.  This may also
-     * be set with the {@link android.R.styleable#AndroidManifestActivity_noHistory
-     * noHistory} attribute.
-     */
-    public static final int FLAG_ACTIVITY_NO_HISTORY = 0x40000000;
-    /**
-     * If set, the activity will not be launched if it is already running
-     * at the top of the history stack.
-     */
-    public static final int FLAG_ACTIVITY_SINGLE_TOP = 0x20000000;
-    /**
-     * If set, this activity will become the start of a new task on this
-     * history stack.  A task (from the activity that started it to the
-     * next task activity) defines an atomic group of activities that the
-     * user can move to.  Tasks can be moved to the foreground and background;
-     * all of the activities inside of a particular task always remain in
-     * the same order.  See
-     * <a href="{@docRoot}guide/topics/fundamentals.html#acttask">Application Fundamentals:
-     * Activities and Tasks</a> for more details on tasks.
-     *
-     * <p>This flag is generally used by activities that want
-     * to present a "launcher" style behavior: they give the user a list of
-     * separate things that can be done, which otherwise run completely
-     * independently of the activity launching them.
-     *
-     * <p>When using this flag, if a task is already running for the activity
-     * you are now starting, then a new activity will not be started; instead,
-     * the current task will simply be brought to the front of the screen with
-     * the state it was last in.  See {@link #FLAG_ACTIVITY_MULTIPLE_TASK} for a flag
-     * to disable this behavior.
-     *
-     * <p>This flag can not be used when the caller is requesting a result from
-     * the activity being launched.
-     */
-    public static final int FLAG_ACTIVITY_NEW_TASK = 0x10000000;
-    /**
-     * <strong>Do not use this flag unless you are implementing your own
-     * top-level application launcher.</strong>  Used in conjunction with
-     * {@link #FLAG_ACTIVITY_NEW_TASK} to disable the
-     * behavior of bringing an existing task to the foreground.  When set,
-     * a new task is <em>always</em> started to host the Activity for the
-     * Intent, regardless of whether there is already an existing task running
-     * the same thing.
-     *
-     * <p><strong>Because the default system does not include graphical task management,
-     * you should not use this flag unless you provide some way for a user to
-     * return back to the tasks you have launched.</strong>
-     *
-     * <p>This flag is ignored if
-     * {@link #FLAG_ACTIVITY_NEW_TASK} is not set.
-     *
-     * <p>See <a href="{@docRoot}guide/topics/fundamentals.html#acttask">Application Fundamentals:
-     * Activities and Tasks</a> for more details on tasks.
-     */
-    public static final int FLAG_ACTIVITY_MULTIPLE_TASK = 0x08000000;
-    /**
-     * If set, and the activity being launched is already running in the
-     * current task, then instead of launching a new instance of that activity,
-     * all of the other activities on top of it will be closed and this Intent
-     * will be delivered to the (now on top) old activity as a new Intent.
-     *
-     * <p>For example, consider a task consisting of the activities: A, B, C, D.
-     * If D calls startActivity() with an Intent that resolves to the component
-     * of activity B, then C and D will be finished and B receive the given
-     * Intent, resulting in the stack now being: A, B.
-     *
-     * <p>The currently running instance of activity B in the above example will
-     * either receive the new intent you are starting here in its
-     * onNewIntent() method, or be itself finished and restarted with the
-     * new intent.  If it has declared its launch mode to be "multiple" (the
-     * default) and you have not set {@link #FLAG_ACTIVITY_SINGLE_TOP} in
-     * the same intent, then it will be finished and re-created; for all other
-     * launch modes or if {@link #FLAG_ACTIVITY_SINGLE_TOP} is set then this
-     * Intent will be delivered to the current instance's onNewIntent().
-     *
-     * <p>This launch mode can also be used to good effect in conjunction with
-     * {@link #FLAG_ACTIVITY_NEW_TASK}: if used to start the root activity
-     * of a task, it will bring any currently running instance of that task
-     * to the foreground, and then clear it to its root state.  This is
-     * especially useful, for example, when launching an activity from the
-     * notification manager.
-     *
-     * <p>See <a href="{@docRoot}guide/topics/fundamentals.html#acttask">Application Fundamentals:
-     * Activities and Tasks</a> for more details on tasks.
-     */
-    public static final int FLAG_ACTIVITY_CLEAR_TOP = 0x04000000;
-    /**
-     * If set and this intent is being used to launch a new activity from an
-     * existing one, then the reply target of the existing activity will be
-     * transfered to the new activity.  This way the new activity can call
-     * {@link android.app.Activity#setResult} and have that result sent back to
-     * the reply target of the original activity.
-     */
-    public static final int FLAG_ACTIVITY_FORWARD_RESULT = 0x02000000;
-    /**
-     * If set and this intent is being used to launch a new activity from an
-     * existing one, the current activity will not be counted as the top
-     * activity for deciding whether the new intent should be delivered to
-     * the top instead of starting a new one.  The previous activity will
-     * be used as the top, with the assumption being that the current activity
-     * will finish itself immediately.
-     */
-    public static final int FLAG_ACTIVITY_PREVIOUS_IS_TOP = 0x01000000;
-    /**
-     * If set, the new activity is not kept in the list of recently launched
-     * activities.
-     */
-    public static final int FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS = 0x00800000;
-    /**
-     * This flag is not normally set by application code, but set for you by
-     * the system as described in the
-     * {@link android.R.styleable#AndroidManifestActivity_launchMode
-     * launchMode} documentation for the singleTask mode.
-     */
-    public static final int FLAG_ACTIVITY_BROUGHT_TO_FRONT = 0x00400000;
-    /**
-     * If set, and this activity is either being started in a new task or
-     * bringing to the top an existing task, then it will be launched as
-     * the front door of the task.  This will result in the application of
-     * any affinities needed to have that task in the proper state (either
-     * moving activities to or from it), or simply resetting that task to
-     * its initial state if needed.
-     */
-    public static final int FLAG_ACTIVITY_RESET_TASK_IF_NEEDED = 0x00200000;
-    /**
-     * This flag is not normally set by application code, but set for you by
-     * the system if this activity is being launched from history
-     * (longpress home key).
-     */
-    public static final int FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY = 0x00100000;
-    /**
-     * If set, this marks a point in the task's activity stack that should
-     * be cleared when the task is reset.  That is, the next time the task
-     * is brought to the foreground with
-     * {@link #FLAG_ACTIVITY_RESET_TASK_IF_NEEDED} (typically as a result of
-     * the user re-launching it from home), this activity and all on top of
-     * it will be finished so that the user does not return to them, but
-     * instead returns to whatever activity preceeded it.
-     *
-     * <p>This is useful for cases where you have a logical break in your
-     * application.  For example, an e-mail application may have a command
-     * to view an attachment, which launches an image view activity to
-     * display it.  This activity should be part of the e-mail application's
-     * task, since it is a part of the task the user is involved in.  However,
-     * if the user leaves that task, and later selects the e-mail app from
-     * home, we may like them to return to the conversation they were
-     * viewing, not the picture attachment, since that is confusing.  By
-     * setting this flag when launching the image viewer, that viewer and
-     * any activities it starts will be removed the next time the user returns
-     * to mail.
-     */
-    public static final int FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET = 0x00080000;
-    /**
-     * If set, this flag will prevent the normal {@link android.app.Activity#onUserLeaveHint}
-     * callback from occurring on the current frontmost activity before it is
-     * paused as the newly-started activity is brought to the front.
-     *
-     * <p>Typically, an activity can rely on that callback to indicate that an
-     * explicit user action has caused their activity to be moved out of the
-     * foreground. The callback marks an appropriate point in the activity's
-     * lifecycle for it to dismiss any notifications that it intends to display
-     * "until the user has seen them," such as a blinking LED.
-     *
-     * <p>If an activity is ever started via any non-user-driven events such as
-     * phone-call receipt or an alarm handler, this flag should be passed to {@link
-     * Context#startActivity Context.startActivity}, ensuring that the pausing
-     * activity does not think the user has acknowledged its notification.
-     */
-    public static final int FLAG_ACTIVITY_NO_USER_ACTION = 0x00040000;
-    /**
-     * If set in an Intent passed to {@link Context#startActivity Context.startActivity()},
-     * this flag will cause the launched activity to be brought to the front of its
-     * task's history stack if it is already running.
-     *
-     * <p>For example, consider a task consisting of four activities: A, B, C, D.
-     * If D calls startActivity() with an Intent that resolves to the component
-     * of activity B, then B will be brought to the front of the history stack,
-     * with this resulting order:  A, C, D, B.
-     *
-     * This flag will be ignored if {@link #FLAG_ACTIVITY_CLEAR_TOP} is also
-     * specified.
-     */
-    public static final int FLAG_ACTIVITY_REORDER_TO_FRONT = 0X00020000;
-    /**
-     * If set in an Intent passed to {@link Context#startActivity Context.startActivity()},
-     * this flag will prevent the system from applying an activity transition
-     * animation to go to the next activity state.  This doesn't mean an
-     * animation will never run -- if another activity change happens that doesn't
-     * specify this flag before the activity started here is displayed, then
-     * that transition will be used.  This this flag can be put to good use
-     * when you are going to do a series of activity operations but the
-     * animation seen by the user shouldn't be driven by the first activity
-     * change but rather a later one.
-     */
-    public static final int FLAG_ACTIVITY_NO_ANIMATION = 0X00010000;
-    /**
-     * If set, when sending a broadcast only registered receivers will be
-     * called -- no BroadcastReceiver components will be launched.
-     */
-    public static final int FLAG_RECEIVER_REGISTERED_ONLY = 0x40000000;
-    /**
-     * If set, when sending a broadcast the new broadcast will replace
-     * any existing pending broadcast that matches it.  Matching is defined
-     * by {@link Intent#filterEquals(Intent) Intent.filterEquals} returning
-     * true for the intents of the two broadcasts.  When a match is found,
-     * the new broadcast (and receivers associated with it) will replace the
-     * existing one in the pending broadcast list, remaining at the same
-     * position in the list.
-     *
-     * <p>This flag is most typically used with sticky broadcasts, which
-     * only care about delivering the most recent values of the broadcast
-     * to their receivers.
-     */
-    public static final int FLAG_RECEIVER_REPLACE_PENDING = 0x20000000;
-    /**
-     * If set, when sending a broadcast <i>before boot has completed</i> only
-     * registered receivers will be called -- no BroadcastReceiver components
-     * will be launched.  Sticky intent state will be recorded properly even
-     * if no receivers wind up being called.  If {@link #FLAG_RECEIVER_REGISTERED_ONLY}
-     * is specified in the broadcast intent, this flag is unnecessary.
-     *
-     * <p>This flag is only for use by system sevices as a convenience to
-     * avoid having to implement a more complex mechanism around detection
-     * of boot completion.
-     *
-     * @hide
-     */
-    public static final int FLAG_RECEIVER_REGISTERED_ONLY_BEFORE_BOOT = 0x10000000;
-    /**
-     * Set when this broadcast is for a boot upgrade, a special mode that
-     * allows the broadcast to be sent before the system is ready and launches
-     * the app process with no providers running in it.
-     * @hide
-     */
-    public static final int FLAG_RECEIVER_BOOT_UPGRADE = 0x08000000;
+### FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+
+```
+如果设置，这将在Task的Activity stack中设置一个还原点，当Task恢复时，需要清理Activity。也就是说，下一次Task带着 FLAG_ACTIVITY_RESET_TASK_IF_NEEDED标记进入前台时（典型的操作是用户在主画
+面重启它），这个Activity和它之上的都将关闭，以至于用户不能再返回到它们，但是可以回到之前的Activity。
+```
+这在你的程序有分割点的时候很有用。例如，一个e-mail应用程序可能有一个操作是查看一个附件，需要启动图片浏览Activity来显示。这个Activity应该作为e-mail应用程序Task的一部分，因为这是用户在这个Task中触发的
+操作。然而，当用户离开这个Task，然后从主画面选择e-mail app，我们可能希望回到查看的会话中，但不是查看图片附件，因为这让人困惑。通过在启动图片浏览时设定这个标志，浏览及其它启动的Activity在下次用户返回到mail程
+序时都将全部清除。
+
+### FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+
+```
+如果设置，新的Activity不会在最近启动的Activity的列表中保存。
+```
+
+### FLAG_ACTIVITY_FORWARD_RESULT
+
+```
+如果设置，并且这个Intent用于从一个存在的Activity启动一个新的Activity，那么，这个作为答复目标的Activity将会传到这个新的Activity中。这种方式下，新的Activity可以调用setResult(int)，并且这个结果值将发送给那
+个作为答复目标的 Activity。
+```
+
+### FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY 
+
+```
+这个标志一般不由应用程序代码设置，如果这个Activity是从历史记录里启动的（常按HOME键），那么，系统会帮你设定。
+```
+
+### FLAG_ACTIVITY_MULTIPLE_TASK 
+
+```
+不要使用这个标志，除非你自己实现了应用程序启动器。与FLAG_ACTIVITY_NEW_TASK结合起来使用，可以禁用把已存的Task送入前台的行为。当设置时，新的Task总是会启动来处理Intent，而不管这是是否已经有一个Task可
+以处理相同的事情。 由于默认的系统不包含图形Task管理功能，因此，你不应该使用这个标志，除非你提供给用户一种方式可以返回到已经启动的Task。如果FLAG_ACTIVITY_NEW_TASK标志没有设置，这个标志被忽略。
+```
+
+### FLAG_ACTIVITY_NEW_TASK 
+
+```
+如果设置，这个Activity会成为历史stack中一个新Task的开始。一个Task（从启动它的Activity到下一个Task中的 Activity）定义了用户可以迁移的Activity原子组。Task可以移动到前台和后台；在某个特定Task中的所有
+Activity总是保持相同的次序。这个标志一般用于呈现“启动”类型的行为：它们提供用户一系列可以单独完成的事情，与启动它们的Activity完全无关。使用这个标志，如果正在启动的Activity的Task已经在运行的话，那么，新的
+Activity将不会启动；代替的，当前Task会简单的移入前台。参考FLAG_ACTIVITY_MULTIPLE_TASK标志，可以禁用这一行为。这个标志不能用于调用方对已经启动的Activity请求结果。
+```
+
+### FLAG_ACTIVITY_NO_ANIMATION 
+
+```
+如果在Intent中设置，并传递给Context.startActivity()的话，这个标志将阻止系统进入下一个Activity时应用 Acitivity迁移动画。这并不意味着动画将永不运行——如果另一个Activity在启动显示之前，没有指定这个标
+志，那么，动画将被应用。这个标志可以很好的用于执行一连串的操作，而动画被看作是更高一级的事件的驱动。
+```
+
+### FLAG_ACTIVITY_NO_HISTORY 
+
+```
+如果设置，新的Activity将不再历史stack中保留。用户一离开它，这个Activity就关闭了。这也可以通过设置noHistory特性。
+```
+
+### FLAG_ACTIVITY_NO_USER_ACTION 
+
+```
+如果设置，作为新启动的Activity进入前台时，这个标志将在Activity暂停之前阻止从最前方的Activity回调的onUserLeaveHint()。
+典型的，一个Activity可以依赖这个回调指明显式的用户动作引起的Activity移出后台。这个回调在Activity的生命周期中标记一个合适的点，并关闭一些Notification。
+如果一个Activity通过非用户驱动的事件，如来电或闹钟，启动的，这个标志也应该传递给Context.startActivity，保证暂停的Activity不认为用户已经知晓其Notification。
+```
+
+### FLAG_ACTIVITY_PREVIOUS_IS_TOP 
+
+```
+If set and this intent is being used to launch a new activity from an existing one, the current activity will not be counted as the top activity for deciding whether the new 
+intent should be delivered to the top instead of starting a new one. The previous activity will be used as the top, with the assumption being that the current activity will 
+finish itself immediately. 
+```
+
+### FLAG_ACTIVITY_REORDER_TO_FRONT
+
+```
+如果在Intent中设置，并传递给Context.startActivity()，这个标志将引发已经运行的Activity移动到历史stack的顶端。例如，假设一个Task由四个Activity组成：A,B,C,D。如果D调用startActivity()来启
+动Activity B，那么，B会移动到历史stack的顶端，现在的次序变成A,C,D,B。如果FLAG_ACTIVITY_CLEAR_TOP标志也设置的话，那么这个标志将被忽略。
+```
+### FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+
+```
+If set, and this activity is either being started in a new task or bringing to the top an existing task, then it will be launched as the front door of the task. This will 
+result in the application of any affinities needed to have that task in the proper state (either moving activities to or from it), or simply resetting that task to its 
+initial state if needed. 
+```
+### FLAG_ACTIVITY_SINGLE_TOP
+
+```
+如果设置，当这个Activity位于历史stack的顶端运行时，不再启动一个新的。 
+```
+
+注意：如果是从BroadcastReceiver启动一个新的Activity，或者是从Service往一个Activity跳转时，不要忘记添加Intent的Flag为FLAG_ACTIVITY_NEW_TASK。
