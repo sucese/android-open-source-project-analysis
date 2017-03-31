@@ -10,7 +10,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:process="com.guoxiaoxing.main.process">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,8 +23,12 @@
         <activity android:name=".program.ProgramActivity" />
         <activity android:name=".system.SystemActivity" />
         <activity android:name=".application.activity.StartActivity" />
-        <activity android:name=".application.activity.SubInProcessActivity" />
-        <activity android:name=".application.activity.SubInNewProcessActivity" />
+        <activity
+            android:name=".application.activity.SubInProcessActivity"
+            android:process="com.guoxiaoxing.main.process" />
+        <activity
+            android:name=".application.activity.SubInNewProcessActivity"
+            android:process="com.guoxiaoxing.new.process" />
     </application>
 
 </manifest>

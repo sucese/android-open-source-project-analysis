@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.guoxiaoxing.android.framework.demo.application.activity.SubInProcessActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Activity in new process"
+        android:textAllCaps="false" />
+
 </android.support.constraint.ConstraintLayout>
