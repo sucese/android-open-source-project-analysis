@@ -48,9 +48,17 @@ Activity组件的启动流程分为3种情况：
 
 3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
 
-Activity的启动流程一共分为7大步，35小步，5个进程通信，在10个组件中执行。我们先来看看整个启动流程的时序图，先对整个流程有个大致印象。
+Activity的启动流程一共分为7大步，35小步，5个进程通信，在10个组件中执行。我们先来看看整个启动流程的序列图，先对整个流程有个大致印象。
+
+Activity启动流程序列图
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_flow.png"/>
+
+Activity启动流程结构图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_structure.png"/>
+
+看了上述两个图，我们来分析下两个问题。
 
 Activity启动的过程中牵扯到了哪些组件？
 
@@ -78,7 +86,7 @@ ACTIVITY_PAUSED_TRANSACTION：Launcher发出，ActivityManagerService处理，�
 ATTACH_APPLICATION_TRANSACTION：新创建的应用进程发出，ActivityManagerService处理，通知ActivityManagerService新进程已经创建，可以开始目标Activity创建工作。
 SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建应用进程处理，ActivityManagerService通知新建应用进程创建目标Activity。
 ```
-一 在Launcher中执行
+一 在Launcher中执行，把Activity的启动过程交由Instrumentation监控，并向ActivityManagerService发出START_ACTIVITY_TRANSACTION进程通信请求，进一步执行目标Activity启动操作。
 
 ```
 1 auncher.startActivitySafely(Intent intent, Object tag)
@@ -87,7 +95,8 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 4 Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
 5 ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
 ```
-二 在ActivityManagerService中执行，主要用来处理Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。
+二 在ActivityManagerService中执行，接收Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。调用ActivityStack里的方法，解析Activity信息以及传递过来的Intent信息。并向Launcher
+发送SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求，请求执行暂停源Activity的操作。
 
 ```
 6 ActivityManagerService.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
@@ -98,7 +107,8 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
 12 ApplicationThreadProxy。schedulePauseActivity(prev, prev.finishing, userLeaving, prev.configChangeFlags)
 ```
-三 在Launcher中执行，主要用来处理ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。
+三 在Launcher中执行，接收ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。执行暂停源Activity的操作。并向ActivityManagerService发送ACTIVITY_PAUSED_TRANSACTION
+进程通信请求，通知源Activity已经被暂停。
 
 ```
 13 ActivityThread.schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges)
@@ -108,7 +118,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 17 ActivityManagerProxy.activityPaused(IBinder token, Bundle state)
 ```
 
-四 在ActivityManagerService中执行，主要用来处理Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求
+四 在ActivityManagerService中执行，接收Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求，创建新进程，为进一步启动目标Activity做准备。
 
 ```
 18 ActivityManagerService.activityPaused(IBinder token, Bundle icicle)
@@ -119,14 +129,15 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 23 ActivityManagerService.startProcessLocked(String processName, ApplicationInfo info, boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName, boolean allowWhileBooting)
 ```
 
-五 在新创建的进程中执行
+五 在新创建的进程中执行，并向ActivityManagerService发送ATTACH_APPLICATION_TRANSACTION进程通信请求，通知新进程已经被创建，可以进一步执行Activity启动操作。
 
 ```
 24 ActivityThread.main(String[] args)
 25 ActivityManagerProxy.attachApplication(IApplicationThread app)
 ```
 
-六 在ActivityManagerService中执行，主要用来处理新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求
+六 在ActivityManagerService中执行，接收新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求，包装新进程信息，检查目标Activity进程信息与新进程信息是否一致，为最终在新进程中
+启动目标Activity做准备。
 
 ```
 26 ActivityManagerService.attachApplication(IApplicationThread thread)
@@ -135,7 +146,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 29 ApplicationThreadProxy.scheduleLaunchActivity(Intent intent, IBinder token, int ident, ActivityInfo info, Bundle state, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, boolean notResumed, boolean isForward)
 ```
 
-七 在新进程中执行，主要用来处理ActivityManagerService发出的SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求
+七 在新进程中执行，接收ActivityManagerService发出的SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求，最终执行目标Activity的启动操作。
 
 ```
 30 ActivityThread.scheduleRelaunchActivity(IBinder token, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, int configChanges, boolean notResumed, Configuration config)
