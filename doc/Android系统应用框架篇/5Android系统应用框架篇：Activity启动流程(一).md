@@ -52,7 +52,7 @@ Activity的启动流程一共分为7大步，35小步，5个进程通信，在10
 
 Activity启动流程序列图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_flow.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_sequence.png"/>
 
 Activity启动流程结构图
 
