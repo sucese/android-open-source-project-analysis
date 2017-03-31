@@ -11,26 +11,22 @@
 
 **关于文章**
 
->作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流
-的问题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去
-star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时
-的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
+>作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流的问题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
-第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，
-更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
+第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 - [5Android系统应用框架篇：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/5Android系统应用框架篇：Activity启动流程(一).md)
 - [6Android系统应用框架篇：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/6Android系统应用框架篇：Activity启动流程(二).md)
 - [7Android系统应用框架篇：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/7Android系统应用框架篇：Activity启动流程(三).md)
 
-从这篇文章开始，我们来详细地分析Activity的启动流程，在分析的过程中会有各种各样的角色参与进来，例如：ActivityServiceManager、ActivityStack、ActivityRecord等，涉及的
-流程与代码也会比较长，但是莫慌，老司机带你轻松看源码。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30" align="bottom" />
+从这篇文章开始，我们来详细地分析Activity的启动流程，在分析的过程中会有各种各样的角色参与进来，例如：ActivityServiceManager、ActivityStack、ActivityRecord等，涉及的流程与代码也会比较长，但是莫慌，老司
+机带你轻松看源码。<img src="https://github.com/guoxiaoxing/emoji/raw/master/emoji/d_doge.png" width="30" height="30" align="bottom" />
 
-在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的
-协同，参数的包装与处理，只要我们抓住核心原理，所有的问题就都迎刃而解。
+在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的协同，参数的包装与处理，只要我们抓
+住核心原理，所有的问题就都迎刃而解。
 
-笔者在分析的过程中，也会为读者提供各种结构图、时序图来辅助理解，每个小节完成后，也会再次做小节汇总，力求让读者看得明白，记得深刻。另外，Android四大组件的启动流程有异曲同工
-之处我们掌握了Activity，后面各组件以及其他系统都可以举一反三，触类旁通。
+笔者在分析的过程中，也会为读者提供各种结构图、时序图来辅助理解，每个小节完成后，也会再次做小节汇总，力求让读者看得明白，记得深刻。另外，Android四大组件的启动流程有异曲同工之处我们掌握了Activity，后面各组件以
+及其他系统都可以举一反三，触类旁通。
 
 由于本文篇幅比较长，正式开始本篇文章前，先说明一下文章中经常出现的名词的含义。
 
