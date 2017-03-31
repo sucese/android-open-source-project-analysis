@@ -67,6 +67,8 @@ ActivityThread：用来描述一个应用进程。
 
 ```
 
+关于上述组件，读者可以先大致了解它们的功能，后续还会有有文章去介绍它们的源码和原理。
+
 在这些组件的交互中，有哪些跨进程通信，这些进程通信都是为了完成什么工作？
 
 ```
@@ -76,7 +78,6 @@ ACTIVITY_PAUSED_TRANSACTION：Launcher发出，ActivityManagerService处理，�
 ATTACH_APPLICATION_TRANSACTION：新创建的应用进程发出，ActivityManagerService处理，通知ActivityManagerService新进程已经创建，可以开始目标Activity创建工作。
 SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建应用进程处理，ActivityManagerService通知新建应用进程创建目标Activity。
 ```
-
 一 在Launcher中执行
 
 ```
@@ -144,9 +145,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 34 ActivityThread.performLaunchActivity(ActivityClientRecord r, Intent customIntent)
 35 Activity.onCreate(Bundle savedInstanceState) 
 ```
-
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)
-
 
 ```java
 /**
