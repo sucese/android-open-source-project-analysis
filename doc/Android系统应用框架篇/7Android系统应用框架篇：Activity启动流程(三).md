@@ -25,6 +25,14 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 我们接着上一篇文章来继续分析Activity的启动流程。
 
+Activity启动流程序列图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_sequence.png"/>
+
+Activity启动流程结构图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_structure.png"/>
+
 ### 18 ActivityManagerService.activityPaused(IBinder token, Bundle icicle)
 
 ```java

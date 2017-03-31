@@ -25,6 +25,14 @@ star文章, 关注文章的最新的动态。另外建议大家去Github上浏�
 
 我们正式开始分析Launcher Activity启动流程的源码，它是三种情况中流程最长的一种，其他两种启动流程都是它的子集，也可以将该流程理解为一个应用的启动流程。
 
+Activity启动流程序列图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_sequence.png"/>
+
+Activity启动流程结构图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_structure.png"/>
+
 ### 1 Launcher.startActivitySafely(Intent intent, Object tag)
 
 ```java
