@@ -161,6 +161,12 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 ```
 ### 相同进程启动Activity
 
+启动栈图：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_in_same_process.png"/>
+
+启动流程：
+
 一 源Activity向ActivityManagerService发送一个启动目标Activity的进程间通信请求START_ACTIVITY_TRANSACTION。
 二 ActivityManagerService首先将目标Activity的信息保存下来，然后再向源Activity发送一个通知源Activity进入终止状态的进程间通信请求START_ACTIVITY_TRANSACTION。
 三 源Activity进入终止状态后，再向ActivityManagerService发送一个源Activity已经进入终止状态的进程通信请求SCHEDULE_PAUSE_ACTIVITY_TRANSACTION，以便ActivityManagerService进一步执行目标Activity启动操作。
@@ -168,6 +174,11 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 
 ### 新进程启动Activity
 
+启动栈图：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_in_new_process.png"/>
+
+启动流程：
 一 源Activity向ActivityManagerService发送一个启动目标Activity的进程间通信请求START_ACTIVITY_TRANSACTION。
 二 ActivityManagerService首先将目标Activity的信息保存下来，然后再向源Activity发送一个通知源Activity进入终止状态的进程间通信请求START_ACTIVITY_TRANSACTION。
 三 源Activity进入终止状态后，再向ActivityManagerService发送一个源Activity已经进入终止状态的进程通信请求SCHEDULE_PAUSE_ACTIVITY_TRANSACTION，以便ActivityManagerService进一步执行目标Activity启动操作。
