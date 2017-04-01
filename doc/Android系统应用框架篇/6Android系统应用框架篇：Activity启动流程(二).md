@@ -68,9 +68,9 @@ public final class Launcher extends Activity
 
 ```xml
 <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
+        <action android:text="android.intent.action.MAIN" />
 
-        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:text="android.intent.category.LAUNCHER" />
     </intent-filter>
 ```
 
@@ -365,7 +365,7 @@ public class ActivityStack {
                 // user navigates back to this point in the history, we should
                 // always restart the exact same activity.
                 intent.setComponent(new ComponentName(
-                        aInfo.applicationInfo.packageName, aInfo.name));
+                        aInfo.applicationInfo.packageName, aInfo.text));
     
                 // Don't debug things in the system process
                 if (debug) {
@@ -495,7 +495,7 @@ public class ActivityStack {
                         ActivityRecord r = this.topRunningActivityLocked(null);
                         if (r.nowVisible) {
                             outResult.timeout = false;
-                            outResult.who = new ComponentName(r.info.packageName, r.info.name);
+                            outResult.who = new ComponentName(r.info.packageName, r.info.text);
                             outResult.totalTime = 0;
                             outResult.thisTime = 0;
                         } else {

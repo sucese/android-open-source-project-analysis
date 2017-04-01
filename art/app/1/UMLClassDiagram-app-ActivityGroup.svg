@@ -105,7 +105,7 @@
  <text x="1777" y="3883" fill="#000000" font-family="Arial" font-size="10">+ Activity.getParent () Activity</text>
  <text x="1777" y="3895" fill="#000000" font-family="Arial" font-size="10">+ Activity.getPreferences (mode: int ) SharedPreferences</text>
  <text x="1777" y="3907" fill="#000000" font-family="Arial" font-size="10">+ Activity.getRequestedOrientation () int</text>
- <text x="1777" y="3919" fill="#000000" font-family="Arial" font-size="10">+ Activity.getSystemService (name: String ) Object</text>
+ <text x="1777" y="3919" fill="#000000" font-family="Arial" font-size="10">+ Activity.getSystemService (text: String ) Object</text>
  <text x="1777" y="3931" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTaskId () int</text>
  <text x="1777" y="3943" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTitle () CharSequence</text>
  <text x="1777" y="3955" fill="#000000" font-family="Arial" font-size="10">+ Activity.getTitleColor () int</text>
@@ -134,7 +134,7 @@
  <text x="1777" y="4231" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreatePanelMenu (featureId: int , menu: Menu ) boolean</text>
  <text x="1777" y="4243" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreatePanelView (featureId: int ) View</text>
  <text x="1777" y="4255" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateThumbnail (outBitmap: Bitmap , canvas: Canvas ) boolean</text>
- <text x="1777" y="4267" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateView (name: String , context: Context , attrs: AttributeSet ) View</text>
+ <text x="1777" y="4267" fill="#000000" font-family="Arial" font-size="10">+ Activity.onCreateView (text: String , context: Context , attrs: AttributeSet ) View</text>
  <text x="1777" y="4279" fill="#000000" font-family="Arial" font-size="10">+ Activity.onDetachedFromWindow () void</text>
  <text x="1777" y="4291" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyDown (keyCode: int , event: KeyEvent ) boolean</text>
  <text x="1777" y="4303" fill="#000000" font-family="Arial" font-size="10">+ Activity.onKeyLongPress (keyCode: int , event: KeyEvent ) boolean</text>
@@ -257,7 +257,7 @@
  <text x="2302" y="2745" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mInflater: LayoutInflater</text>
  <text x="2302" y="2757" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mTheme: Resources.Theme</text>
  <text x="2302" y="2769" fill="#000000" font-family="Arial" font-size="10">- ContextThemeWrapper.mThemeResource: int</text>
- <text x="2302" y="2789" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.getSystemService (name: String ) Object</text>
+ <text x="2302" y="2789" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.getSystemService (text: String ) Object</text>
  <text x="2302" y="2801" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.getTheme () Resources.Theme</text>
  <text x="2302" y="2813" fill="#000000" font-family="Arial" font-size="10">+ ContextThemeWrapper.setTheme (resid: int ) void</text>
  <text x="2302" y="2825" fill="#000000" font-family="Arial" font-size="10"># ContextThemeWrapper.attachBaseContext (newBase: Context ) void</text>
@@ -281,8 +281,8 @@
  <text x="2092" y="1875" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.clearWallpaper () void</text>
  <text x="2092" y="1887" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.createPackageContext (packageName: String , flags: int ) Context</text>
  <text x="2092" y="1899" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.databaseList () String[]</text>
- <text x="2092" y="1911" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteDatabase (name: String ) boolean</text>
- <text x="2092" y="1923" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteFile (name: String ) boolean</text>
+ <text x="2092" y="1911" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteDatabase (text: String ) boolean</text>
+ <text x="2092" y="1923" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.deleteFile (text: String ) boolean</text>
  <text x="2092" y="1935" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingOrSelfPermission (permission: String , message: String ) void</text>
  <text x="2092" y="1947" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingOrSelfUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
  <text x="2092" y="1959" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.enforceCallingPermission (permission: String , message: String ) void</text>
@@ -298,11 +298,11 @@
  <text x="2092" y="2079" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getCacheDir () File</text>
  <text x="2092" y="2091" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getClassLoader () ClassLoader</text>
  <text x="2092" y="2103" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getContentResolver () ContentResolver</text>
- <text x="2092" y="2115" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDatabasePath (name: String ) File</text>
- <text x="2092" y="2127" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDir (name: String , mode: int ) File</text>
+ <text x="2092" y="2115" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDatabasePath (text: String ) File</text>
+ <text x="2092" y="2127" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getDir (text: String , mode: int ) File</text>
  <text x="2092" y="2139" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getExternalCacheDir () File</text>
  <text x="2092" y="2151" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getExternalFilesDir (type: String ) File</text>
- <text x="2092" y="2163" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getFileStreamPath (name: String ) File</text>
+ <text x="2092" y="2163" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getFileStreamPath (text: String ) File</text>
  <text x="2092" y="2175" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getFilesDir () File</text>
  <text x="2092" y="2187" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getMainLooper () Looper</text>
  <text x="2092" y="2199" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageCodePath () String</text>
@@ -310,18 +310,18 @@
  <text x="2092" y="2223" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageName () String</text>
  <text x="2092" y="2235" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getPackageResourcePath () String</text>
  <text x="2092" y="2247" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getResources () Resources</text>
- <text x="2092" y="2259" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPreferences (name: String , mode: int ) SharedPreferences</text>
- <text x="2092" y="2271" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPrefsFile (name: String ) File</text>
- <text x="2092" y="2283" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSystemService (name: String ) Object</text>
+ <text x="2092" y="2259" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPreferences (text: String , mode: int ) SharedPreferences</text>
+ <text x="2092" y="2271" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSharedPrefsFile (text: String ) File</text>
+ <text x="2092" y="2283" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getSystemService (text: String ) Object</text>
  <text x="2092" y="2295" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getTheme () Resources.Theme</text>
  <text x="2092" y="2307" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaper () Drawable</text>
  <text x="2092" y="2319" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaperDesiredMinimumHeight () int</text>
  <text x="2092" y="2331" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.getWallpaperDesiredMinimumWidth () int</text>
  <text x="2092" y="2343" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.grantUriPermission (toPackage: String , uri: Uri , modeFlags: int ) void</text>
  <text x="2092" y="2355" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.isRestricted () boolean</text>
- <text x="2092" y="2367" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileInput (name: String ) FileInputStream</text>
- <text x="2092" y="2379" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileOutput (name: String , mode: int ) FileOutputStream</text>
- <text x="2092" y="2391" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openOrCreateDatabase (name: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
+ <text x="2092" y="2367" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileInput (text: String ) FileInputStream</text>
+ <text x="2092" y="2379" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openFileOutput (text: String , mode: int ) FileOutputStream</text>
+ <text x="2092" y="2391" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.openOrCreateDatabase (text: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
  <text x="2092" y="2403" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.peekWallpaper () Drawable</text>
  <text x="2092" y="2415" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter ) Intent</text>
  <text x="2092" y="2427" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter , broadcastPermission: String , scheduler: Handler ) Intent</text>
@@ -340,7 +340,7 @@
  <text x="2092" y="2583" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startInstrumentation (className: ComponentName , profileFile: String , arguments: Bundle ) boolean</text>
  <text x="2092" y="2595" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startIntentSender (intent: IntentSender , fillInIntent: Intent , flagsMask: int , flagsValues: int , extraFlags: int ) void</text>
  <text x="2092" y="2607" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.startService (service: Intent ) ComponentName</text>
- <text x="2092" y="2619" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.stopService (name: Intent ) boolean</text>
+ <text x="2092" y="2619" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.stopService (text: Intent ) boolean</text>
  <text x="2092" y="2631" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.unbindService (conn: ServiceConnection ) void</text>
  <text x="2092" y="2643" fill="#000000" font-family="Arial" font-size="10">+ ContextWrapper.unregisterReceiver (receiver: BroadcastReceiver ) void</text>
  <text x="2092" y="2655" fill="#000000" font-family="Arial" font-size="10"># ContextWrapper.attachBaseContext (base: Context ) void</text>
@@ -410,8 +410,8 @@
  <text x="2111" y="937" fill="#000000" font-family="Arial" font-size="10">+ Context.clearWallpaper () void</text>
  <text x="2111" y="949" fill="#000000" font-family="Arial" font-size="10">+ Context.createPackageContext (packageName: String , flags: int ) Context</text>
  <text x="2111" y="961" fill="#000000" font-family="Arial" font-size="10">+ Context.databaseList () String[]</text>
- <text x="2111" y="973" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteDatabase (name: String ) boolean</text>
- <text x="2111" y="985" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteFile (name: String ) boolean</text>
+ <text x="2111" y="973" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteDatabase (text: String ) boolean</text>
+ <text x="2111" y="985" fill="#000000" font-family="Arial" font-size="10">+ Context.deleteFile (text: String ) boolean</text>
  <text x="2111" y="997" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingOrSelfPermission (permission: String , message: String ) void</text>
  <text x="2111" y="1009" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingOrSelfUriPermission (uri: Uri , modeFlags: int , message: String ) void</text>
  <text x="2111" y="1021" fill="#000000" font-family="Arial" font-size="10">+ Context.enforceCallingPermission (permission: String , message: String ) void</text>
@@ -426,11 +426,11 @@
  <text x="2111" y="1129" fill="#000000" font-family="Arial" font-size="10">+ Context.getCacheDir () File</text>
  <text x="2111" y="1141" fill="#000000" font-family="Arial" font-size="10">+ Context.getClassLoader () ClassLoader</text>
  <text x="2111" y="1153" fill="#000000" font-family="Arial" font-size="10">+ Context.getContentResolver () ContentResolver</text>
- <text x="2111" y="1165" fill="#000000" font-family="Arial" font-size="10">+ Context.getDatabasePath (name: String ) File</text>
- <text x="2111" y="1177" fill="#000000" font-family="Arial" font-size="10">+ Context.getDir (name: String , mode: int ) File</text>
+ <text x="2111" y="1165" fill="#000000" font-family="Arial" font-size="10">+ Context.getDatabasePath (text: String ) File</text>
+ <text x="2111" y="1177" fill="#000000" font-family="Arial" font-size="10">+ Context.getDir (text: String , mode: int ) File</text>
  <text x="2111" y="1189" fill="#000000" font-family="Arial" font-size="10">+ Context.getExternalCacheDir () File</text>
  <text x="2111" y="1201" fill="#000000" font-family="Arial" font-size="10">+ Context.getExternalFilesDir (type: String ) File</text>
- <text x="2111" y="1213" fill="#000000" font-family="Arial" font-size="10">+ Context.getFileStreamPath (name: String ) File</text>
+ <text x="2111" y="1213" fill="#000000" font-family="Arial" font-size="10">+ Context.getFileStreamPath (text: String ) File</text>
  <text x="2111" y="1225" fill="#000000" font-family="Arial" font-size="10">+ Context.getFilesDir () File</text>
  <text x="2111" y="1237" fill="#000000" font-family="Arial" font-size="10">+ Context.getMainLooper () Looper</text>
  <text x="2111" y="1249" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageCodePath () String</text>
@@ -438,17 +438,17 @@
  <text x="2111" y="1273" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageName () String</text>
  <text x="2111" y="1285" fill="#000000" font-family="Arial" font-size="10">+ Context.getPackageResourcePath () String</text>
  <text x="2111" y="1297" fill="#000000" font-family="Arial" font-size="10">+ Context.getResources () Resources</text>
- <text x="2111" y="1309" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPreferences (name: String , mode: int ) SharedPreferences</text>
- <text x="2111" y="1321" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPrefsFile (name: String ) File</text>
- <text x="2111" y="1333" fill="#000000" font-family="Arial" font-size="10">+ Context.getSystemService (name: String ) Object</text>
+ <text x="2111" y="1309" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPreferences (text: String , mode: int ) SharedPreferences</text>
+ <text x="2111" y="1321" fill="#000000" font-family="Arial" font-size="10">+ Context.getSharedPrefsFile (text: String ) File</text>
+ <text x="2111" y="1333" fill="#000000" font-family="Arial" font-size="10">+ Context.getSystemService (text: String ) Object</text>
  <text x="2111" y="1345" fill="#000000" font-family="Arial" font-size="10">+ Context.getTheme () Resources.Theme</text>
  <text x="2111" y="1357" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaper () Drawable</text>
  <text x="2111" y="1369" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaperDesiredMinimumHeight () int</text>
  <text x="2111" y="1381" fill="#000000" font-family="Arial" font-size="10">+ Context.getWallpaperDesiredMinimumWidth () int</text>
  <text x="2111" y="1393" fill="#000000" font-family="Arial" font-size="10">+ Context.grantUriPermission (toPackage: String , uri: Uri , modeFlags: int ) void</text>
- <text x="2111" y="1405" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileInput (name: String ) FileInputStream</text>
- <text x="2111" y="1417" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileOutput (name: String , mode: int ) FileOutputStream</text>
- <text x="2111" y="1429" fill="#000000" font-family="Arial" font-size="10">+ Context.openOrCreateDatabase (name: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
+ <text x="2111" y="1405" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileInput (text: String ) FileInputStream</text>
+ <text x="2111" y="1417" fill="#000000" font-family="Arial" font-size="10">+ Context.openFileOutput (text: String , mode: int ) FileOutputStream</text>
+ <text x="2111" y="1429" fill="#000000" font-family="Arial" font-size="10">+ Context.openOrCreateDatabase (text: String , mode: int , factory: CursorFactory ) SQLiteDatabase</text>
  <text x="2111" y="1441" fill="#000000" font-family="Arial" font-size="10">+ Context.peekWallpaper () Drawable</text>
  <text x="2111" y="1453" fill="#000000" font-family="Arial" font-size="10">+ Context.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter ) Intent</text>
  <text x="2111" y="1465" fill="#000000" font-family="Arial" font-size="10">+ Context.registerReceiver (receiver: BroadcastReceiver , filter: IntentFilter , broadcastPermission: String , scheduler: Handler ) Intent</text>

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guoxiaoxing.android.framework.demo">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:text="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,23 +11,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:text=".MainActivity"
             android:process="com.guoxiaoxing.main.process">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:text="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:text="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".application.ApplicationActivity" />
-        <activity android:name=".program.ProgramActivity" />
-        <activity android:name=".system.SystemActivity" />
-        <activity android:name=".application.activity.StartActivity" />
+        <activity android:text=".application.ApplicationActivity" />
+        <activity android:text=".program.ProgramActivity" />
+        <activity android:text=".system.SystemActivity" />
+        <activity android:text=".application.activity.StartActivity" />
         <activity
-            android:name=".application.activity.SubInProcessActivity"
+            android:text=".application.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
         <activity
-            android:name=".application.activity.SubInNewProcessActivity"
+            android:text=".application.activity.SubInNewProcessActivity"
             android:process="com.guoxiaoxing.new.process" />
     </application>
 

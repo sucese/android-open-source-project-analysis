@@ -596,7 +596,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         //     object attached to it so we know it couldn't have crashed; and
         // (3) There is a pid assigned to it, so it is either starting or
         //     already running.
-        if (DEBUG_PROCESSES) Slog.v(TAG, "startProcess: name=" + processName
+        if (DEBUG_PROCESSES) Slog.v(TAG, "startProcess: text=" + processName
                 + " app=" + app + " knownToBeDead=" + knownToBeDead
                 + " thread=" + (app != null ? app.thread : null)
                 + " pid=" + (app != null ? app.pid : -1));
@@ -865,10 +865,10 @@ public final class ActivityThread {
         }
 
         thread.detach();
-        String name = (thread.mInitialApplication != null)
+        String text = (thread.mInitialApplication != null)
             ? thread.mInitialApplication.getPackageName()
             : "<unknown>";
-        Slog.i(TAG, "Main thread of " + name + " is now exiting");
+        Slog.i(TAG, "Main thread of " + text + " is now exiting");
     }
 
 }
@@ -1707,7 +1707,7 @@ public final class ActivityThread {
                 CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());
                 Configuration config = new Configuration(mConfiguration);
                 if (DEBUG_CONFIGURATION) Slog.v(TAG, "Launching activity "
-                        + r.activityInfo.name + " with config " + config);
+                        + r.activityInfo.text + " with config " + config);
                 //使用ContextImpl对象和ActivityClientRecord对象来初始化Activity组件
                 activity.attach(appContext, this, getInstrumentation(), r.token,
                         r.ident, app, r.intent, r.activityInfo, title, r.parent,

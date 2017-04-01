@@ -78,7 +78,7 @@ G、installLocation
              android:killAfterRestore=["true" | "false"]
              android:label="string resource"
              android:manageSpaceActivity="string"
-             android:name="string"
+             android:text="string"
              android:permission="string"
              android:persistent=["true" | "false"]
              android:process="string"
@@ -137,11 +137,11 @@ I、android:killAfterRestore
 
 J、android:manageSpaceActivity
 
-K、android:name
+K、android:text
 
 为应用程序所实现的Application子类的全名。当应用程序进程开始时，该类在所有应用程序组件之前被实例化。
 
-若该类(比方androidMain类)是在声明的package下，则可以直接声明android:name="androidMain",但此类是在package下面的子包的话，就必须声明为全路径或android:name="package名称.子包名成.androidMain"
+若该类(比方androidMain类)是在声明的package下，则可以直接声明android:text="androidMain",但此类是在package下面的子包的话，就必须声明为全路径或android:text="package名称.子包名成.androidMain"
 
 L、android:permission
 
@@ -186,7 +186,7 @@ Q、android:theme
           android:launchMode=["multiple" | "singleTop" |
                               "singleTask" | "singleInstance"]
           android:multiprocess=["true" | "false"]
-          android:name="string"
+          android:text="string"
           android:noHistory=["true" | "false"]  
           android:permission="string"
           android:process="string"
@@ -371,13 +371,13 @@ scheme的值一般为"http"，host为包名，port为端口号，path为具体�
 
 5、第四层<meta-data>
 
-<meta-data android:name="string"
+<meta-data android:text="string"
            android:resource="resource specification"
            android:value="string"/>
 
 这是该元素的基本结构.可以包含在<activity> <activity-alias> <service> <receiver>四个元素中。
 
-android:name（解释：元数据项的名字，为了保证这个名字是唯一的，采用java风格的命名规范，如com.woody.project.fried)
+android:text（解释：元数据项的名字，为了保证这个名字是唯一的，采用java风格的命名规范，如com.woody.project.fried)
 
 android:resource(解释：资源的一个引用，指定给这个项的值是该资源的id。该id可以通过方法Bundle.getInt()来从meta-data中找到。)
 
@@ -390,7 +390,7 @@ android:value(解释：指定给这一项的值。可以作为值来指定的数
                 android:exported=["true" | "false"]
                 android:icon="drawable resource"
                 android:label="string resource"
-                android:name="string"
+                android:text="string"
                 android:permission="string"
                 android:targetActivity="string">
 
@@ -401,23 +401,23 @@ android:value(解释：指定给这一项的值。可以作为值来指定的数
 <activity-alias>是为activity创建快捷方式的，如下实例：
 
 
-<activity android:name=".shortcut">
+<activity android:text=".shortcut">
 
             <intent-filter>
 
-                <action android:name="android.intent.action.MAIN" />
+                <action android:text="android.intent.action.MAIN" />
 
             </intent-filter>
 
 </activity>
 
- <activity-alias android:name=".CreateShortcuts" android:targetActivity=".shortcut" android:label="@string/shortcut">
+ <activity-alias android:text=".CreateShortcuts" android:targetActivity=".shortcut" android:label="@string/shortcut">
 
     <intent-filter>
 
-             <action android:name="android.intent.action.CREATE_SHORTCUT" />
+             <action android:text="android.intent.action.CREATE_SHORTCUT" />
 
-             <category android:name="android.intent.category.DEFAULT" />
+             <category android:text="android.intent.category.DEFAULT" />
 
      </intent-filter>
 
@@ -448,7 +448,7 @@ Service后端的数据最终还是要呈现在前端Activity之上的，因为�
 
          android:label="string resource"
 
-         android:name="string"
+         android:text="string"
 
          android:permission="string"
 
@@ -482,7 +482,7 @@ BroadcastReceiver：用于发送广播，broadcast是在应用程序之间传输
 
           android:multiprocess=["true" | "false"]
 
-          android:name="string"
+          android:text="string"
 
           android:permission="string"
 
@@ -536,7 +536,7 @@ contentProvider(数据存储)
                     android:reqTouchScreen=["undefined" | "notouch" | "stylus" | "finger"] />
 
 <uses-feature android:glEsVersion="integer"
-              android:name="string"
+              android:text="string"
               android:required=["true" | "false"] />
 
 这两者都是在描述应用所需要的硬件和软件特性，以便防止应用在没有这些特性的设备上安装。
@@ -558,7 +558,7 @@ contentProvider(数据存储)
                  android:handleProfiling=["true" | "false"]
                  android:icon="drawable resource"
                  android:label="string resource"
-                 android:name="string"
+                 android:text="string"
                  android:targetPackage="string"/>
 
  定义一些用于探测和分析应用性能等等相关的类，可以监控程序。在各个应用程序的组件之前instrumentation类被实例化
@@ -571,14 +571,14 @@ android:functionalTest(解释：instrumentation类是否能运行一个功能测
 
 通常情况下我们不需要为自己的应用程序声明某个权限，除非你提供了供其他应用程序调用的代码或者数据。这个时候你才需要使用<permission> 这个标签。很显然这个标签可以让我们声明自己的权限。比如：
 
-<permission android:name="com.teleca.project.MY_SECURITY" . . . />
+<permission android:text="com.teleca.project.MY_SECURITY" . . . />
 
 那么在activity中就可以声明该自定义权限了，如：
 
 
 <application . . .>
 
-        <activity android:name="XXX" . . . >
+        <activity android:text="XXX" . . . >
 
                   android:permission="com.teleca.project.MY_SECURITY"> </activity>
 
