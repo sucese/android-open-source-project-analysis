@@ -2,9 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guoxiaoxing.android.framework.demo">
 
-    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true" android:theme="@style/AppTheme">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +26,13 @@
         <activity
             android:name=".application.activity.SubInNewProcessActivity"
             android:process="com.guoxiaoxing.new.process" />
+
+        <service
+            android:name=".application.service.CounterService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".application.service.ServiceActivity"></activity>
     </application>
 
 </manifest>
