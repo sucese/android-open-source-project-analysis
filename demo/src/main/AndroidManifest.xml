@@ -2,32 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.guoxiaoxing.android.framework.demo">
 
-    <uses-permission android:text="android.permission.ACCESS_NETWORK_STATE" />
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:text=".MainActivity"
-            android:process="com.guoxiaoxing.main.process">
+    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true" android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:text="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:text="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:text=".application.ApplicationActivity" />
-        <activity android:text=".program.ProgramActivity" />
-        <activity android:text=".system.SystemActivity" />
-        <activity android:text=".application.activity.StartActivity" />
+        <activity android:name=".application.ApplicationActivity" />
+        <activity android:name=".program.ProgramActivity" />
+        <activity android:name=".system.SystemActivity" />
+        <activity android:name=".application.activity.StartActivity" />
         <activity
-            android:text=".application.activity.SubInProcessActivity"
+            android:name=".application.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
         <activity
-            android:text=".application.activity.SubInNewProcessActivity"
+            android:name=".application.activity.SubInNewProcessActivity"
             android:process="com.guoxiaoxing.new.process" />
     </application>
 
