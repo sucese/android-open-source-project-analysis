@@ -108,3 +108,6 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - 22Android系统编程思想篇：外观模式
 - 23Android系统编程思想篇：桥接模式
 - 24Android系统编程思想篇：软件设计原则
+
+<img src="http://git.souche.com/souche-wireless-component/souche-splash-screen-sdk/raw/video-splash/art/splash_screen_photo_advertisement.gif"/>
+
