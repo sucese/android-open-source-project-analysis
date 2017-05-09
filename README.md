@@ -87,7 +87,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - Android系统应用框架篇：Android 定位系统
 - Android系统应用框架篇：Android 安全机制
 
-**Android系统底层框架篇**
+## Android系统底层框架篇
 
 >本篇章从Android源码的底层框架原理，例如：Binder机制、智能指针与虚拟机等。
 
