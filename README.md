@@ -76,16 +76,6 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - 16Android系统应用框架篇：Content Provider启动流程
 - 17Android系统应用框架篇：Content Provider共享原理
 - 18Android系统应用框架篇：Content Provider更新机制
-- Android系统应用框架篇：Android应用程序框架
-- Android系统应用框架篇：Android UI框架
-- Android系统应用框架篇：Android 应用资源管理框架
-- Android系统应用框架篇：Android应用消息处理系统
-- Android系统应用框架篇：Andriod进程与线程
-- Android系统应用框架篇：Webkit
-- Android系统应用框架篇：OpenGL|ES
-- Android系统应用框架篇：Android 多媒体系统
-- Android系统应用框架篇：Android 定位系统
-- Android系统应用框架篇：Android 安全机制
 
 ## Android系统底层框架篇
 
