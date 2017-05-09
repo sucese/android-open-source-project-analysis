@@ -32,7 +32,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".application.service.ServiceActivity"></activity>
+        <activity android:name=".application.service.ClientActivity"></activity>
     </application>
 
 </manifest>

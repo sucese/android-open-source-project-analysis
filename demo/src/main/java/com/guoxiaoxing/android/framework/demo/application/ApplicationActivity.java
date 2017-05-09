@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.guoxiaoxing.android.framework.demo.R;
 import com.guoxiaoxing.android.framework.demo.application.activity.StartActivity;
+import com.guoxiaoxing.android.framework.demo.application.service.ClientActivity;
 
 public class ApplicationActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,7 +30,7 @@ public class ApplicationActivity extends AppCompatActivity implements View.OnCli
             }
             break;
             case R.id.btn_application_service: {
-
+                startActivity(new Intent(ApplicationActivity.this, ClientActivity.class));
             }
             break;
             case R.id.btn_application_broadcast_receiver: {

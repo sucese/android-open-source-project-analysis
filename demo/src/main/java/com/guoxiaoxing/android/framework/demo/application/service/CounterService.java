@@ -12,9 +12,22 @@ public class CounterService extends Service implements ICounterService {
     private ICounterCallback counterCallback;
     private IBinder binder = new CounterBinder();
 
+    public class CounterBinder extends Binder {
+        public CounterService getCounterService() {
+            return CounterService.this;
+        }
+
+    }
+
     public CounterService() {
     }
 
+    /**
+     * 当Service组件被绑定时，onBind会被调用。
+     *
+     * @param intent intent
+     * @return IBinder
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
@@ -32,7 +45,8 @@ public class CounterService extends Service implements ICounterService {
                 Integer count = params[0];
 
                 stop = false;
-                while (stop) {
+                while (!stop) {
+                    publishProgress(count);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -66,12 +80,5 @@ public class CounterService extends Service implements ICounterService {
     @Override
     public void stopCounter() {
         stop = true;
-    }
-
-    private class CounterBinder extends Binder {
-        public CounterService getCounterService() {
-            return CounterService.this;
-        }
-
     }
 }

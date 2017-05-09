@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context="com.guoxiaoxing.android.framework.demo.application.service.ServiceActivity">
+    tools:context="com.guoxiaoxing.android.framework.demo.application.service.ClientActivity">
 
     <TextView
         android:id="@+id/tv_counter"

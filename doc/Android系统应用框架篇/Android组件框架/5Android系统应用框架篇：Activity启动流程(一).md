@@ -72,7 +72,6 @@ ActivityStack：Activity栈，用来控制Activity的出栈与入栈。
 ApplicationThreadProxy：ApplicationThreadd的代理对象。
 ApplicationThread：它是ActivityThread的一个内部类，继承与ApplicationThreadNative，本质上是一个Binder对象，用于进程间通信。
 ActivityThread：用来描述一个应用进程。
-
 ```
 
 关于上述组件，读者可以先大致了解它们的功能，后续还会有有文章去介绍它们的源码和原理。
