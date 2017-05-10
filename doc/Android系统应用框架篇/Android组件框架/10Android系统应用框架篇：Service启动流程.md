@@ -26,6 +26,12 @@
 以继续执行启动Service组件的的操作。
 4 ActivityManagerService将第2步保存的Service组件信息发送给新床架的应用进程，以便它可以将Service组件启动起来。
 ```
+
+新进程中启动Service组件序列图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/service_start_sequence.png"/>
+
+
 #### 1 Activity.startService(Intent service)
 
 当我们在Activity里调用startService(Intent service)方法时，它实际上在调用ContextWrapper.startService(Intent service)。
@@ -425,144 +431,14 @@ public final class ActivityManagerService extends ActivityManagerNative
             app = null;
         }
 
-        if (app == null) {
-            Slog.w(TAG, "No pending application record for pid " + pid
-                    + " (IApplicationThread " + thread + "); dropping process");
-            EventLog.writeEvent(EventLogTags.AM_DROP_PROCESS, pid);
-            if (pid > 0 && pid != MY_PID) {
-                Process.killProcess(pid);
-            } else {
-                try {
-                    thread.scheduleExit();
-                } catch (Exception e) {
-                    // Ignore exceptions.
-                }
-            }
-            return false;
-        }
-
-        // If this application record is still attached to a previous
-        // process, clean it up now.
-        if (app.thread != null) {
-            handleAppDiedLocked(app, true);
-        }
-
-        // Tell the process all about itself.
-
-        if (localLOGV) Slog.v(
-                TAG, "Binding process pid " + pid + " to record " + app);
-
-        String processName = app.processName;
-        try {
-            thread.asBinder().linkToDeath(new AppDeathRecipient(
-                    app, pid, thread), 0);
-        } catch (RemoteException e) {
-            app.resetPackageList();
-            startProcessLocked(app, "link fail", processName);
-            return false;
-        }
-
-        EventLog.writeEvent(EventLogTags.AM_PROC_BOUND, app.pid, app.processName);
+        ...
         
         //指向上一步传递过来的ApplicationThread对象，ActivityManagerService以后就可以通过
         //这个ApplicationThread对象同新创建的应用进程通信了。
         app.thread = thread;
-        app.curAdj = app.setAdj = -100;
-        app.curSchedGroup = Process.THREAD_GROUP_DEFAULT;
-        app.setSchedGroup = Process.THREAD_GROUP_BG_NONINTERACTIVE;
-        app.forcingToForeground = null;
-        app.foregroundServices = false;
-        app.debugging = false;
+        ...
 
-        mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
-
-        boolean normalMode = mProcessesReady || isAllowedWhileBooting(app.info);
-        List providers = normalMode ? generateApplicationProvidersLocked(app) : null;
-
-        if (!normalMode) {
-            Slog.i(TAG, "Launching preboot mode app: " + app);
-        }
-        
-        if (localLOGV) Slog.v(
-            TAG, "New app record " + app
-            + " thread=" + thread.asBinder() + " pid=" + pid);
-        try {
-            int testMode = IApplicationThread.DEBUG_OFF;
-            if (mDebugApp != null && mDebugApp.equals(processName)) {
-                testMode = mWaitForDebugger
-                    ? IApplicationThread.DEBUG_WAIT
-                    : IApplicationThread.DEBUG_ON;
-                app.debugging = true;
-                if (mDebugTransient) {
-                    mDebugApp = mOrigDebugApp;
-                    mWaitForDebugger = mOrigWaitForDebugger;
-                }
-            }
-            
-            // If the app is being launched for restore or full backup, set it up specially
-            boolean isRestrictedBackupMode = false;
-            if (mBackupTarget != null && mBackupAppName.equals(processName)) {
-                isRestrictedBackupMode = (mBackupTarget.backupMode == BackupRecord.RESTORE)
-                        || (mBackupTarget.backupMode == BackupRecord.BACKUP_FULL);
-            }
-            
-            ensurePackageDexOpt(app.instrumentationInfo != null
-                    ? app.instrumentationInfo.packageName
-                    : app.info.packageName);
-            if (app.instrumentationClass != null) {
-                ensurePackageDexOpt(app.instrumentationClass.getPackageName());
-            }
-            if (DEBUG_CONFIGURATION) Slog.v(TAG, "Binding proc "
-                    + processName + " with config " + mConfiguration);
-            thread.bindApplication(processName, app.instrumentationInfo != null
-                    ? app.instrumentationInfo : app.info, providers,
-                    app.instrumentationClass, app.instrumentationProfileFile,
-                    app.instrumentationArguments, app.instrumentationWatcher, testMode, 
-                    isRestrictedBackupMode || !normalMode,
-                    mConfiguration, getCommonServicesLocked());
-            updateLruProcessLocked(app, false, true);
-            app.lastRequestedGc = app.lastLowMemory = SystemClock.uptimeMillis();
-        } catch (Exception e) {
-            // todo: Yikes!  What should we do?  For now we will try to
-            // start another process, but that could easily get us in
-            // an infinite loop of restarting processes...
-            Slog.w(TAG, "Exception thrown during bind!", e);
-
-            app.resetPackageList();
-            startProcessLocked(app, "bind fail", processName);
-            return false;
-        }
-
-        // Remove this record from the list of starting applications.
-        mPersistentStartingProcesses.remove(app);
-        if (DEBUG_PROCESSES && mProcessesOnHold.contains(app)) Slog.v(TAG,
-                "Attach application locked removing on hold: " + app);
-        mProcessesOnHold.remove(app);
-
-        boolean badApp = false;
-        boolean didSomething = false;
-
-        //ActivityManagerService优先处理在它里面启动或显示的Activity组件
-        // See if the top visible activity is waiting to run in this process...
-        ActivityRecord hr = mMainStack.topRunningActivityLocked(null);
-        if (hr != null && normalMode) {
-            if (hr.app == null && app.info.uid == hr.info.applicationInfo.uid
-                    && processName.equals(hr.processName)) {
-                try {
-                    if (mMainStack.realStartActivityLocked(hr, app, true, true)) {
-                        didSomething = true;
-                    }
-                } catch (Exception e) {
-                    Slog.w(TAG, "Exception in new application when starting activity "
-                          + hr.intent.getComponent().flattenToShortString(), e);
-                    badApp = true;
-                }
-            } else {
-                mMainStack.ensureActivitiesVisibleLocked(hr, null, processName, 0);
-            }
-        }
-
-        //然后再处理Service组件
+        //处理Service组件
         // Find any services that should be running in this process...
         if (!badApp && mPendingServices.size() > 0) {
             ServiceRecord sr = null;
@@ -587,55 +463,15 @@ public final class ActivityManagerService extends ActivityManagerNative
                 badApp = true;
             }
         }
-
-        // Check if the next broadcast receiver is in this process...
-        BroadcastRecord br = mPendingBroadcast;
-        if (!badApp && br != null && br.curApp == app) {
-            try {
-                mPendingBroadcast = null;
-                processCurBroadcastLocked(br, app);
-                didSomething = true;
-            } catch (Exception e) {
-                Slog.w(TAG, "Exception in new application when starting receiver "
-                      + br.curComponent.flattenToShortString(), e);
-                badApp = true;
-                logBroadcastReceiverDiscardLocked(br);
-                finishReceiverLocked(br.receiver, br.resultCode, br.resultData,
-                        br.resultExtras, br.resultAbort, true);
-                scheduleBroadcastsLocked();
-                // We need to reset the state if we fails to start the receiver.
-                br.state = BroadcastRecord.IDLE;
-            }
-        }
-
-        // Check whether the next backup agent is in this process...
-        if (!badApp && mBackupTarget != null && mBackupTarget.appInfo.uid == app.info.uid) {
-            if (DEBUG_BACKUP) Slog.v(TAG, "New app is backup target, launching agent for " + app);
-            ensurePackageDexOpt(mBackupTarget.appInfo.packageName);
-            try {
-                thread.scheduleCreateBackupAgent(mBackupTarget.appInfo, mBackupTarget.backupMode);
-            } catch (Exception e) {
-                Slog.w(TAG, "Exception scheduling backup agent creation: ");
-                e.printStackTrace();
-            }
-        }
-
-        if (badApp) {
-            // todo: Also need to kill application to deal with all
-            // kinds of exceptions.
-            handleAppDiedLocked(app, false);
-            return false;
-        }
-
-        if (!didSomething) {
-            updateOomAdjLocked();
-        }
-
-        return true;
+        ...
     }       
 }
 ```
+注：Activity组件、Service组件与BrocastReceiver组件启动都是由这个函数来处理的。
 
+该函数会检查保存在mPendingServices里的Service组件是否需要在新进程中启动，如果果需要在新进程中启动，则将其
+在mPendingServices移除，并调用realStartServiceLocked启动该Service组件。
+                                                                  
 #### 13 ActivityManagerService.realStartServiceLocked(ServiceRecord r, ProcessRecord app)
 
 ```java
@@ -646,6 +482,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 ProcessRecord app) throws RemoteException {
             ...
             
+            //将ProcessRecord对象app设置为ServiceRecord的成员变量app
             r.app = app;
             ...
             try {
@@ -661,75 +498,164 @@ public final class ActivityManagerService extends ActivityManagerNative
             ...     
 }
 ```
+该函数进一步调用ApplicationThreadProxy.scheduleCreateService()方法执行Service组件启动操作。
 
-#### 14 ActivityManagerService.attachApplicationLocked(IApplicationThread thread, int pid)
+#### 14 ActivityManagerService.scheduleCreateService(IBinder token, ServiceInfo info)
 
 ```java
-public final class ActivityManagerService extends ActivityManagerNative
-        implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
-        
+class ApplicationThreadProxy implements IApplicationThread {
+
+    public final void scheduleCreateService(IBinder token, ServiceInfo info)
+            throws RemoteException {
+        Parcel data = Parcel.obtain();
+        data.writeInterfaceToken(IApplicationThread.descriptor);
+        data.writeStrongBinder(token);
+        info.writeToParcel(data, 0);
+        mRemote.transact(SCHEDULE_CREATE_SERVICE_TRANSACTION, data, null,
+                IBinder.FLAG_ONEWAY);
+        data.recycle();
+    }
+
 }
 ```
-#### 
+该函数调用ApplicationThreadProxy内部的一个Binder对象向新创建的进程发送一个SCHEDULE_CREATE_SERVICE_TRANSACTION
+进程间通信请求，进一步在新进程中创建Service组件。
+
+#### 15 ActivityThread.cheduleCreateService(IBinder token, ServiceInfo info)
 
 ```java
+public final class ActivityThread {
+
+    public final void scheduleCreateService(IBinder token,
+            ServiceInfo info) {
+        CreateServiceData s = new CreateServiceData();
+        s.token = token;
+        s.info = info;
+
+        queueOrSendMessage(H.CREATE_SERVICE, s);
+    }
+
+}
 
 ```
 
+该方法将要启动的Service组件信息封装成一个CreateServiceData对象，然后传递给queueOrSendMessage方法。
 
-#### 
-
-```java
-
-```
-
-
-#### 
+#### 16 ActivityThread.queueOrSendMessage(int what, Object obj, int arg1, int arg2
 
 ```java
+public final class ActivityThread {
 
+     private final void queueOrSendMessage(int what, Object obj, int arg1, int arg2) {
+            synchronized (this) {
+                if (DEBUG_MESSAGES) Slog.v(
+                    TAG, "SCHEDULE " + what + " " + mH.codeToString(what)
+                    + ": " + arg1 + " / " + obj);
+                Message msg = Message.obtain();
+                msg.what = what;
+                msg.obj = obj;
+                msg.arg1 = arg1;
+                msg.arg2 = arg2;
+                mH.sendMessage(msg);
+            }
+        }
+}
 ```
+该方法发送一个CREATE_SERVICE消息来进一步创建Service组件。然后调用ActivityThread内部的Handler对象来处理消息。
 
-
-#### 
+#### 17 H.handleMessage(Message msg) 
 
 ```java
+private final class H extends Handler {
+public void handleMessage(Message msg) {
+            if (DEBUG_MESSAGES) Slog.v(TAG, ">>> handling: " + msg.what);
+            switch (msg.what) {
+                ...
+                case CREATE_SERVICE:
+                    handleCreateService((CreateServiceData)msg.obj);
+                    break;
+                ...
+              }
 
+}
 ```
+该方法进一步调用handleCreateService()来创建Service组件。
 
-#### 
+#### 18 ActivityThread.handleCreateService(CreateServiceData data)
 
 ```java
-
+public final class ActivityThread {
+    private final void handleCreateService(CreateServiceData data) {
+            // If we are getting ready to gc after going to the background, well
+            // we are back active so skip it.
+            unscheduleGcIdler();
+    
+            //获取一个用来描述即将要启动Service组件的所在应用的LoadedApk对象。并将它
+            //保存在变量packageInfo中。
+            LoadedApk packageInfo = getPackageInfoNoCheck(
+                    data.info.applicationInfo);
+            Service service = null;
+            try {
+                //获取类加载器，将Service组件加载到内存中，并创建它的一个实例。
+                java.lang.ClassLoader cl = packageInfo.getClassLoader();
+                service = (Service) cl.loadClass(data.info.name).newInstance();
+            } catch (Exception e) {
+                if (!mInstrumentation.onException(service, e)) {
+                    throw new RuntimeException(
+                        "Unable to instantiate service " + data.info.name
+                        + ": " + e.toString(), e);
+                }
+            }
+    
+            try {
+                if (localLOGV) Slog.v(TAG, "Creating service " + data.info.name);
+    
+                //创建一个Context对象，作为Service组件运行的上下文环境。
+                ContextImpl context = new ContextImpl();
+                context.init(packageInfo, null, this);
+    
+                //创建一个Application对象，用来描述Service组件所属的应用。
+                Application app = packageInfo.makeApplication(false, mInstrumentation);
+                context.setOuterContext(service);
+                //初始化Service组件
+                service.attach(context, this, data.info.name, data.token, app,
+                        ActivityManagerNative.getDefault());
+                //调用Service的onCreate()方法
+                service.onCreate();
+                //将新创建的Service组件保存到ActivityThread的成员变量mServices中，其中data.token
+                //指向的是ActivityManagerService内部的一个ServiceRecord对象。
+                mServices.put(data.token, service);
+                try {
+                    ActivityManagerNative.getDefault().serviceDoneExecuting(
+                            data.token, 0, 0, 0);
+                } catch (RemoteException e) {
+                    // nothing to do.
+                }
+            } catch (Exception e) {
+                if (!mInstrumentation.onException(service, e)) {
+                    throw new RuntimeException(
+                        "Unable to create service " + data.info.name
+                        + ": " + e.toString(), e);
+                }
+            }
+        }
+}
 ```
 
-#### 
-
-```java
+该方法真正执行了Service组件的创建以及初始化工作，它主要做了以下几件事情：
 
 ```
+1 获取初始化Service组件所必需的参数：
 
-#### 
+LoadedApk packageInfo：用来描述已经加载到进程中的应用，通过它可以访问到该应用里的资源。
+ContextImpl context：创建一个Context对象，作为Service组件运行的上下文环境。
+Application app：创建一个Application对象，用来描述Service组件所属的应用。
 
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
+2 获取类加载器，将Service组件加载到内存中，并创建它的一个实例。
+3 根据上面创建的参数进行Service组件的初始化。
+4 调用Service的onCreate()方法。
 
 ```
+#### 19 Service.onCreate()
 
-#### 
-
-```java
-
-```
-
+这个onCreate()方法就是我们使用Service组件所重写的方法了，用来自定义一些我需要的初始化操作。
