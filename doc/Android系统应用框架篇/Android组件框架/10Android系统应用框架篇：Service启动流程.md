@@ -281,8 +281,8 @@ public final class ActivityManagerService extends ActivityManagerNative
 该函数主要做了两件事情：
 
 ```
-1 获取ServiceRecord里的processName属性，然后根据processName属性与Service组件的用户ID去查找ActivityManagerService是否已经存在
-一个ProcessRecord对象。
+1 获取ServiceRecord里的processName属性，然后根据processName属性与Service组件的用户ID去查找ActivityManagerService
+是否已经存在一个ProcessRecord对象。
 
 如果存在：则在app所描述的应用进程中启动该Service组件
 如果不存在：则会去启动一个新的应用进程。
