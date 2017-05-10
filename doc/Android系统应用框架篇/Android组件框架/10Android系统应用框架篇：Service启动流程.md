@@ -26,12 +26,12 @@
 以继续执行启动Service组件的的操作。
 4 ActivityManagerService将第2步保存的Service组件信息发送给新床架的应用进程，以便它可以将Service组件启动起来。
 ```
-### 1 Activity.startService(Intent service)
+#### 1 Activity.startService(Intent service)
 
 当我们在Activity里调用startService(Intent service)方法时，它实际上在调用ContextWrapper.startService(Intent service)。
 
 
-### 2 ContextWrapper.startService(Intent service)
+#### 2 ContextWrapper.startService(Intent service)
 
 ```java
 public class ContextWrapper{
@@ -45,7 +45,7 @@ public class ContextWrapper{
 mBase的对象类型是Context，它实际上指向了Context的实现类ContextImpl，所以该方法进一步调用ContextImpl.startService.
 
 
-### 3 ContextImpl.startService(Intent service)
+#### 3 ContextImpl.startService(Intent service)
 
 ```java
 public class ContextImpl{
@@ -77,7 +77,7 @@ service.resolveTypeIfNeeded(getContentResolver())：返回Intent的MIME类型。
 ```
 该方法进一步调用即ActivityManagerProxy.startService(IApplicationThread caller, Intent service, String resolvedType) 
 
-### 4 ActivityManagerProxy.startService(IApplicationThread caller, Intent service, String resolvedType) 
+#### 4 ActivityManagerProxy.startService(IApplicationThread caller, Intent service, String resolvedType) 
 
 ```java
 public abstract class ActivityManagerNative extends Binder implements IActivityManager{
@@ -106,7 +106,7 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
 将传递金磊的参数封装成Parcel对象，然后利用ActivityManagerProxy内部的Binder对象mRemote向ActivityManagerService发送一个START_SERVICE_TRANSACTION进程间通信请求。
 该函数进一步调用ActivityManagerService.startService(IApplicationThread caller, Intent service, String resolvedType)来处理这个请求。
 
-### 5 ActivityManagerService.startService(IApplicationThread caller, Intent service, String resolvedType)
+#### 5 ActivityManagerService.startService(IApplicationThread caller, Intent service, String resolvedType)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -134,7 +134,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
 这个函数的参数的含义上面第2步已经介绍过，它进一步调用ActivityManagerService.startServiceLocked()方法执行启动Service组件的操作。
 
-### 6 ActivityManagerService
+#### 6 ActivityManagerService.startServiceLocked(IApplicationThread caller, Intent service, String resolvedType, int callingPid, int callingUid)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -209,7 +209,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 ```
 我们来看ActivityManagerService.bringUpServiceLocked()方法的实现。
 
-### 
+### 7 ActivityManagerService.bringUpServiceLocked(ServiceRecord r, int intentFlags, boolean whileRestarting)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -290,14 +290,232 @@ public final class ActivityManagerService extends ActivityManagerNative
 2 将该Service组件对象保存在ActivityManagerService的成员变量mPendingService中，表示它是一个正在等待启动的Service组件。
 ```
 
-### 
+我们分析的是在新进程创建Service组件的情况，因此我们接着来看ActivityManagerService.startProcessLocked()的实现。
+
+### 8 ActivityManagerService.
 
 ```java
+public final class ActivityManagerService extends ActivityManagerNative
+        implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
+
+    final ProcessRecord startProcessLocked(String processName,
+            ApplicationInfo info, boolean knownToBeDead, int intentFlags,
+            String hostingType, ComponentName hostingName, boolean allowWhileBooting) {
+        ProcessRecord app = getProcessRecordLocked(processName, info.uid);
+        // We don't have to do anything more if:
+        // (1) There is an existing application record; and
+        // (2) The caller doesn't think it is dead, OR there is no thread
+        //     object attached to it so we know it couldn't have crashed; and
+        // (3) There is a pid assigned to it, so it is either starting or
+        //     already running.
+        if (DEBUG_PROCESSES) Slog.v(TAG, "startProcess: name=" + processName
+                + " app=" + app + " knownToBeDead=" + knownToBeDead
+                + " thread=" + (app != null ? app.thread : null)
+                + " pid=" + (app != null ? app.pid : -1));
+        if (app != null && app.pid > 0) {
+            if (!knownToBeDead || app.thread == null) {
+                // We already have the app running, or are waiting for it to
+                // come up (we have a pid but not yet its thread), so keep it.
+                if (DEBUG_PROCESSES) Slog.v(TAG, "App already running: " + app);
+                return app;
+            } else {
+                // An application record is attached to a previous process,
+                // clean it up now.
+                if (DEBUG_PROCESSES) Slog.v(TAG, "App died: " + app);
+                handleAppDiedLocked(app, true);
+            }
+        }
+
+        String hostingNameStr = hostingName != null
+                ? hostingName.flattenToShortString() : null;
+        
+        if ((intentFlags&Intent.FLAG_FROM_BACKGROUND) != 0) {
+            // If we are in the background, then check to see if this process
+            // is bad.  If so, we will just silently fail.
+            if (mBadProcesses.get(info.processName, info.uid) != null) {
+                if (DEBUG_PROCESSES) Slog.v(TAG, "Bad process: " + info.uid
+                        + "/" + info.processName);
+                return null;
+            }
+        } else {
+            // When the user is explicitly starting a process, then clear its
+            // crash count so that we won't make it bad until they see at
+            // least one crash dialog again, and make the process good again
+            // if it had been bad.
+            if (DEBUG_PROCESSES) Slog.v(TAG, "Clearing bad process: " + info.uid
+                    + "/" + info.processName);
+            mProcessCrashTimes.remove(info.processName, info.uid);
+            if (mBadProcesses.get(info.processName, info.uid) != null) {
+                EventLog.writeEvent(EventLogTags.AM_PROC_GOOD, info.uid,
+                        info.processName);
+                mBadProcesses.remove(info.processName, info.uid);
+                if (app != null) {
+                    app.bad = false;
+                }
+            }
+        }
+        
+        if (app == null) {
+            app = newProcessRecordLocked(null, info, processName);
+            mProcessNames.put(processName, info.uid, app);
+        } else {
+            // If this is a new package in the process, add the package to the list
+            app.addPackage(info.packageName);
+        }
+
+        // If the system is not ready yet, then hold off on starting this
+        // process until it is.
+        if (!mProcessesReady
+                && !isAllowedWhileBooting(info)
+                && !allowWhileBooting) {
+            if (!mProcessesOnHold.contains(app)) {
+                mProcessesOnHold.add(app);
+            }
+            if (DEBUG_PROCESSES) Slog.v(TAG, "System not ready, putting on hold: " + app);
+            return app;
+        }
+
+        startProcessLocked(app, hostingType, hostingNameStr);
+        return (app.pid != 0) ? app : null;
+    }
+
+    boolean isAllowedWhileBooting(ApplicationInfo ai) {
+        return (ai.flags&ApplicationInfo.FLAG_PERSISTENT) != 0;
+    }
+    
+    private final void startProcessLocked(ProcessRecord app,
+            String hostingType, String hostingNameStr) {
+        if (app.pid > 0 && app.pid != MY_PID) {
+            synchronized (mPidsSelfLocked) {
+                mPidsSelfLocked.remove(app.pid);
+                mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
+            }
+            app.pid = 0;
+        }
+
+        if (DEBUG_PROCESSES && mProcessesOnHold.contains(app)) Slog.v(TAG,
+                "startProcessLocked removing on hold: " + app);
+        mProcessesOnHold.remove(app);
+
+        updateCpuStats();
+        
+        System.arraycopy(mProcDeaths, 0, mProcDeaths, 1, mProcDeaths.length-1);
+        mProcDeaths[0] = 0;
+        
+        try {
+            int uid = app.info.uid;
+            int[] gids = null;
+            try {
+                gids = mContext.getPackageManager().getPackageGids(
+                        app.info.packageName);
+            } catch (PackageManager.NameNotFoundException e) {
+                Slog.w(TAG, "Unable to retrieve gids", e);
+            }
+            if (mFactoryTest != SystemServer.FACTORY_TEST_OFF) {
+                if (mFactoryTest == SystemServer.FACTORY_TEST_LOW_LEVEL
+                        && mTopComponent != null
+                        && app.processName.equals(mTopComponent.getPackageName())) {
+                    uid = 0;
+                }
+                if (mFactoryTest == SystemServer.FACTORY_TEST_HIGH_LEVEL
+                        && (app.info.flags&ApplicationInfo.FLAG_FACTORY_TEST) != 0) {
+                    uid = 0;
+                }
+            }
+            int debugFlags = 0;
+            if ((app.info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+                debugFlags |= Zygote.DEBUG_ENABLE_DEBUGGER;
+            }
+            // Run the app in safe mode if its manifest requests so or the
+            // system is booted in safe mode.
+            if ((app.info.flags & ApplicationInfo.FLAG_VM_SAFE_MODE) != 0 ||
+                Zygote.systemInSafeMode == true) {
+                debugFlags |= Zygote.DEBUG_ENABLE_SAFEMODE;
+            }
+            if ("1".equals(SystemProperties.get("debug.checkjni"))) {
+                debugFlags |= Zygote.DEBUG_ENABLE_CHECKJNI;
+            }
+            if ("1".equals(SystemProperties.get("debug.assert"))) {
+                debugFlags |= Zygote.DEBUG_ENABLE_ASSERT;
+            }
+            int pid = Process.start("android.app.ActivityThread",
+                    mSimpleProcessManagement ? app.processName : null, uid, uid,
+                    gids, debugFlags, null);
+            BatteryStatsImpl bs = app.batteryStats.getBatteryStats();
+            synchronized (bs) {
+                if (bs.isOnBattery()) {
+                    app.batteryStats.incStartsLocked();
+                }
+            }
+            
+            EventLog.writeEvent(EventLogTags.AM_PROC_START, pid, uid,
+                    app.processName, hostingType,
+                    hostingNameStr != null ? hostingNameStr : "");
+            
+            if (app.persistent) {
+                Watchdog.getInstance().processStarted(app.processName, pid);
+            }
+            
+            StringBuilder buf = mStringBuilder;
+            buf.setLength(0);
+            buf.append("Start proc ");
+            buf.append(app.processName);
+            buf.append(" for ");
+            buf.append(hostingType);
+            if (hostingNameStr != null) {
+                buf.append(" ");
+                buf.append(hostingNameStr);
+            }
+            buf.append(": pid=");
+            buf.append(pid);
+            buf.append(" uid=");
+            buf.append(uid);
+            buf.append(" gids={");
+            if (gids != null) {
+                for (int gi=0; gi<gids.length; gi++) {
+                    if (gi != 0) buf.append(", ");
+                    buf.append(gids[gi]);
+
+                }
+            }
+            buf.append("}");
+            Slog.i(TAG, buf.toString());
+            if (pid == 0 || pid == MY_PID) {
+                // Processes are being emulated with threads.
+                app.pid = MY_PID;
+                app.removed = false;
+                mStartingProcesses.add(app);
+            } else if (pid > 0) {
+                app.pid = pid;
+                app.removed = false;
+                synchronized (mPidsSelfLocked) {
+                    this.mPidsSelfLocked.put(pid, app);
+                    Message msg = mHandler.obtainMessage(PROC_START_TIMEOUT_MSG);
+                    msg.obj = app;
+                    mHandler.sendMessageDelayed(msg, PROC_START_TIMEOUT);
+                }
+            } else {
+                app.pid = 0;
+                RuntimeException e = new RuntimeException(
+                        "Failure starting process " + app.processName
+                        + ": returned pid=" + pid);
+                Slog.e(TAG, e.getMessage(), e);
+            }
+        } catch (RuntimeException e) {
+            // XXX do better error recovery.
+            app.pid = 0;
+            Slog.e(TAG, "Failure starting process " + app.processName, e);
+        }
+    }        
+}
 ```
 
+从这个函数开始就开始创建新的应用进程了，
+
 ### 
 
 ```java
+
 ```
 
 
