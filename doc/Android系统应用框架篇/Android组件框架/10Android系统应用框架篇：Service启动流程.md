@@ -236,10 +236,14 @@ public final class ActivityManagerService extends ActivityManagerNative
         // restarting state.
         mRestartingServices.remove(r);
         
+        //获取ServiceRecord里的processName属性
         final String appName = r.processName;
+        //然后根据processName属性与Service组件的用户ID去查找ActivityManagerService是否已经存在
+        //一个ProcessRecord对象。
         ProcessRecord app = getProcessRecordLocked(appName, r.appInfo.uid);
         if (app != null && app.thread != null) {
             try {
+                //如果存在该ProcessRecord对象则在app所描述的应用进程中启动该Service组件
                 realStartServiceLocked(r, app);
                 return true;
             } catch (RemoteException e) {
@@ -250,6 +254,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             // restart the application.
         }
 
+        //如果没有查找到该进程，则会去启动一个新的应用进程。
         // Not running -- get it started, and enqueue this service record
         // to be executed when the app comes up.
         if (startProcessLocked(appName, r.appInfo, true, intentFlags,
@@ -263,6 +268,8 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
         
         if (!mPendingServices.contains(r)) {
+            //将该Service组件对象保存在ActivityManagerService的成员变量mPendingService中，表示它是一个
+            //正在等待启动的Service组件。
             mPendingServices.add(r);
         }
         
@@ -271,6 +278,17 @@ public final class ActivityManagerService extends ActivityManagerNative
 }
 ```
 
+该函数主要做了两件事情：
+
+```
+1 获取ServiceRecord里的processName属性，然后根据processName属性与Service组件的用户ID去查找ActivityManagerService是否已经存在
+一个ProcessRecord对象。
+
+如果存在：则在app所描述的应用进程中启动该Service组件
+如果不存在：则会去启动一个新的应用进程。
+
+2 将该Service组件对象保存在ActivityManagerService的成员变量mPendingService中，表示它是一个正在等待启动的Service组件。
+```
 
 ### 
 
