@@ -22,4 +22,6 @@
 
 **ActivityManagerService类图**
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.svg"/>
+[点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.svg)
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.png"/>
