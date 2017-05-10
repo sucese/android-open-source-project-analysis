@@ -17,3 +17,9 @@
 
 
 本篇文章我们正式来分析ActivityManagerService的实现
+
+>ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，
+
+**ActivityManagerService类图**
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.png"/>

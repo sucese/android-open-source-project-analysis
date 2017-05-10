@@ -79,6 +79,10 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - 16Android系统应用框架篇：Content Provider启动流程
 - 17Android系统应用框架篇：Content Provider共享原理
 - 18Android系统应用框架篇：Content Provider更新机制
+- 19Android系统应用框架篇：Context
+- [20Android系统应用框架篇：ActivityManagerService](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/20Android系统应用框架篇：ActivityManagerService.md)
+- 21Android系统应用框架篇：ActivityThread
+- 22Android系统应用框架篇：ApplicationThread
 
 ## Android系统底层框架篇
 
