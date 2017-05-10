@@ -1,0 +1,555 @@
+<?xml version="1.0"?>
+<svg width="1400" height="6616" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <polygon points="4,6613 4,4 1397,4 1397,6613 4,6613" stroke="#ffffff" fill="#ffffff"/>
+ <polygon points="3,6611 3,803 1397,803 1397,6611 3,6611" stroke="#ff0000" fill="#ffffff"/>
+ <polyline points="3,823 1397,823" stroke="#ff0000" fill="none"/>
+ <polyline points="3,3267 1397,3267" stroke="#ff0000" fill="none"/>
+ <text x="596" y="817" fill="#000000" font-family="Arial" font-size="10">com.android.server.am.ActivityManagerService</text>
+ <text x="12" y="837" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.GL_ES_VERSION: int</text>
+ <text x="12" y="849" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mAdjSeq: int</text>
+ <text x="12" y="861" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mAlwaysFinishActivities: boolean= false</text>
+ <text x="12" y="873" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mAppBindArgs: HashMap&lt;String,IBinder&gt;</text>
+ <text x="12" y="885" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mAppSwitchesAllowedTime: long</text>
+ <text x="12" y="897" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBackupAppName: String= null</text>
+ <text x="12" y="909" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBackupTarget: BackupRecord= null</text>
+ <text x="12" y="921" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBadProcesses: ProcessMap&lt;Long&gt;= ProcessMap()</text>
+ <text x="12" y="933" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBatteryStatsService: BatteryStatsService</text>
+ <text x="12" y="945" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBooted: boolean= false</text>
+ <text x="12" y="957" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBooting: boolean= false</text>
+ <text x="12" y="969" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBroadcastHistory: BroadcastRecord[]= BroadcastRecord[MAX_BROADCAST_HISTORY]</text>
+ <text x="12" y="981" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mBroadcastsScheduled: boolean= false</text>
+ <text x="12" y="993" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mCancelledThumbnails: ArrayList= ArrayList()</text>
+ <text x="12" y="1005" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mCheckedForSetup: boolean</text>
+ <text x="12" y="1017" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mConfiguration: Configuration= Configuration()</text>
+ <text x="12" y="1029" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mConfigurationSeq: int</text>
+ <text x="12" y="1041" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mContext: Context</text>
+ <text x="12" y="1053" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mController: IActivityController= null</text>
+ <text x="12" y="1065" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mCurTask: int= 1</text>
+ <text x="12" y="1077" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mDebugApp: String= null</text>
+ <text x="12" y="1089" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mDebugTransient: boolean= false</text>
+ <text x="12" y="1101" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mDidAppSwitch: boolean</text>
+ <text x="12" y="1113" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mDidDexOpt: boolean</text>
+ <text x="12" y="1125" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mDidUpdate: boolean= false</text>
+ <text x="12" y="1137" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mFactoryTest: int</text>
+ <text x="12" y="1149" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mFocusedActivity: ActivityRecord= null</text>
+ <text x="12" y="1161" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mForegroundProcesses: SparseArray&lt;ForegroundToken&gt;= SparseArray()</text>
+ <text x="12" y="1173" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mHandler: Handler</text>
+ <text x="12" y="1185" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mHeavyWeightProcess: ProcessRecord= null</text>
+ <text x="12" y="1197" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mHomeProcess: ProcessRecord</text>
+ <text x="12" y="1209" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mIntentSenderRecords: HashMap&lt;PendingIntentRecord.Key,WeakReference&gt;= HashMap()</text>
+ <text x="12" y="1221" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLastCpuTime: AtomicLong= AtomicLong(0)</text>
+ <text x="12" y="1233" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLastPowerCheckRealtime: long</text>
+ <text x="12" y="1245" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLastPowerCheckUptime: long</text>
+ <text x="12" y="1257" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLastWriteTime: long</text>
+ <text x="12" y="1269" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLaunchWarningShown: boolean= false</text>
+ <text x="12" y="1281" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLaunchingProviders: ArrayList&lt;ContentProviderRecord&gt;= ArrayList()</text>
+ <text x="12" y="1293" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLruProcesses: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1305" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mLruSeq: int</text>
+ <text x="12" y="1317" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mOnBattery: boolean= false</text>
+ <text x="12" y="1329" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mOrderedBroadcasts: ArrayList&lt;BroadcastRecord&gt;= ArrayList()</text>
+ <text x="12" y="1341" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mOrigDebugApp: String= null</text>
+ <text x="12" y="1353" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mOrigWaitForDebugger: boolean= false</text>
+ <text x="12" y="1365" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mParallelBroadcasts: ArrayList&lt;BroadcastRecord&gt;= ArrayList()</text>
+ <text x="12" y="1377" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingActivityLaunches: ArrayList&lt;PendingActivityLaunch&gt;= ArrayList()</text>
+ <text x="12" y="1389" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingBroadcast: BroadcastRecord= null</text>
+ <text x="12" y="1401" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingBroadcastRecvIndex: int</text>
+ <text x="12" y="1413" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingResultRecords: HashSet= HashSet()</text>
+ <text x="12" y="1425" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingServices: ArrayList&lt;ServiceRecord&gt;= ArrayList()</text>
+ <text x="12" y="1437" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPendingThumbnails: ArrayList= ArrayList()</text>
+ <text x="12" y="1449" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPersistentStartingProcesses: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1461" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mPidsSelfLocked: SparseArray&lt;ProcessRecord&gt;= SparseArray()</text>
+ <text x="12" y="1473" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcDeaths: int[]= int[20]</text>
+ <text x="12" y="1485" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessCrashTimes: ProcessMap&lt;Long&gt;= ProcessMap()</text>
+ <text x="12" y="1497" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessLimit: int</text>
+ <text x="12" y="1509" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessNames: ProcessMap&lt;ProcessRecord&gt;= ProcessMap()</text>
+ <text x="12" y="1521" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessStats: ProcessStats= ProcessStats(MONITOR_THREAD_CPU_USAGE)</text>
+ <text x="12" y="1533" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessStatsMutexFree: AtomicBoolean= AtomicBoolean(true)</text>
+ <text x="12" y="1545" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessStatsThread: Thread</text>
+ <text x="12" y="1557" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessesOnHold: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1569" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessesReady: boolean= false</text>
+ <text x="12" y="1581" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProcessesToGc: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1593" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProvidersByClass: HashMap&lt;String,ContentProviderRecord&gt;= HashMap()</text>
+ <text x="12" y="1605" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mProvidersByName: HashMap&lt;String,ContentProviderRecord&gt;= HashMap()</text>
+ <text x="12" y="1617" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mReceiverResolver: IntentResolver&lt;BroadcastFilter,BroadcastFilter&gt;</text>
+ <text x="12" y="1629" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRecentTasks: ArrayList&lt;TaskRecord&gt;= ArrayList()</text>
+ <text x="12" y="1641" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRegisteredReceivers: HashMap= HashMap()</text>
+ <text x="12" y="1653" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRemovedProcesses: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1665" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRequestPssCallback: Runnable</text>
+ <text x="12" y="1677" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRequestPssList: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1689" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mRestartingServices: ArrayList&lt;ServiceRecord&gt;= ArrayList()</text>
+ <text x="12" y="1701" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mServiceConnections: HashMap&lt;IBinder,ArrayList&gt;= HashMap()</text>
+ <text x="12" y="1713" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mServices: HashMap&lt;ComponentName,ServiceRecord&gt;= HashMap()</text>
+ <text x="12" y="1725" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mServicesByIntent: HashMap&lt;Intent.FilterComparison,ServiceRecord&gt;= HashMap()</text>
+ <text x="12" y="1737" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mShuttingDown: boolean= false</text>
+ <text x="12" y="1749" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mSimpleProcessManagement: boolean= false</text>
+ <text x="12" y="1761" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mSleeping: boolean= false</text>
+ <text x="12" y="1773" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mStartRunning: boolean= false</text>
+ <text x="12" y="1785" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mStartingProcesses: ArrayList&lt;ProcessRecord&gt;= ArrayList()</text>
+ <text x="12" y="1797" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mStickyBroadcasts: HashMap&lt;String,ArrayList&gt;= HashMap()</text>
+ <text x="12" y="1809" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mStoppingServices: ArrayList&lt;ServiceRecord&gt;= ArrayList()</text>
+ <text x="12" y="1821" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mStringBuilder: StringBuilder= StringBuilder(256)</text>
+ <text x="12" y="1833" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mSystemReady: boolean= false</text>
+ <text x="12" y="1845" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mTopAction: String</text>
+ <text x="12" y="1857" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mTopComponent: ComponentName</text>
+ <text x="12" y="1869" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mTopData: String</text>
+ <text x="12" y="1881" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mUidAlert: AlertDialog</text>
+ <text x="12" y="1893" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mUsageStatsService: UsageStatsService</text>
+ <text x="12" y="1905" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mWaitForDebugger: boolean= false</text>
+ <text x="12" y="1917" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mWaitingUpdate: boolean= false</text>
+ <text x="12" y="1929" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mWatchers: RemoteCallbackList&lt;IActivityWatcher&gt;= RemoteCallbackList()</text>
+ <text x="12" y="1941" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mWindowManager: WindowManagerService</text>
+ <text x="12" y="1953" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.APP_SWITCH_DELAY_TIME: long= 5000</text>
+ <text x="12" y="1965" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BACKUP_APP_ADJ: int</text>
+ <text x="12" y="1977" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BACKUP_APP_MEM: int</text>
+ <text x="12" y="1989" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BATTERY_STATS_TIME: long= 1800000</text>
+ <text x="12" y="2001" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BROADCAST_INTENT_MSG: int= 7</text>
+ <text x="12" y="2013" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BROADCAST_TIMEOUT: int= 10000</text>
+ <text x="12" y="2025" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.BROADCAST_TIMEOUT_MSG: int= 8</text>
+ <text x="12" y="2037" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.CANCEL_HEAVY_NOTIFICATION_MSG: int= 25</text>
+ <text x="12" y="2049" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.CHECK_EXCESSIVE_WAKE_LOCKS_MSG: int= 27</text>
+ <text x="12" y="2061" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.CONTENT_APP_IDLE_OFFSET: long= 15000</text>
+ <text x="12" y="2073" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.CORE_SERVER_ADJ: int= -12</text>
+ <text x="12" y="2085" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.CPU_MIN_CHECK_DURATION: int= (DEBUG_POWER_QUICK ? 1 : 5) * 60 * 1000</text>
+ <text x="12" y="2097" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG: boolean= false</text>
+ <text x="12" y="2109" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_BACKUP: boolean= localLOGV || false</text>
+ <text x="12" y="2121" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_BROADCAST: boolean= localLOGV || false</text>
+ <text x="12" y="2133" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_BROADCAST_LIGHT: boolean= DEBUG_BROADCAST || false</text>
+ <text x="12" y="2145" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_CONFIGURATION: boolean= localLOGV || false</text>
+ <text x="12" y="2157" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_OOM_ADJ: boolean= localLOGV || false</text>
+ <text x="12" y="2169" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_PAUSE: boolean= localLOGV || false</text>
+ <text x="12" y="2181" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_POWER: boolean= localLOGV || false</text>
+ <text x="12" y="2193" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_POWER_QUICK: boolean= DEBUG_POWER || false</text>
+ <text x="12" y="2205" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_PROCESSES: boolean= localLOGV || false</text>
+ <text x="12" y="2217" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_PROVIDER: boolean= localLOGV || false</text>
+ <text x="12" y="2229" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_RESULTS: boolean= localLOGV || false</text>
+ <text x="12" y="2241" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_SERVICE: boolean= localLOGV || false</text>
+ <text x="12" y="2253" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_SERVICE_EXECUTING: boolean= localLOGV || false</text>
+ <text x="12" y="2265" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_SWITCH: boolean= localLOGV || false</text>
+ <text x="12" y="2277" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_TASKS: boolean= localLOGV || false</text>
+ <text x="12" y="2289" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_TRANSITION: boolean= localLOGV || false</text>
+ <text x="12" y="2301" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_URI_PERMISSION: boolean= localLOGV || false</text>
+ <text x="12" y="2313" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_USER_LEAVING: boolean= localLOGV || false</text>
+ <text x="12" y="2325" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DEBUG_VISBILITY: boolean= localLOGV || false</text>
+ <text x="12" y="2337" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.DO_PENDING_ACTIVITY_LAUNCHES_MSG: int= 21</text>
+ <text x="12" y="2349" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.EMPTY_APP_ADJ: int</text>
+ <text x="12" y="2361" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.EMPTY_APP_IDLE_OFFSET: long= 120000</text>
+ <text x="12" y="2373" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.EMPTY_APP_MEM: int</text>
+ <text x="12" y="2385" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.EMPTY_STRING_ARRAY: String[]= String[0]</text>
+ <text x="12" y="2397" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.ENFORCE_PROCESS_LIMIT: boolean= false</text>
+ <text x="12" y="2409" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.FINALIZE_PENDING_INTENT_MSG: int= 23</text>
+ <text x="12" y="2421" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.FOREGROUND_APP_ADJ: int</text>
+ <text x="12" y="2433" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.FOREGROUND_APP_MEM: int</text>
+ <text x="12" y="2445" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.GC_BACKGROUND_PROCESSES_MSG: int= 5</text>
+ <text x="12" y="2457" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.GC_MIN_INTERVAL: int= 60000</text>
+ <text x="12" y="2469" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.GC_TIMEOUT: int= 5000</text>
+ <text x="12" y="2481" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HEAVY_WEIGHT_APP_ADJ: int</text>
+ <text x="12" y="2493" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HEAVY_WEIGHT_APP_MEM: int</text>
+ <text x="12" y="2505" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HIDDEN_APP_MAX_ADJ: int</text>
+ <text x="12" y="2517" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HIDDEN_APP_MEM: int</text>
+ <text x="12" y="2529" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HIDDEN_APP_MIN_ADJ: int</text>
+ <text x="12" y="2541" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HOME_APP_ADJ: int</text>
+ <text x="12" y="2553" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.HOME_APP_MEM: int</text>
+ <text x="12" y="2565" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.IM_FEELING_LUCKY_MSG: int= 15</text>
+ <text x="12" y="2577" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.INSTRUMENTATION_KEY_DISPATCHING_TIMEOUT: int= 60000</text>
+ <text x="12" y="2589" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.KEY_DISPATCHING_TIMEOUT: int= 5000</text>
+ <text x="12" y="2601" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.KILL_APPLICATION_MSG: int= 22</text>
+ <text x="12" y="2613" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_ACTIVITIES: int= 20</text>
+ <text x="12" y="2625" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_BROADCAST_HISTORY: int= 100</text>
+ <text x="12" y="2637" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_HIDDEN_APPS: int= 15</text>
+ <text x="12" y="2649" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_PROCESSES: int= 2</text>
+ <text x="12" y="2661" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_RECENT_TASKS: int= 20</text>
+ <text x="12" y="2673" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MAX_SERVICE_INACTIVITY: int= 1800000</text>
+ <text x="12" y="2685" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MIN_CRASH_INTERVAL: int= 60000</text>
+ <text x="12" y="2697" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MIN_HIDDEN_APPS: int= 2</text>
+ <text x="12" y="2709" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MONITOR_CPU_MAX_TIME: long= 0x0fffffff</text>
+ <text x="12" y="2721" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MONITOR_CPU_MIN_TIME: long= 5000</text>
+ <text x="12" y="2733" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MONITOR_CPU_USAGE: boolean= true</text>
+ <text x="12" y="2745" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MONITOR_THREAD_CPU_USAGE: boolean= false</text>
+ <text x="12" y="2757" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.MY_PID: int= Process.myPid</text>
+ <text x="12" y="2769" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.PAGE_SIZE: int= 4096</text>
+ <text x="12" y="2781" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.PERCEPTIBLE_APP_ADJ: int</text>
+ <text x="12" y="2793" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.PERCEPTIBLE_APP_MEM: int</text>
+ <text x="12" y="2805" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.POST_HEAVY_NOTIFICATION_MSG: int= 24</text>
+ <text x="12" y="2817" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.POWER_CHECK_DELAY: int= (DEBUG_POWER_QUICK ? 2 : 15) * 60 * 1000</text>
+ <text x="12" y="2829" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.PROC_START_TIMEOUT: int= 10000</text>
+ <text x="12" y="2841" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.PROC_START_TIMEOUT_MSG: int= 20</text>
+ <text x="12" y="2853" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SECONDARY_SERVER_ADJ: int</text>
+ <text x="12" y="2865" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SECONDARY_SERVER_MEM: int</text>
+ <text x="12" y="2877" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_MIN_RESTART_TIME_BETWEEN: int= 10000</text>
+ <text x="12" y="2889" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_RESET_RUN_DURATION: int= 60000</text>
+ <text x="12" y="2901" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_RESTART_DURATION: int= 5000</text>
+ <text x="12" y="2913" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_RESTART_DURATION_FACTOR: int= 4</text>
+ <text x="12" y="2925" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_TIMEOUT: int= 20000</text>
+ <text x="12" y="2937" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SERVICE_TIMEOUT_MSG: int= 12</text>
+ <text x="12" y="2949" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_ACTIVITY_START_TIME: boolean= true</text>
+ <text x="12" y="2961" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_ERROR_MSG: int= 1</text>
+ <text x="12" y="2973" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_FACTORY_ERROR_MSG: int= 3</text>
+ <text x="12" y="2985" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_NOT_RESPONDING_MSG: int= 2</text>
+ <text x="12" y="2997" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_STRICT_MODE_VIOLATION_MSG: int= 26</text>
+ <text x="12" y="3009" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SHOW_UID_ERROR_MSG: int= 14</text>
+ <text x="12" y="3021" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.STOCK_PM_FLAGS: int= PackageManager.GET_SHARED_LIBRARY_FILES</text>
+ <text x="12" y="3033" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.SYSTEM_ADJ: int= -16</text>
+ <text x="12" y="3045" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.TAG: String= &quot;ActivityManager&quot;</text>
+ <text x="12" y="3057" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.UPDATE_CONFIGURATION_MSG: int= 4</text>
+ <text x="12" y="3069" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.UPDATE_TIME_ZONE: int= 13</text>
+ <text x="12" y="3081" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.VALIDATE_TOKENS: boolean= false</text>
+ <text x="12" y="3093" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.VISIBLE_APP_ADJ: int</text>
+ <text x="12" y="3105" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.VISIBLE_APP_MEM: int</text>
+ <text x="12" y="3117" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.WAIT_FOR_DEBUGGER_MSG: int= 6</text>
+ <text x="12" y="3129" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.WAKE_LOCK_MIN_CHECK_DURATION: int= (DEBUG_POWER_QUICK ? 1 : 5) * 60 * 1000</text>
+ <text x="12" y="3141" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.localLOGV: boolean= DEBUG ? Config.LOGD : Config.LOGV</text>
+ <text x="12" y="3153" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mSelf: ActivityManagerService</text>
+ <text x="12" y="3165" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mSystemThread: ActivityThread</text>
+ <text x="12" y="3177" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.mMainStack: ActivityStack</text>
+ <text x="12" y="3189" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.mAlreadyLoggedViolatedStacks: HashSet&lt;Integer&gt;= HashSet()</text>
+ <text x="12" y="3201" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.mGrantedUriPermissions: SparseArray&lt;HashMap&gt;= SparseArray()</text>
+ <text x="12" y="3213" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.mPendingBroadcastTimeoutMessage: boolean</text>
+ <text x="12" y="3225" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.mStrictModeBuffer: StringBuilder= StringBuilder()</text>
+ <text x="12" y="3237" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.MAX_DUP_SUPPRESSED_STACKS: int= 5000</text>
+ <text x="12" y="3249" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.SYSTEM_SECURE: String= &quot;ro.secure&quot;</text>
+ <text x="12" y="3261" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.sCallerIdentity: ThreadLocal&lt;Identity&gt;= ThreadLocal()</text>
+ <text x="12" y="3281" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpApplicationMemoryUsage (fd: FileDescriptor , pw: PrintWriter , list: List , prefix: String , args: String[] ) void</text>
+ <text x="12" y="3293" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getIntProp (name: String , allowZero: boolean ) int</text>
+ <text x="12" y="3305" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.performReceiveLocked (app: ProcessRecord , receiver: IIntentReceiver , intent: Intent , resultCode: int , data: String , extras: Bundle , ordered: boolean , sticky: boolean ) void</text>
+ <text x="12" y="3317" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpStackTraces (clearTraces: boolean , firstPids: ArrayList&lt;Integer&gt; , processStats: ProcessStats , lastPids: SparseArray&lt;Boolean&gt; ) File</text>
+ <text x="12" y="3329" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.installSystemProviders () void</text>
+ <text x="12" y="3341" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.main (factoryTest: int ) Context</text>
+ <text x="12" y="3353" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.self () ActivityManagerService</text>
+ <text x="12" y="3365" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setSystemProcess () void</text>
+ <text x="12" y="3377" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityDestroyed (token: IBinder ) void</text>
+ <text x="12" y="3389" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityIdle (token: IBinder , config: Configuration ) void</text>
+ <text x="12" y="3401" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityPaused (token: IBinder , icicle: Bundle ) void</text>
+ <text x="12" y="3413" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityStopped (token: IBinder , thumbnail: Bitmap , description: CharSequence ) void</text>
+ <text x="12" y="3425" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addErrorToDropBox (eventType: String , process: ProcessRecord , activity: ActivityRecord , parent: ActivityRecord , subject: String , report: String , logFile: File , crashInfo: ApplicationErrorReport.CrashInfo ) void</text>
+ <text x="12" y="3437" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.attachApplication (thread: IApplicationThread ) void</text>
+ <text x="12" y="3449" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.backupAgentCreated (agentPackageName: String , agent: IBinder ) void</text>
+ <text x="12" y="3461" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.batteryNeedsCpuUpdate () void</text>
+ <text x="12" y="3473" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.batteryPowerChanged (onBattery: boolean ) void</text>
+ <text x="12" y="3485" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.bindBackupAgent (app: ApplicationInfo , backupMode: int ) boolean</text>
+ <text x="12" y="3497" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.bindService (caller: IApplicationThread , token: IBinder , service: Intent , resolvedType: String , connection: IServiceConnection , flags: int ) int</text>
+ <text x="12" y="3509" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.broadcastIntent (caller: IApplicationThread , intent: Intent , resolvedType: String , resultTo: IIntentReceiver , resultCode: int , resultData: String , map: Bundle , requiredPermission: String , serialized: boolean , sticky: boolean ) int</text>
+ <text x="12" y="3521" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.cancelIntentSender (sender: IIntentSender ) void</text>
+ <text x="12" y="3533" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkPermission (permission: String , pid: int , uid: int ) int</text>
+ <text x="12" y="3545" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkUriPermission (uri: Uri , pid: int , uid: int , modeFlags: int ) int</text>
+ <text x="12" y="3557" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.clearApplicationUserData (packageName: String , observer: IPackageDataObserver ) boolean</text>
+ <text x="12" y="3569" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.closeSystemDialogs (reason: String ) void</text>
+ <text x="12" y="3581" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.crashApplication (uid: int , initialPid: int , packageName: String , message: String ) void</text>
+ <text x="12" y="3593" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.enterSafeMode () void</text>
+ <text x="12" y="3605" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishActivity (token: IBinder , resultCode: int , resultData: Intent ) boolean</text>
+ <text x="12" y="3617" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishHeavyWeightApp () void</text>
+ <text x="12" y="3629" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishInstrumentation (target: IApplicationThread , resultCode: int , results: Bundle ) void</text>
+ <text x="12" y="3641" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishOtherInstances (token: IBinder , className: ComponentName ) void</text>
+ <text x="12" y="3653" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishReceiver (who: IBinder , resultCode: int , resultData: String , resultExtras: Bundle , resultAbort: boolean ) void</text>
+ <text x="12" y="3665" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishSubActivity (token: IBinder , resultWho: String , requestCode: int ) void</text>
+ <text x="12" y="3677" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.forceStopPackage (packageName: String ) void</text>
+ <text x="12" y="3689" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getActivityClassForToken (token: IBinder ) ComponentName</text>
+ <text x="12" y="3701" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getCallingActivity (token: IBinder ) ComponentName</text>
+ <text x="12" y="3713" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getCallingPackage (token: IBinder ) String</text>
+ <text x="12" y="3725" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getConfiguration () Configuration</text>
+ <text x="12" y="3737" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getContentProvider (caller: IApplicationThread , name: String ) ContentProviderHolder</text>
+ <text x="12" y="3749" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getDeviceConfigurationInfo () ConfigurationInfo</text>
+ <text x="12" y="3761" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getIntentSender (type: int , packageName: String , token: IBinder , resultWho: String , requestCode: int , intent: Intent , resolvedType: String , flags: int ) IIntentSender</text>
+ <text x="12" y="3773" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getMemoryInfo (outInfo: ActivityManager.MemoryInfo ) void</text>
+ <text x="12" y="3785" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getPackageForIntentSender (pendingResult: IIntentSender ) String</text>
+ <text x="12" y="3797" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getPackageForToken (token: IBinder ) String</text>
+ <text x="12" y="3809" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getProcessLimit () int</text>
+ <text x="12" y="3821" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getProcessMemoryInfo (pids: int[] ) Debug.MemoryInfo[]</text>
+ <text x="12" y="3833" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getProcessesInErrorState () List</text>
+ <text x="12" y="3845" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getProviderMimeType (uri: Uri ) String</text>
+ <text x="12" y="3857" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRecentTasks (maxNum: int , flags: int ) List</text>
+ <text x="12" y="3869" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRequestedOrientation (token: IBinder ) int</text>
+ <text x="12" y="3881" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRunningAppProcesses () List</text>
+ <text x="12" y="3893" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRunningExternalApplications () List</text>
+ <text x="12" y="3905" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRunningServiceControlPanel (name: ComponentName ) PendingIntent</text>
+ <text x="12" y="3917" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getServices (maxNum: int , flags: int ) List</text>
+ <text x="12" y="3929" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getTaskForActivity (token: IBinder , onlyRoot: boolean ) int</text>
+ <text x="12" y="3941" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getTasks (maxNum: int , flags: int , receiver: IThumbnailReceiver ) List</text>
+ <text x="12" y="3953" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.goingToSleep () void</text>
+ <text x="12" y="3965" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermission (caller: IApplicationThread , targetPkg: String , uri: Uri , modeFlags: int ) void</text>
+ <text x="12" y="3977" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermissionFromOwner (token: IBinder , fromUid: int , targetPkg: String , uri: Uri , modeFlags: int ) void</text>
+ <text x="12" y="3989" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.handleApplicationCrash (app: IBinder , crashInfo: ApplicationErrorReport.CrashInfo ) void</text>
+ <text x="12" y="4001" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.handleApplicationStrictModeViolation (app: IBinder , violationMask: int , info: StrictMode.ViolationInfo ) void</text>
+ <text x="12" y="4013" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.handleApplicationWtf (app: IBinder , tag: String , crashInfo: ApplicationErrorReport.CrashInfo ) boolean</text>
+ <text x="12" y="4025" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.isUserAMonkey () boolean</text>
+ <text x="12" y="4037" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.killApplicationProcess (processName: String , uid: int ) void</text>
+ <text x="12" y="4049" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.killApplicationWithUid (pkg: String , uid: int ) void</text>
+ <text x="12" y="4061" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.killBackgroundProcesses (packageName: String ) void</text>
+ <text x="12" y="4073" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.killPids (pids: int[] , pReason: String ) boolean</text>
+ <text x="12" y="4085" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.monitor () void</text>
+ <text x="12" y="4097" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.moveActivityTaskToBack (token: IBinder , nonRoot: boolean ) boolean</text>
+ <text x="12" y="4109" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.moveTaskBackwards (task: int ) void</text>
+ <text x="12" y="4121" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.moveTaskToBack (task: int ) void</text>
+ <text x="12" y="4133" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.moveTaskToFront (task: int ) void</text>
+ <text x="12" y="4145" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.newUriPermissionOwner (name: String ) IBinder</text>
+ <text x="12" y="4157" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.noteWakeupAlarm (sender: IIntentSender ) void</text>
+ <text x="12" y="4169" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.onTransact (code: int , data: Parcel , reply: Parcel , flags: int ) boolean</text>
+ <text x="12" y="4181" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.openContentUri (uri: Uri ) ParcelFileDescriptor</text>
+ <text x="12" y="4193" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.overridePendingTransition (token: IBinder , packageName: String , enterAnim: int , exitAnim: int ) void</text>
+ <text x="12" y="4205" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.peekService (service: Intent , resolvedType: String ) IBinder</text>
+ <text x="12" y="4217" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.profileControl (process: String , start: boolean , path: String , fd: ParcelFileDescriptor ) boolean</text>
+ <text x="12" y="4229" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.publishContentProviders (caller: IApplicationThread , providers: List&lt;ContentProviderHolder&gt; ) void</text>
+ <text x="12" y="4241" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.publishService (token: IBinder , intent: Intent , service: IBinder ) void</text>
+ <text x="12" y="4253" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.registerActivityWatcher (watcher: IActivityWatcher ) void</text>
+ <text x="12" y="4265" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.registerReceiver (caller: IApplicationThread , receiver: IIntentReceiver , filter: IntentFilter , permission: String ) Intent</text>
+ <text x="12" y="4277" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.removeContentProvider (caller: IApplicationThread , name: String ) void</text>
+ <text x="12" y="4289" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.reportThumbnail (token: IBinder , thumbnail: Bitmap , description: CharSequence ) void</text>
+ <text x="12" y="4301" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.resumeAppSwitches () void</text>
+ <text x="12" y="4313" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.revokeUriPermission (caller: IApplicationThread , uri: Uri , modeFlags: int ) void</text>
+ <text x="12" y="4325" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.revokeUriPermissionFromOwner (token: IBinder , uri: Uri , mode: int ) void</text>
+ <text x="12" y="4337" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.serviceDoneExecuting (token: IBinder , type: int , startId: int , res: int ) void</text>
+ <text x="12" y="4349" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.serviceDoneExecutingLocked (r: ServiceRecord , inStopping: boolean ) void</text>
+ <text x="12" y="4361" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setActivityController (controller: IActivityController ) void</text>
+ <text x="12" y="4373" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setAlwaysFinish (enabled: boolean ) void</text>
+ <text x="12" y="4385" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setDebugApp (packageName: String , waitForDebugger: boolean , persistent: boolean ) void</text>
+ <text x="12" y="4397" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setProcessForeground (token: IBinder , pid: int , isForeground: boolean ) void</text>
+ <text x="12" y="4409" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setProcessLimit (max: int ) void</text>
+ <text x="12" y="4421" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setRequestedOrientation (token: IBinder , requestedOrientation: int ) void</text>
+ <text x="12" y="4433" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setServiceForeground (className: ComponentName , token: IBinder , id: int , notification: Notification , removeNotification: boolean ) void</text>
+ <text x="12" y="4445" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setWindowManager (wm: WindowManagerService ) void</text>
+ <text x="12" y="4457" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.showWaitingForDebugger (who: IApplicationThread , waiting: boolean ) void</text>
+ <text x="12" y="4469" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.shutdown (timeout: int ) boolean</text>
+ <text x="12" y="4481" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.signalPersistentProcesses (sig: int ) void</text>
+ <text x="12" y="4493" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startActivity (caller: IApplicationThread , intent: Intent , resolvedType: String , grantedUriPermissions: Uri[] , grantedMode: int , resultTo: IBinder , resultWho: String , requestCode: int , onlyIfNeeded: boolean , debug: boolean ) int</text>
+ <text x="12" y="4505" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startActivityAndWait (caller: IApplicationThread , intent: Intent , resolvedType: String , grantedUriPermissions: Uri[] , grantedMode: int , resultTo: IBinder , resultWho: String , requestCode: int , onlyIfNeeded: boolean , debug: boolean ) WaitResult</text>
+ <text x="12" y="4517" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startActivityInPackage (uid: int , intent: Intent , resolvedType: String , resultTo: IBinder , resultWho: String , requestCode: int , onlyIfNeeded: boolean ) int</text>
+ <text x="12" y="4529" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startActivityIntentSender (caller: IApplicationThread , intent: IntentSender , fillInIntent: Intent , resolvedType: String , resultTo: IBinder , resultWho: String , requestCode: int , flagsMask: int , flagsValues: int ) int</text>
+ <text x="12" y="4541" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startActivityWithConfig (caller: IApplicationThread , intent: Intent , resolvedType: String , grantedUriPermissions: Uri[] , grantedMode: int , resultTo: IBinder , resultWho: String , requestCode: int , onlyIfNeeded: boolean , debug: boolean , config: Configuration ) int</text>
+ <text x="12" y="4553" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startInstrumentation (className: ComponentName , profileFile: String , flags: int , arguments: Bundle , watcher: IInstrumentationWatcher ) boolean</text>
+ <text x="12" y="4565" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startNextMatchingActivity (callingActivity: IBinder , intent: Intent ) boolean</text>
+ <text x="12" y="4577" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startRunning (pkg: String , cls: String , action: String , data: String ) void</text>
+ <text x="12" y="4589" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startService (caller: IApplicationThread , service: Intent , resolvedType: String ) ComponentName</text>
+ <text x="12" y="4601" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.stopAppSwitches () void</text>
+ <text x="12" y="4613" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.stopService (caller: IApplicationThread , service: Intent , resolvedType: String ) int</text>
+ <text x="12" y="4625" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.stopServiceToken (className: ComponentName , token: IBinder , startId: int ) boolean</text>
+ <text x="12" y="4637" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.systemReady (goingCallback: Runnable ) void</text>
+ <text x="12" y="4649" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.testIsSystemReady () boolean</text>
+ <text x="12" y="4661" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unbindBackupAgent (appInfo: ApplicationInfo ) void</text>
+ <text x="12" y="4673" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unbindFinished (token: IBinder , intent: Intent , doRebind: boolean ) void</text>
+ <text x="12" y="4685" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unbindService (connection: IServiceConnection ) boolean</text>
+ <text x="12" y="4697" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unbroadcastIntent (caller: IApplicationThread , intent: Intent ) void</text>
+ <text x="12" y="4709" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unhandledBack () void</text>
+ <text x="12" y="4721" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unregisterActivityWatcher (watcher: IActivityWatcher ) void</text>
+ <text x="12" y="4733" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.unregisterReceiver (receiver: IIntentReceiver ) void</text>
+ <text x="12" y="4745" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateConfiguration (values: Configuration ) void</text>
+ <text x="12" y="4757" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateConfigurationLocked (values: Configuration , starting: ActivityRecord ) boolean</text>
+ <text x="12" y="4769" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateServiceForegroundLocked (proc: ProcessRecord , oomAdj: boolean ) void</text>
+ <text x="12" y="4781" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.wakingUp () void</text>
+ <text x="12" y="4793" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.willActivityBeVisible (token: IBinder ) boolean</text>
+ <text x="12" y="4805" fill="#000000" font-family="Arial" font-size="10"># ActivityManagerService.dump (fd: FileDescriptor , pw: PrintWriter , args: String[] ) void</text>
+ <text x="12" y="4817" fill="#000000" font-family="Arial" font-size="10"># ActivityManagerService.dumpService (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) void</text>
+ <text x="12" y="4829" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.buildOomTag (prefix: String , space: String , val: int , base: int ) String</text>
+ <text x="12" y="4841" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.dumpHistoryList (pw: PrintWriter , list: List , prefix: String , label: String , complete: boolean ) void</text>
+ <text x="12" y="4853" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.dumpProcessList (pw: PrintWriter , service: ActivityManagerService , list: List , prefix: String , normalLabel: String , persistentLabel: String ) int</text>
+ <text x="12" y="4865" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.dumpProcessOomList (pw: PrintWriter , service: ActivityManagerService , list: List&lt;ProcessRecord&gt; , prefix: String , normalLabel: String , persistentLabel: String , inclDetails: boolean ) void</text>
+ <text x="12" y="4877" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getCalledPreBootReceiversFile () File</text>
+ <text x="12" y="4889" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.processClass (process: ProcessRecord ) String</text>
+ <text x="12" y="4901" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.readLastDonePreBootReceivers () ArrayList</text>
+ <text x="12" y="4913" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.scanArgs (args: String[] , value: String ) boolean</text>
+ <text x="12" y="4925" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.writeLastDonePreBootReceivers (list: ArrayList&lt;ComponentName&gt; ) void</text>
+ <text x="12" y="4937" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.addBroadcastToHistoryLocked (r: BroadcastRecord ) void</text>
+ <text x="12" y="4949" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.appendDropBoxProcessHeaders (process: ProcessRecord , sb: StringBuilder ) void</text>
+ <text x="12" y="4961" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.attachApplicationLocked (thread: IApplicationThread , pid: int ) boolean</text>
+ <text x="12" y="4973" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.bringDownServiceLocked (r: ServiceRecord , force: boolean ) void</text>
+ <text x="12" y="4985" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.bringUpServiceLocked (r: ServiceRecord , intentFlags: int , whileRestarting: boolean ) boolean</text>
+ <text x="12" y="4997" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.broadcastIntentLocked (callerApp: ProcessRecord , callerPackage: String , intent: Intent , resolvedType: String , resultTo: IIntentReceiver , resultCode: int , resultData: String , map: Bundle , requiredPermission: String , ordered: boolean , sticky: boolean , callingPid: int , callingUid: int ) int</text>
+ <text x="12" y="5009" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.broadcastTimeoutLocked (fromMsg: boolean ) void</text>
+ <text x="12" y="5021" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.bumpServiceExecutingLocked (r: ServiceRecord , why: String ) void</text>
+ <text x="12" y="5033" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.canGcNowLocked () boolean</text>
+ <text x="12" y="5045" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.cancelBroadcastTimeoutLocked () void</text>
+ <text x="12" y="5057" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.checkContentProviderPermissionLocked (cpi: ProviderInfo , r: ProcessRecord ) String</text>
+ <text x="12" y="5069" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.checkHoldingPermissionsLocked (pm: IPackageManager , pi: ProviderInfo , uri: Uri , uid: int , modeFlags: int ) boolean</text>
+ <text x="12" y="5081" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.checkUriPermissionLocked (uri: Uri , uid: int , modeFlags: int ) boolean</text>
+ <text x="12" y="5093" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.cleanUpApplicationRecordLocked (app: ProcessRecord , restarting: boolean , index: int ) void</text>
+ <text x="12" y="5105" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.computeOomAdjLocked (app: ProcessRecord , hiddenAdj: int , TOP_APP: ProcessRecord , recursed: boolean ) int</text>
+ <text x="12" y="5117" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.crashApplication (r: ProcessRecord , crashInfo: ApplicationErrorReport.CrashInfo ) void</text>
+ <text x="12" y="5129" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.createAppErrorReportLocked (r: ProcessRecord , timeMillis: long , crashInfo: ApplicationErrorReport.CrashInfo ) ApplicationErrorReport</text>
+ <text x="12" y="5141" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.deliverToRegisteredReceiverLocked (r: BroadcastRecord , filter: BroadcastFilter , ordered: boolean ) void</text>
+ <text x="12" y="5153" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.dumpService (fd: FileDescriptor , pw: PrintWriter , r: ServiceRecord , args: String[] , dumpAll: boolean ) void</text>
+ <text x="12" y="5165" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.findAffinityTaskTopLocked (startIndex: int , affinity: String ) int</text>
+ <text x="12" y="5177" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.findAppProcess (app: IBinder ) ProcessRecord</text>
+ <text x="12" y="5189" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.findServiceLocked (name: ComponentName , token: IBinder ) ServiceRecord</text>
+ <text x="12" y="5201" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.findServiceLocked (service: Intent , resolvedType: String ) ServiceLookupResult</text>
+ <text x="12" y="5213" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.finishReceiverLocked (receiver: IBinder , resultCode: int , resultData: String , resultExtras: Bundle , resultAbort: boolean , explicit: boolean ) boolean</text>
+ <text x="12" y="5225" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.forceStopPackageLocked (packageName: String , uid: int ) void</text>
+ <text x="12" y="5237" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.forceStopPackageLocked (name: String , uid: int , callerWillRestart: boolean , purgeCache: boolean , doit: boolean ) boolean</text>
+ <text x="12" y="5249" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.generateApplicationProvidersLocked (app: ProcessRecord ) List</text>
+ <text x="12" y="5261" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.generateProcessError (app: ProcessRecord , condition: int , activity: String , shortMsg: String , longMsg: String , stackTrace: String ) ActivityManager.ProcessErrorStateInfo</text>
+ <text x="12" y="5273" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getCallingRecordLocked (token: IBinder ) ActivityRecord</text>
+ <text x="12" y="5285" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getCommonServicesLocked () HashMap</text>
+ <text x="12" y="5297" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getContentProviderExternal (name: String ) ContentProviderHolder</text>
+ <text x="12" y="5309" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getContentProviderImpl (caller: IApplicationThread , name: String ) ContentProviderHolder</text>
+ <text x="12" y="5321" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getLRURecordIndexForAppLocked (thread: IApplicationThread ) int</text>
+ <text x="12" y="5333" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.getStickiesLocked (action: String , filter: IntentFilter , cur: List ) List</text>
+ <text x="12" y="5345" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.handleAppCrashLocked (app: ProcessRecord ) boolean</text>
+ <text x="12" y="5357" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.handleAppDiedLocked (app: ProcessRecord , restarting: boolean ) void</text>
+ <text x="12" y="5369" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.killPackageProcessesLocked (packageName: String , uid: int , minOomAdj: int , callerWillRestart: boolean , doit: boolean ) boolean</text>
+ <text x="12" y="5381" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.killServicesLocked (app: ProcessRecord , allowRestart: boolean ) void</text>
+ <text x="12" y="5393" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.logBroadcastReceiverDiscardLocked (r: BroadcastRecord ) void</text>
+ <text x="12" y="5405" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.logStrictModeViolationToDropBox (process: ProcessRecord , info: StrictMode.ViolationInfo ) void</text>
+ <text x="12" y="5417" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.makeAppCrashingLocked (app: ProcessRecord , shortMsg: String , longMsg: String , stackTrace: String ) boolean</text>
+ <text x="12" y="5429" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.makeAppNotRespondingLocked (app: ProcessRecord , activity: String , shortMsg: String , longMsg: String ) void</text>
+ <text x="12" y="5441" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.moveTaskBackwardsLocked (task: int ) void</text>
+ <text x="12" y="5453" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.processCurBroadcastLocked (r: BroadcastRecord , app: ProcessRecord ) void</text>
+ <text x="12" y="5465" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.processNextBroadcast (fromMsg: boolean ) void</text>
+ <text x="12" y="5477" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.processStartTimedOutLocked (app: ProcessRecord ) void</text>
+ <text x="12" y="5489" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.realStartServiceLocked (r: ServiceRecord , app: ProcessRecord ) void</text>
+ <text x="12" y="5501" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.removeContentProviderExternal (name: String ) void</text>
+ <text x="12" y="5513" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.removeDyingProviderLocked (proc: ProcessRecord , cpr: ContentProviderRecord ) void</text>
+ <text x="12" y="5525" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.removeProcessLocked (app: ProcessRecord , callerWillRestart: boolean ) boolean</text>
+ <text x="12" y="5537" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.reportStartInstrumentationFailure (watcher: IInstrumentationWatcher , cn: ComponentName , report: String ) void</text>
+ <text x="12" y="5549" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.requestServiceBindingLocked (r: ServiceRecord , i: IntentBindRecord , rebind: boolean ) boolean</text>
+ <text x="12" y="5561" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.requestServiceBindingsLocked (r: ServiceRecord ) void</text>
+ <text x="12" y="5573" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.resumedAppLocked () ActivityRecord</text>
+ <text x="12" y="5585" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.retrieveServiceLocked (service: Intent , resolvedType: String , callingPid: int , callingUid: int ) ServiceLookupResult</text>
+ <text x="12" y="5597" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.retrieveSettings () void</text>
+ <text x="12" y="5609" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.revokeUriPermissionLocked (callingUid: int , uri: Uri , modeFlags: int ) void</text>
+ <text x="12" y="5621" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.saveLocaleLocked (l: Locale , isDiff: boolean , isPersist: boolean ) void</text>
+ <text x="12" y="5633" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.scheduleBroadcastsLocked () void</text>
+ <text x="12" y="5645" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.scheduleServiceRestartLocked (r: ServiceRecord , allowCancel: boolean ) boolean</text>
+ <text x="12" y="5657" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.sendPackageBroadcastLocked (cmd: int , packages: String[] ) void</text>
+ <text x="12" y="5669" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.sendServiceArgsLocked (r: ServiceRecord , oomAdjusted: boolean ) void</text>
+ <text x="12" y="5681" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.setBroadcastTimeoutLocked (timeoutTime: long ) void</text>
+ <text x="12" y="5693" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.startProcessLocked (app: ProcessRecord , hostingType: String , hostingNameStr: String ) void</text>
+ <text x="12" y="5705" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.unscheduleServiceRestartLocked (r: ServiceRecord ) boolean</text>
+ <text x="12" y="5717" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.updateLruProcessInternalLocked (app: ProcessRecord , oomAdj: boolean , updateActivityTime: boolean , bestPos: int ) void</text>
+ <text x="12" y="5729" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.updateOomAdjLocked (app: ProcessRecord , hiddenAdj: int , TOP_APP: ProcessRecord ) boolean</text>
+ <text x="12" y="5741" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerService.updateOomAdjLocked (app: ProcessRecord ) boolean</text>
+ <text x="12" y="5753" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addAppLocked (info: ApplicationInfo ) ProcessRecord</text>
+ <text x="12" y="5765" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addProcessToGcListLocked (proc: ProcessRecord ) void</text>
+ <text x="12" y="5777" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addRecentTaskLocked (task: TaskRecord ) void</text>
+ <text x="12" y="5789" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.appDiedLocked (app: ProcessRecord , pid: int , thread: IApplicationThread ) void</text>
+ <text x="12" y="5801" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.appNotResponding (app: ProcessRecord , activity: ActivityRecord , parent: ActivityRecord , annotation: String ) void</text>
+ <text x="12" y="5813" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.broadcastIntentInPackage (packageName: String , uid: int , intent: Intent , resolvedType: String , resultTo: IIntentReceiver , resultCode: int , resultData: String , map: Bundle , requiredPermission: String , serialized: boolean , sticky: boolean ) int</text>
+ <text x="12" y="5825" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.cancelIntentSenderLocked (rec: PendingIntentRecord , cleanActivity: boolean ) void</text>
+ <text x="12" y="5837" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkAppInLaunchingProvidersLocked (app: ProcessRecord , alwaysBad: boolean ) boolean</text>
+ <text x="12" y="5849" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkAppSwitchAllowedLocked (callingPid: int , callingUid: int , name: String ) boolean</text>
+ <text x="12" y="5861" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkCallingPermission (permission: String ) int</text>
+ <text x="12" y="5873" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkComponentPermission (permission: String , pid: int , uid: int , reqUid: int ) int</text>
+ <text x="12" y="5885" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkExcessivePowerUsageLocked (doKills: boolean ) void</text>
+ <text x="12" y="5897" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkGrantUriPermissionFromIntentLocked (callingUid: int , targetPkg: String , intent: Intent ) int</text>
+ <text x="12" y="5909" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.checkGrantUriPermissionLocked (callingUid: int , targetPkg: String , uri: Uri , modeFlags: int ) int</text>
+ <text x="12" y="5921" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.createAppErrorIntentLocked (r: ProcessRecord , timeMillis: long , crashInfo: ApplicationErrorReport.CrashInfo ) Intent</text>
+ <text x="12" y="5933" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.doPendingActivityLaunchesLocked (doResume: boolean ) void</text>
+ <text x="12" y="5945" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpActivitiesLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean , needHeader: boolean ) boolean</text>
+ <text x="12" y="5957" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpBroadcastsLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="5969" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpOomLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="5981" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpPendingIntentsLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="5993" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpProcessesLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="6005" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpProcessesToGc (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , needSep: boolean , dumpAll: boolean ) boolean</text>
+ <text x="12" y="6017" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpProvidersLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="6029" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.dumpServicesLocked (fd: FileDescriptor , pw: PrintWriter , args: String[] , opti: int , dumpAll: boolean ) boolean</text>
+ <text x="12" y="6041" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.enableScreenAfterBoot () void</text>
+ <text x="12" y="6053" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.enforceCallingPermission (permission: String , func: String ) void</text>
+ <text x="12" y="6065" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.ensureBootCompleted () void</text>
+ <text x="12" y="6077" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.ensurePackageDexOpt (packageName: String ) void</text>
+ <text x="12" y="6089" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishBooting () void</text>
+ <text x="12" y="6101" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.finishInstrumentationLocked (app: ProcessRecord , resultCode: int , results: Bundle ) void</text>
+ <text x="12" y="6113" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.foregroundTokenDied (token: ForegroundToken ) void</text>
+ <text x="12" y="6125" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getIntentSenderLocked (type: int , packageName: String , callingUid: int , token: IBinder , resultWho: String , requestCode: int , intent: Intent , resolvedType: String , flags: int ) IIntentSender</text>
+ <text x="12" y="6137" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getProcessRecordLocked (processName: String , uid: int ) ProcessRecord</text>
+ <text x="12" y="6149" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getRecordForAppLocked (thread: IApplicationThread ) ProcessRecord</text>
+ <text x="12" y="6161" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.getTaskForActivityLocked (token: IBinder , onlyRoot: boolean ) int</text>
+ <text x="12" y="6173" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermissionFromIntentLocked (callingUid: int , targetPkg: String , intent: Intent , owner: UriPermissionOwner ) void</text>
+ <text x="12" y="6185" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermissionLocked (callingUid: int , targetPkg: String , uri: Uri , modeFlags: int , owner: UriPermissionOwner ) void</text>
+ <text x="12" y="6197" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermissionUncheckedFromIntentLocked (targetUid: int , targetPkg: String , intent: Intent , owner: UriPermissionOwner ) void</text>
+ <text x="12" y="6209" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.grantUriPermissionUncheckedLocked (targetUid: int , targetPkg: String , uri: Uri , modeFlags: int , owner: UriPermissionOwner ) void</text>
+ <text x="12" y="6221" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.isAllowedWhileBooting (ai: ApplicationInfo ) boolean</text>
+ <text x="12" y="6233" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.isNextTransitionForward () boolean</text>
+ <text x="12" y="6245" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.killAppAtUsersRequest (app: ProcessRecord , fromDialog: Dialog ) void</text>
+ <text x="12" y="6257" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.makeRunningServiceInfoLocked (r: ServiceRecord ) ActivityManager.RunningServiceInfo</text>
+ <text x="12" y="6269" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.newProcessRecordLocked (thread: IApplicationThread , info: ApplicationInfo , customProcess: String ) ProcessRecord</text>
+ <text x="12" y="6281" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.performAppGcLocked (app: ProcessRecord ) void</text>
+ <text x="12" y="6293" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.performAppGcsIfAppropriateLocked () void</text>
+ <text x="12" y="6305" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.performAppGcsLocked () void</text>
+ <text x="12" y="6317" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.performServiceRestartLocked (r: ServiceRecord ) void</text>
+ <text x="12" y="6329" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.removeConnectionLocked (c: ConnectionRecord , skipApp: ProcessRecord , skipAct: ActivityRecord ) void</text>
+ <text x="12" y="6341" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.removeReceiverLocked (rl: ReceiverList ) void</text>
+ <text x="12" y="6353" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.removeUriPermissionIfNeededLocked (perm: UriPermission ) void</text>
+ <text x="12" y="6365" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.reportResumedActivityLocked (r: ActivityRecord ) void</text>
+ <text x="12" y="6377" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.scheduleAppGcLocked (app: ProcessRecord ) void</text>
+ <text x="12" y="6389" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.scheduleAppGcsLocked () void</text>
+ <text x="12" y="6401" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.sendPendingThumbnail (r: ActivityRecord , token: IBinder , thumbnail: Bitmap , description: CharSequence , always: boolean ) void</text>
+ <text x="12" y="6413" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.serviceTimeout (proc: ProcessRecord ) void</text>
+ <text x="12" y="6425" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.setFocusedActivityLocked (r: ActivityRecord ) void</text>
+ <text x="12" y="6437" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.showLaunchWarningLocked (cur: ActivityRecord , next: ActivityRecord ) void</text>
+ <text x="12" y="6449" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.skipCurrentReceiverLocked (app: ProcessRecord ) void</text>
+ <text x="12" y="6461" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startAppProblemLocked (app: ProcessRecord ) void</text>
+ <text x="12" y="6473" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startHomeActivityLocked () boolean</text>
+ <text x="12" y="6485" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startProcessLocked (processName: String , info: ApplicationInfo , knownToBeDead: boolean , intentFlags: int , hostingType: String , hostingName: ComponentName , allowWhileBooting: boolean ) ProcessRecord</text>
+ <text x="12" y="6497" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startServiceInPackage (uid: int , service: Intent , resolvedType: String ) ComponentName</text>
+ <text x="12" y="6509" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startServiceLocked (caller: IApplicationThread , service: Intent , resolvedType: String , callingPid: int , callingUid: int ) ComponentName</text>
+ <text x="12" y="6521" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.startSetupActivityLocked () void</text>
+ <text x="12" y="6533" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.trimApplications () void</text>
+ <text x="12" y="6545" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateCpuStats () void</text>
+ <text x="12" y="6557" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateCpuStatsNow () void</text>
+ <text x="12" y="6569" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateLruProcessLocked (app: ProcessRecord , oomAdj: boolean , updateActivityTime: boolean ) void</text>
+ <text x="12" y="6581" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateOomAdjLocked () boolean</text>
+ <text x="12" y="6593" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.updateUsageStats (resumedComponent: ActivityRecord , resumed: boolean ) void</text>
+ <text x="12" y="6605" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.verifyBroadcastLocked (intent: Intent ) Intent</text>
+ <polygon points="483,765 483,621 918,621 918,765 483,765" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="483,641 918,641" stroke="#0000ff" fill="none"/>
+ <polyline points="483,673 918,673" stroke="#0000ff" fill="none"/>
+ <text x="623" y="635" fill="#000000" font-family="Arial" font-size="10">android.app.ActivityManagerNative</text>
+ <text x="491" y="655" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.sSystemReady: boolean= false</text>
+ <text x="491" y="667" fill="#000000" font-family="Arial" font-size="10">- ActivityManagerNative.gDefault: IActivityManager</text>
+ <text x="491" y="687" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.asInterface (obj: IBinder ) IActivityManager</text>
+ <text x="491" y="699" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.broadcastStickyIntent (intent: Intent , permission: String ) void</text>
+ <text x="491" y="711" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.getDefault () IActivityManager</text>
+ <text x="491" y="723" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.isSystemReady () boolean</text>
+ <text x="491" y="735" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.noteWakeupAlarm (ps: PendingIntent ) void</text>
+ <text x="491" y="747" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.asBinder () IBinder</text>
+ <text x="491" y="759" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerNative.onTransact (code: int , data: Parcel , reply: Parcel , flags: int ) boolean</text>
+ <polyline points="700,803 700,800 700,797 700,794 700,791 700,789 700,786 700,783 700,780 700,778 700,775" stroke="#CC0044" fill="none"/>
+ <polygon points="697,775 700,765 704,775 697,775" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="516,583 516,211 884,211 884,583 516,583" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="516,231 884,231" stroke="#0000ff" fill="none"/>
+ <polyline points="516,299 884,299" stroke="#0000ff" fill="none"/>
+ <text x="661" y="225" fill="#000000" font-family="Arial" font-size="10">android.os.Binder</text>
+ <text x="524" y="245" fill="#000000" font-family="Arial" font-size="10">- Binder.mDescriptor: String</text>
+ <text x="524" y="257" fill="#000000" font-family="Arial" font-size="10">- Binder.mObject: int</text>
+ <text x="524" y="269" fill="#000000" font-family="Arial" font-size="10">- Binder.mOwner: IInterface</text>
+ <text x="524" y="281" fill="#000000" font-family="Arial" font-size="10">- Binder.FIND_POTENTIAL_LEAKS: boolean= false</text>
+ <text x="524" y="293" fill="#000000" font-family="Arial" font-size="10">- Binder.TAG: String= &quot;Binder&quot;</text>
+ <text x="524" y="313" fill="#000000" font-family="Arial" font-size="10">+ Binder.clearCallingIdentity () long</text>
+ <text x="524" y="325" fill="#000000" font-family="Arial" font-size="10">+ Binder.destroy () void</text>
+ <text x="524" y="337" fill="#000000" font-family="Arial" font-size="10">+ Binder.flushPendingCommands () void</text>
+ <text x="524" y="349" fill="#000000" font-family="Arial" font-size="10">+ Binder.getCallingPid () int</text>
+ <text x="524" y="361" fill="#000000" font-family="Arial" font-size="10">+ Binder.getCallingUid () int</text>
+ <text x="524" y="373" fill="#000000" font-family="Arial" font-size="10">+ Binder.getThreadStrictModePolicy () int</text>
+ <text x="524" y="385" fill="#000000" font-family="Arial" font-size="10">+ Binder.init () void</text>
+ <text x="524" y="397" fill="#000000" font-family="Arial" font-size="10">+ Binder.joinThreadPool () void</text>
+ <text x="524" y="409" fill="#000000" font-family="Arial" font-size="10">+ Binder.restoreCallingIdentity (token: long ) void</text>
+ <text x="524" y="421" fill="#000000" font-family="Arial" font-size="10">+ Binder.setThreadStrictModePolicy (policyMask: int ) void</text>
+ <text x="524" y="433" fill="#000000" font-family="Arial" font-size="10">+ Binder.attachInterface (owner: IInterface , descriptor: String ) void</text>
+ <text x="524" y="445" fill="#000000" font-family="Arial" font-size="10">+ Binder.dump (fd: FileDescriptor , args: String[] ) void</text>
+ <text x="524" y="457" fill="#000000" font-family="Arial" font-size="10">+ Binder.getInterfaceDescriptor () String</text>
+ <text x="524" y="469" fill="#000000" font-family="Arial" font-size="10">+ Binder.isBinderAlive () boolean</text>
+ <text x="524" y="481" fill="#000000" font-family="Arial" font-size="10">+ Binder.linkToDeath (recipient: DeathRecipient , flags: int ) void</text>
+ <text x="524" y="493" fill="#000000" font-family="Arial" font-size="10">+ Binder.pingBinder () boolean</text>
+ <text x="524" y="505" fill="#000000" font-family="Arial" font-size="10">+ Binder.queryLocalInterface (descriptor: String ) IInterface</text>
+ <text x="524" y="517" fill="#000000" font-family="Arial" font-size="10">+ Binder.transact (code: int , data: Parcel , reply: Parcel , flags: int ) boolean</text>
+ <text x="524" y="529" fill="#000000" font-family="Arial" font-size="10">+ Binder.unlinkToDeath (recipient: DeathRecipient , flags: int ) boolean</text>
+ <text x="524" y="541" fill="#000000" font-family="Arial" font-size="10"># Binder.dump (fd: FileDescriptor , fout: PrintWriter , args: String[] ) void</text>
+ <text x="524" y="553" fill="#000000" font-family="Arial" font-size="10"># Binder.finalize () void</text>
+ <text x="524" y="565" fill="#000000" font-family="Arial" font-size="10"># Binder.onTransact (code: int , data: Parcel , reply: Parcel , flags: int ) boolean</text>
+ <text x="524" y="577" fill="#000000" font-family="Arial" font-size="10">- Binder.execTransact (code: int , dataObj: int , replyObj: int , flags: int ) boolean</text>
+ <polyline points="700,621 700,618 700,616 700,613 700,610 700,607 700,605 700,602 700,599 700,596 700,593" stroke="#CC0044" fill="none"/>
+ <polygon points="697,593 700,583 704,593 697,593" stroke="#CC0044" fill="#CC0044"/>
+ <polygon points="604,173 604,5 796,5 796,173 604,173" stroke="#0000ff" fill="#ffffff"/>
+ <polyline points="604,25 796,25" stroke="#0000ff" fill="none"/>
+ <polyline points="604,45 796,45" stroke="#0000ff" fill="none"/>
+ <text x="664" y="19" fill="#000000" font-family="Arial" font-size="10">java.lang.Object</text>
+ <text x="699" y="39" fill="#000000" font-family="Arial" font-size="10" xml:space='preserve'> </text>
+ <text x="612" y="59" fill="#000000" font-family="Arial" font-size="10">+ Object.getClass () Class</text>
+ <text x="612" y="71" fill="#000000" font-family="Arial" font-size="10">+ Object.hashCode () int</text>
+ <text x="612" y="83" fill="#000000" font-family="Arial" font-size="10">+ Object.notify () void</text>
+ <text x="612" y="95" fill="#000000" font-family="Arial" font-size="10">+ Object.notifyAll () void</text>
+ <text x="612" y="107" fill="#000000" font-family="Arial" font-size="10">+ Object.wait (time: long , frac: int ) void</text>
+ <text x="612" y="119" fill="#000000" font-family="Arial" font-size="10">+ Object.equals (o: Object ) boolean</text>
+ <text x="612" y="131" fill="#000000" font-family="Arial" font-size="10">+ Object.toString () String</text>
+ <text x="612" y="143" fill="#000000" font-family="Arial" font-size="10">+ Object.wait () void</text>
+ <text x="612" y="155" fill="#000000" font-family="Arial" font-size="10">+ Object.wait (time: long ) void</text>
+ <text x="612" y="167" fill="#000000" font-family="Arial" font-size="10"># Object.finalize () void</text>
+ <polyline points="700,211 700,208 700,205 700,202 700,199 700,197 700,194 700,191 700,188 700,186 700,183" stroke="#CC0044" fill="none"/>
+ <polygon points="697,183 700,173 704,183 697,183" stroke="#CC0044" fill="#CC0044"/>
+</svg>
