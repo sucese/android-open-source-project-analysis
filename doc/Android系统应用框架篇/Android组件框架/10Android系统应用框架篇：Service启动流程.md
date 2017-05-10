@@ -22,8 +22,8 @@
 ```
 1 向ActivityManagerService发送一个启动Service组件的请求。
 2 ActivityManagerService发现用来运行Service组件的进程不存在，它会先保存Service组件的信息，接着再创建一个新的应用进程。
-3 新的应用进程创建完成后，就会向ActivityManagerService发送一个启动完成的进程间通信请求，以便ActivityManagerService可以继续执行启
-动Service组件的的操作。
+3 新的应用进程创建完成后，就会向ActivityManagerService发送一个启动完成的进程间通信请求，以便ActivityManagerService可
+以继续执行启动Service组件的的操作。
 4 ActivityManagerService将第2步保存的Service组件信息发送给新床架的应用进程，以便它可以将Service组件启动起来。
 ```
 ### 1 Activity.startService(Intent service)
