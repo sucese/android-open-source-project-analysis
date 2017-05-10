@@ -301,141 +301,19 @@ public final class ActivityManagerService extends ActivityManagerNative
     final ProcessRecord startProcessLocked(String processName,
             ApplicationInfo info, boolean knownToBeDead, int intentFlags,
             String hostingType, ComponentName hostingName, boolean allowWhileBooting) {
-        ProcessRecord app = getProcessRecordLocked(processName, info.uid);
-        
-        //...
-        
+        ProcessRecord app = getProcessRecordLocked(processName, info.uid); 
+        ...  
         startProcessLocked(app, hostingType, hostingNameStr);
         return (app.pid != 0) ? app : null;
     }
 
-    boolean isAllowedWhileBooting(ApplicationInfo ai) {
-        return (ai.flags&ApplicationInfo.FLAG_PERSISTENT) != 0;
-    }
-    
     private final void startProcessLocked(ProcessRecord app,
             String hostingType, String hostingNameStr) {
-        if (app.pid > 0 && app.pid != MY_PID) {
-            synchronized (mPidsSelfLocked) {
-                mPidsSelfLocked.remove(app.pid);
-                mHandler.removeMessages(PROC_START_TIMEOUT_MSG, app);
-            }
-            app.pid = 0;
-        }
-
-        if (DEBUG_PROCESSES && mProcessesOnHold.contains(app)) Slog.v(TAG,
-                "startProcessLocked removing on hold: " + app);
-        mProcessesOnHold.remove(app);
-
-        updateCpuStats();
-        
-        System.arraycopy(mProcDeaths, 0, mProcDeaths, 1, mProcDeaths.length-1);
-        mProcDeaths[0] = 0;
-        
-        try {
-            int uid = app.info.uid;
-            int[] gids = null;
-            try {
-                gids = mContext.getPackageManager().getPackageGids(
-                        app.info.packageName);
-            } catch (PackageManager.NameNotFoundException e) {
-                Slog.w(TAG, "Unable to retrieve gids", e);
-            }
-            if (mFactoryTest != SystemServer.FACTORY_TEST_OFF) {
-                if (mFactoryTest == SystemServer.FACTORY_TEST_LOW_LEVEL
-                        && mTopComponent != null
-                        && app.processName.equals(mTopComponent.getPackageName())) {
-                    uid = 0;
-                }
-                if (mFactoryTest == SystemServer.FACTORY_TEST_HIGH_LEVEL
-                        && (app.info.flags&ApplicationInfo.FLAG_FACTORY_TEST) != 0) {
-                    uid = 0;
-                }
-            }
-            int debugFlags = 0;
-            if ((app.info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
-                debugFlags |= Zygote.DEBUG_ENABLE_DEBUGGER;
-            }
-            // Run the app in safe mode if its manifest requests so or the
-            // system is booted in safe mode.
-            if ((app.info.flags & ApplicationInfo.FLAG_VM_SAFE_MODE) != 0 ||
-                Zygote.systemInSafeMode == true) {
-                debugFlags |= Zygote.DEBUG_ENABLE_SAFEMODE;
-            }
-            if ("1".equals(SystemProperties.get("debug.checkjni"))) {
-                debugFlags |= Zygote.DEBUG_ENABLE_CHECKJNI;
-            }
-            if ("1".equals(SystemProperties.get("debug.assert"))) {
-                debugFlags |= Zygote.DEBUG_ENABLE_ASSERT;
-            }
+            ...
             int pid = Process.start("android.app.ActivityThread",
                     mSimpleProcessManagement ? app.processName : null, uid, uid,
                     gids, debugFlags, null);
-            BatteryStatsImpl bs = app.batteryStats.getBatteryStats();
-            synchronized (bs) {
-                if (bs.isOnBattery()) {
-                    app.batteryStats.incStartsLocked();
-                }
-            }
-            
-            EventLog.writeEvent(EventLogTags.AM_PROC_START, pid, uid,
-                    app.processName, hostingType,
-                    hostingNameStr != null ? hostingNameStr : "");
-            
-            if (app.persistent) {
-                Watchdog.getInstance().processStarted(app.processName, pid);
-            }
-            
-            StringBuilder buf = mStringBuilder;
-            buf.setLength(0);
-            buf.append("Start proc ");
-            buf.append(app.processName);
-            buf.append(" for ");
-            buf.append(hostingType);
-            if (hostingNameStr != null) {
-                buf.append(" ");
-                buf.append(hostingNameStr);
-            }
-            buf.append(": pid=");
-            buf.append(pid);
-            buf.append(" uid=");
-            buf.append(uid);
-            buf.append(" gids={");
-            if (gids != null) {
-                for (int gi=0; gi<gids.length; gi++) {
-                    if (gi != 0) buf.append(", ");
-                    buf.append(gids[gi]);
-
-                }
-            }
-            buf.append("}");
-            Slog.i(TAG, buf.toString());
-            if (pid == 0 || pid == MY_PID) {
-                // Processes are being emulated with threads.
-                app.pid = MY_PID;
-                app.removed = false;
-                mStartingProcesses.add(app);
-            } else if (pid > 0) {
-                app.pid = pid;
-                app.removed = false;
-                synchronized (mPidsSelfLocked) {
-                    this.mPidsSelfLocked.put(pid, app);
-                    Message msg = mHandler.obtainMessage(PROC_START_TIMEOUT_MSG);
-                    msg.obj = app;
-                    mHandler.sendMessageDelayed(msg, PROC_START_TIMEOUT);
-                }
-            } else {
-                app.pid = 0;
-                RuntimeException e = new RuntimeException(
-                        "Failure starting process " + app.processName
-                        + ": returned pid=" + pid);
-                Slog.e(TAG, e.getMessage(), e);
-            }
-        } catch (RuntimeException e) {
-            // XXX do better error recovery.
-            app.pid = 0;
-            Slog.e(TAG, "Failure starting process " + app.processName, e);
-        }
+            ...
     }        
 }
 ```
