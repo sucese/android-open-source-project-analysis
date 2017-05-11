@@ -18,7 +18,8 @@
 
 本篇文章我们正式来分析ActivityManagerService的实现
 
->ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，
+>ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，AMS作为Android最核心的服务，它负责系统中四大组件的
+启动、切换、调度以及应用进程进程的管理与调度工作。
 
 **ActivityManagerService类图**
 

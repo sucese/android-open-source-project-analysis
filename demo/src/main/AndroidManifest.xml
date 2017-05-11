@@ -32,7 +32,15 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".application.service.ClientActivity"></activity>
+        <activity android:name=".application.service.ClientActivity" />
+
+        <service
+            android:name=".system.aidl.AidlService"
+            android:process="com.guoxiaoxing.AidlService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".system.aidl.AidlActivity"></activity>
     </application>
 
 </manifest>

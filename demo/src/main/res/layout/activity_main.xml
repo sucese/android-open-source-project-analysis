@@ -26,7 +26,7 @@
             android:id="@+id/btn_system"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android系统应用框架篇"
+            android:text="Android系统底层框架篇"
             android:textAllCaps="false" />
 
 
@@ -34,7 +34,7 @@
             android:id="@+id/btn_program"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android系统应用框架篇"
+            android:text="Android系统编程思想篇"
             android:textAllCaps="false" />
 
     </LinearLayout>
