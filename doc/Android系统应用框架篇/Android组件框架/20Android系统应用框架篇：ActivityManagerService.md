@@ -15,14 +15,23 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+本篇文章我们正式来分析ActivityManagerService的实现。
 
-本篇文章我们正式来分析ActivityManagerService的实现
+## ActivityManagerService功能结构
 
 >ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，AMS作为Android最核心的服务，它负责系统中四大组件的
 启动、切换、调度以及应用进程进程的管理与调度工作。
+
+在正式介绍ActivityManagerService之前，我们先来了解一些关键的概念。
+
+```
+ActivityManager：用来与系统中所有运行的Activity进行交互，运行在用户进程中。
+````
 
 **ActivityManagerService类图**
 
 [点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.svg)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.png"/>
+`   
+## ActivityManagerService启动流程
