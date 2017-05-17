@@ -1,4 +1,4 @@
-# Android系统应用框架篇：Service启动流程
+# Android系统应用框架篇：Context
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
@@ -15,3 +15,9 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+Context是个抽象类，它的实现类是ContextImpl，ContextWrapper作为一个代理类，持有Context的引用，代理ContextImpl的功能，我们
+在调用Context里的方法，最终通过ContextWrapper调用ContextImpl里的方法，从而隐藏ContextImpl的实现。
+
+Context的类图如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/19/context_uml.png">

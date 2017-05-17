@@ -40,7 +40,13 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **Android系统架构图**
 
+对Android系统的探索就像探索一个宝藏一样，每天分析一点，就完成了藏宝图的一角，直到有一天我们将整个宝藏的蓝图绘制完成。
+
+官方藏宝图
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_system_structure.png"/>
+
+探索中的个人版藏宝图
 
 文章更新中...
 
