@@ -93,7 +93,7 @@ ClientActivity组件可以通过这个Binder对象与ServerService组件建立�
 绑定在ClientActivity组件内部了。
 ```
 
-**Service组件在程内绑定序列图**
+**Service组件在进程内绑定序列图**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
 
@@ -1000,6 +1000,19 @@ final class LoadedApk {
 该方法将name与service封装成一个RunConnection对象，然后发送给ClientActivity所在主线程的消息队列，该消息最终会在
 RunConnection.run()方法里处理.
 
+为什么不直接在本方法中将ServerService内部的Binder组件IBinder service传递给ClientActivity，而是通过消息处理机制
+简介传递呢？
+
+这么做有2个原因：
+
+```
+1 当前线程要尽快回到Binder线程池中，以便可以处理其他的Binder进程通信请求。从而提高ClientActivity并发处理Binder
+进程间通信请求的能力。
+2 ClientActivity组件在接收ServerService组件内部的Binder本地对象时，可能会需要执行与用户界面相关的操作，因此就
+需要通过消息处理机制将这个转递操作放在主线程中执行。
+```
+
+
 ### 25 RunConnection.run() 
 
 ```java
@@ -1128,7 +1141,7 @@ public class ClientActivity extends AppCompatActivity  {
 ServerService内部有一个继承Binder的本地Binder对象，该对象会在ServerService绑定完成后通过ServiceConnection接口接口
 方法传递给ClientActivity，这样ClientActivity就可以调用该Binder对象里的方法。
 
-**Service组件在程内绑定序列图**
+**Service组件在进程内绑定序列图**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
 
