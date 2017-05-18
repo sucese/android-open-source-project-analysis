@@ -28,7 +28,7 @@
             android:process="com.guoxiaoxing.new.process" />
 
         <service
-            android:name=".application.service.CounterService"
+            android:name=".application.service.ServerService"
             android:enabled="true"
             android:exported="true" />
 

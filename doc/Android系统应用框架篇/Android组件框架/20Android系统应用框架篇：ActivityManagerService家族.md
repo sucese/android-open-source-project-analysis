@@ -17,7 +17,7 @@
 
 本篇文章我们正式来分析ActivityManagerService的实现。
 
-## ActivityManagerService功能结构
+## 一 ActivityManagerService功能结构
 
 >ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，AMS作为Android最核心的服务，它负责系统中四大组件的
 启动、切换、调度以及应用进程进程的管理与调度工作。
@@ -39,7 +39,7 @@ ActivityManagerNative.ActivityManagerProxy对应的是Stub.proxy，它提供给�
 接口的真正实现者。
  
 
-### AThread
+### 1.1 AThread
 
 >AThread是定义在ActivityManagerService内部一个线程，它具有消息循环以及处理的功能，它主要用来完成ActivityManagerService
 对象初始化，然后通知main函数所在线程ActivityManagerService创建完成。
@@ -90,12 +90,12 @@ public final class ActivityManagerService extends ActivityManagerNative
 }
 ```
 
-## ActivityManagerService启动流程
+## 二 ActivityManagerService启动流程
 
 我们来看看ActivityManagerService是的初始化流程，ActivityManagerService是由SystemServer的ServerThread创建的。很多关键服务
 例如：WindowManagerService、ConnectivityService等都是在这个线程里进行创建的。
 
-### 1 ServerThread.run()
+### 2.1 ServerThread.run()
 
 ```java
 class ServerThread extends Thread {
@@ -133,7 +133,7 @@ class ServerThread extends Thread {
 在该方法中调用ActivityManagerService.main(factoryTest)得到一个Context对象。并将SystemServer进程添加到ActivityManagerService中，以便被它管理。
 我们接着来看该main函数的实现。
 
-### 2 ActivityManagerService.main(int factoryTest)
+### 2.2 ActivityManagerService.main(int factoryTest)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -198,7 +198,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
 我们再来进一步看看AThread内部调用ActivityManagerService的构造函数的实现。
 
-### 3 ActivityManagerService.ActivityManagerService()
+### 2.3 ActivityManagerService.ActivityManagerService()
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -293,7 +293,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 ActivityManagerService创建完成后，我们继续来看ActivityThread对象的创建，它也是ActivityManagerService重要的一部分。
 
 
-### 4 ActivityThread.systemMain()
+### 2.4 ActivityThread.systemMain()
 
 ```java
 public final class ActivityThread {
@@ -401,7 +401,7 @@ Context：应用上下文环境，它是一个接口，其实现类是ContextImp
 
 分析完了这一步，我们再来看看ActivityThread.getSystemContext()的创建过程。
 
-### 5 ActivityThread.getSystemContext()
+### 2.5 ActivityThread.getSystemContext()
 
 ```java
 public final class ActivityThread {
@@ -438,7 +438,7 @@ public final class ActivityThread {
 
 我们在接着来看ActivityManagerService.startRunning函数的调用与实现。
 ```
-### 6 ActivityManagerService.startRunning(String pkg, String cls, String action,  String data)
+### 2.6 ActivityManagerService.startRunning(String pkg, String cls, String action,  String data)
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -476,7 +476,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 到这里ActivityManagerService已经创建完了，我们再来分析一下ActivityManagerService.setSystemProcess()，该
 方法将SystemServer进程添加到ActivityManagerService中，以便被它管理。
 
-### 7 ActivityManagerService.setSystemProcess()
+### 2.7 ActivityManagerService.setSystemProcess()
 
 ```java
 public final class ActivityManagerService extends ActivityManagerNative
@@ -494,11 +494,13 @@ public final class ActivityManagerService extends ActivityManagerNative
                 ServiceManager.addService("permission", new PermissionController(m));
     
                 ApplicationInfo info =
+                    //向PackageManagerService查询名为"android"的ApplicationInfo
                     mSelf.mContext.getPackageManager().getApplicationInfo(
                             "android", STOCK_PM_FLAGS);
                 mSystemThread.installSystemApplicationInfo(info);
            
                 synchronized (mSelf) {
+                    //管理进程
                     ProcessRecord app = mSelf.newProcessRecordLocked(
                             mSystemThread.getApplicationThread(), info,
                             info.processName);

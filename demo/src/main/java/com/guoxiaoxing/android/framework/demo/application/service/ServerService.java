@@ -6,20 +6,20 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 
-public class CounterService extends Service implements ICounterService {
+public class ServerService extends Service implements IServerService {
 
     private boolean stop = false;
     private ICounterCallback counterCallback;
-    private IBinder binder = new CounterBinder();
+    private IBinder binder = new ServerBinder();
 
-    public class CounterBinder extends Binder {
-        public CounterService getCounterService() {
-            return CounterService.this;
+    public class ServerBinder extends Binder {
+        public ServerService getService() {
+            return ServerService.this;
         }
 
     }
 
-    public CounterService() {
+    public ServerService() {
     }
 
     /**

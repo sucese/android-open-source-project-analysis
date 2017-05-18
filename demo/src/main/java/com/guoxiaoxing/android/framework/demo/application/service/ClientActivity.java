@@ -16,17 +16,17 @@ public class ClientActivity extends AppCompatActivity implements ICounterCallbac
 
     private TextView mTvCounter;
 
-    private ICounterService counterService;
+    private IServerService serverService;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            counterService = ((CounterService.CounterBinder) service).getCounterService();
+            serverService = ((ServerService.ServerBinder) service).getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            counterService = null;
+            serverService = null;
         }
     };
 
@@ -35,7 +35,7 @@ public class ClientActivity extends AppCompatActivity implements ICounterCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
 
-        Intent intent = new Intent(ClientActivity.this, CounterService.class);
+        Intent intent = new Intent(ClientActivity.this, ServerService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         mTvCounter = (TextView) findViewById(R.id.tv_counter);
@@ -43,8 +43,8 @@ public class ClientActivity extends AppCompatActivity implements ICounterCallbac
         findViewById(R.id.btn_start_counter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (counterService != null) {
-                    counterService.startCounter(0, ClientActivity.this);
+                if (serverService != null) {
+                    serverService.startCounter(0, ClientActivity.this);
                 }
             }
         });
@@ -52,7 +52,7 @@ public class ClientActivity extends AppCompatActivity implements ICounterCallbac
         findViewById(R.id.btn_stop_counter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                counterService.stopCounter();
+                serverService.stopCounter();
             }
         });
 
