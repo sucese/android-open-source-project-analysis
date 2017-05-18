@@ -15,4 +15,9 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+从这篇文章开始，我们正式来分析Android的UI框架，包括Window、WindowManager、WindowManagerService等组件的实现原理。
+
+>Window表示Android的窗口，它是一个抽象类，它的实现类是PhoneWindow，Android的所有视图都是通过Window来呈现的，Window
+是View的直接管理者。
+
 

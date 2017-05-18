@@ -1,4 +1,4 @@
-# Android系统应用框架篇：Activity启动标识
+# Android系统应用框架篇：Activity基础知识
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
@@ -14,6 +14,49 @@
 >作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流的问题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
+
+在正式介绍Activity源码结构之前，我们先来回忆一下Activity相关的基础知识。
+
+## Activity生命周期
+
+onCreate
+
+onAttachFragment
+
+onContentChanged
+
+onStart
+
+onRestoreInstanceState
+
+onPostCreate
+
+onResume
+
+onPostResume
+
+onAccachedToWindow
+
+onCreateOptionsMenu
+
+onPause
+
+onSaveInstanceState
+
+onStop
+
+onDestory
+
+Activity与Fragment生命周期对比图:
+
+![](https://github.com/YannanGuo/android-advanced-learning-route/blob/master/doc/Android%E5%88%9D%E7%B%84%E4%BB%B6%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/art/complete_android_fragment_lifecycle.png)A%A7%E5%86%85%E5%AE%B9/Android%E5%9B%9B%E5%A4%A7%E7%BB
+
+[点击查看高清SVG大图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/1/UMLClassDiagram-app-ActivityGroup.png)
+
+## Activity启动模式
+
+
+## Activity启动标识
 
 
 ### FLAG_ACTIVITY_BROUGHT_TO_FRONT 
@@ -129,3 +172,29 @@ initial state if needed.
 ```
 
 注意：如果是从BroadcastReceiver启动一个新的Activity，或者是从Service往一个Activity跳转时，不要忘记添加Intent的Flag为FLAG_ACTIVITY_NEW_TASK。
+
+
+
+以上便是Activity相关的基础知识，我们下面来看看Activity相关源码结构，为后面的源码分析准个准备
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/UMLClassDiagram-app-ActivityGroup.png"/>
+
+我们来介绍下上图中主要的类
+
+- Context：抽象类，应用的全局运行环境。
+- ContextWrapper：继承于Context，Context的代理类。ContextWrapper里的方法都最终调用Context里的方法来实现。
+- ContextThemeWrapper：继承于ContextWrapper，可以进行主题修改。
+- Activity：继承于ContextThemeWrapper，展示在用户面前的类，绘制UI，处理用户交互。
+- ActivityGroup：继承于Activity，一个屏幕可以包含多个Activity。
+
+
+我们再来看看在Activity提供各种功能的内部模块。
+
+- Instrumentation
+- IBinder
+- ActivityInfo
+- ActivityThread
+- SearchManager
+- Window
+- WindowManager
+

@@ -15,6 +15,11 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+在正式介绍Service源码结构之前，我们先来回忆一下Service相关的基础知识。
+
+## Service生命周期
+
+以上便是Service相关的基础知识，下面我们来看看Service相关的源码结构，为后续Service的源码分析做准备。
 
 ServiceRecord
 
