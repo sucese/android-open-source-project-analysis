@@ -1124,13 +1124,13 @@ public class ClientActivity extends AppCompatActivity  {
 
 整个流程比较长，我们再来总结一下。
 
-**Service组件在程内绑定序列图**
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
-
 >ClientActivity内部持有一个实现了ServiceConnection接口的匿名内部类，它会在bindService()传递给ServerService，而
 ServerService内部有一个继承Binder的本地Binder对象，该对象会在ServerService绑定完成后通过ServiceConnection接口接口
 方法传递给ClientActivity，这样ClientActivity就可以调用该Binder对象里的方法。
+
+**Service组件在程内绑定序列图**
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
 
 我们再来梳理一下整个流程：
 
