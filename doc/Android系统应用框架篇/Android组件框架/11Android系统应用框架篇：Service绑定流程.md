@@ -57,7 +57,7 @@ public class ServerService extends Service  {
     private IBinder binder = new ServerBinder();
 
     public class ServerBinder extends Binder {
-        public ServerService getCounterService() {
+        public ServerService getService() {
             return ServerService.this;
         }
 
@@ -1124,75 +1124,15 @@ public class ClientActivity extends AppCompatActivity  {
 
 整个流程比较长，我们再来总结一下。
 
-先看例子
-
-1 定义一个Activity，它将要绑定一个Service组件运行后台任务。
-
-```java
-public class ClientActivity extends AppCompatActivity  {
-
-    private IServerService serverService;
-    
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            serverService = ((ServerService.ServerBinder) service).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            serverService = null;
-        }
-    };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service);
-
-        Intent intent = new Intent(ClientActivity.this, ServerService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-}
-```
-
-2 在定义一个ServerService，它即将要被一个Activity组件绑定。
-
-```java
-public class ServerService extends Service  {
-
-    private IBinder binder = new ServerBinder();
-
-    public class ServerBinder extends Binder {
-        public ServerService getCounterService() {
-            return ServerService.this;
-        }
-
-    }
-
-    public ServerService() {
-    }
-
-    /**
-     * 当Service组件被绑定时，onBind会被调用。
-     *
-     * @param intent intent
-     * @return IBinder
-     */
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-}
-```
-
-再看序列图
-
 **Service组件在程内绑定序列图**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
 
-好，我们开始总结整个流程
+>ClientActivity内部持有一个实现了ServiceConnection接口的匿名内部类，它会在bindService()传递给ServerService，而
+ServerService内部有一个继承Binder的本地Binder对象，该对象会在ServerService绑定完成后通过ServiceConnection接口接口
+方法传递给ClientActivity，这样ClientActivity就可以调用该Binder对象里的方法。
+
+我们再来梳理一下整个流程：
 
 ```
 1 ClientActivity组件向ActivityManagerService发送一个绑定ServerService组件的进程间通信请求。
