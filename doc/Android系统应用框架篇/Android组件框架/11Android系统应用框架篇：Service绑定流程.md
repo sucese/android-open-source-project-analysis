@@ -101,6 +101,8 @@ ClientActivity组件可以通过这个Binder对象与ServerService组件建立�
 
 注：ClientActivity：要绑定ServerService的Activity组件。ServerService：将要被绑定的Service组件。
 
+## Service组件绑定路程
+
 ### 1 ClientActivity.onCreate()
 
 ```java
@@ -1116,8 +1118,11 @@ public class ClientActivity extends AppCompatActivity  {
 ```
 
 在该方法中，调用getService()方法获得ServerService，保存在IServerService serverService变量中，ServerService实现了接口IServerService。
+到这一步，ServerService组件成功与ClientActivity组件绑定。
 
-到这一步，ServerService组件成功与ClientActivity组件绑定，整个流程比较长，我们再来总结一下。
+## 总结
+
+整个流程比较长，我们再来总结一下。
 
 先看例子
 
