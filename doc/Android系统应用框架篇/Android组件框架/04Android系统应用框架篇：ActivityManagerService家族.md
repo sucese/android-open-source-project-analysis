@@ -30,9 +30,9 @@ ActivityManager：用来与系统中所有运行的Activity进行交互，运行
 
 **ActivityManagerService类图**
 
-[点击查看详细类图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/20/UMLClassDiagram-am-ActivityManagerService.svg)
+[点击查看详细类图](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/04/UMLClassDiagram-am-ActivityManagerService.svg)
  
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/20/activity_manager_service_uml.png">
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/04/activity_manager_service_uml.png">
  
 从类图可以看出，ActivityManagerService是典型的AIDL实现：IActivityManager是定义好的AIDL接口。ActivityManagerNative对应Stub，
 ActivityManagerNative.ActivityManagerProxy对应的是Stub.proxy，它提供给客户端ActivityManager使用，而ActivityManagerService是
