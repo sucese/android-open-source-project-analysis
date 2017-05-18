@@ -29,7 +29,7 @@ public class ClientActivity extends AppCompatActivity  {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            serverService = ((ServerService.ServerBinder) service).getCounterService();
+            serverService = ((ServerService.ServerBinder) service).getService();
         }
 
         @Override
@@ -888,10 +888,13 @@ public final class ActivityManagerService extends ActivityManagerNative
                 if (r != null) {
                     Intent.FilterComparison filter
                             = new Intent.FilterComparison(intent);
+                    //创建IntentBindRecord对象，该对象用来描述Activity组件与Service组件的绑定情况
                     IntentBindRecord b = r.bindings.get(filter);
                     if (b != null && !b.received) {
+                        //添加ServerService组件的Binder本地对象到IntentBindRecord中
                         b.binder = service;
                         b.requested = true;
+                        //received变量描述ActivityMangerService是否已经收到了ServerService组件的Binder本地对象
                         b.received = true;
                         if (r.connections.size() > 0) {
                             Iterator<ArrayList<ConnectionRecord>> it
@@ -899,6 +902,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                             while (it.hasNext()) {
                                 ArrayList<ConnectionRecord> clist = it.next();
                                 for (int i=0; i<clist.size(); i++) {
+                                    //创建ConnectionRecord对象，用来描述哪些与该ServerService组件绑定的Activity组件
                                     ConnectionRecord c = clist.get(i);
                                     if (!filter.equals(c.binding.intent.intent)) {
                                         if (DEBUG_SERVICE) Slog.v(
@@ -911,6 +915,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                                     }
                                     if (DEBUG_SERVICE) Slog.v(TAG, "Publishing to: " + c);
                                     try {
+                                        //调用InnerConnection.connected()来连接ServerService组件
                                         c.conn.connected(r.name, service);
                                     } catch (Exception e) {
                                         Slog.w(TAG, "Failure sending service " + r.name +
@@ -940,48 +945,258 @@ Intent intent：Intent对象。
 IBinder service：指向ServerService组件内部的一个Binder本地对象。
 ```
 
-### 
+该方法会接着调用InnerConnection.connected()来连接ServerService组件，以便获得ServerService组件内部的一个Binder本地对象。
+
+### 23 InnerConnection.connected(ComponentName name, IBinder service)
 
 ```java
+final class LoadedApk {
+   static final class ServiceDispatcher {
+   
+        private static class InnerConnection extends IServiceConnection.Stub {
+            final WeakReference<LoadedApk.ServiceDispatcher> mDispatcher;
 
+            InnerConnection(LoadedApk.ServiceDispatcher sd) {
+                //InnerConnection内部持有一个它外部类ServiceDispatcher的弱引用
+                mDispatcher = new WeakReference<LoadedApk.ServiceDispatcher>(sd);
+            }
+
+            public void connected(ComponentName name, IBinder service) throws RemoteException {
+                LoadedApk.ServiceDispatcher sd = mDispatcher.get();
+                if (sd != null) {
+                    sd.connected(name, service);
+                }
+            }
+        }
+   }
+}
 ```
 
+可以看到类的关系是：LoadedApk.ServiceDispatcher.InnerConnection，该方法最终会去调用方法ServiceDispatcher.connected()。
 
-
-### 
+### 24 ServiceDispatcher.connected(ComponentName name, IBinder service)
 
 ```java
-
+final class LoadedApk {
+   static final class ServiceDispatcher {
+   
+      public void connected(ComponentName name, IBinder service) {
+            //mActivityThread的类型是Handler，它指向了ActivityThread内部的mH变量，它是
+            //用来向ClientActivity所在主线程发送消息的
+            if (mActivityThread != null) {
+                //将name与service封装成一个RunConnection对象，然后发送给ClientActivity所在主线程的
+                //消息队列
+                mActivityThread.post(new RunConnection(name, service, 0));
+            } else {
+                doConnected(name, service);
+            }
+        }
+   }
+}
 ```
 
+该方法将name与service封装成一个RunConnection对象，然后发送给ClientActivity所在主线程的消息队列，该消息最终会在
+RunConnection.run()方法里处理.
 
-
-### 
+### 25 RunConnection.run() 
 
 ```java
-
+final class LoadedApk {
+    private final class RunConnection implements Runnable {
+        RunConnection(ComponentName name, IBinder service, int command) {
+            mName = name;
+            mService = service;
+            mCommand = command;
+        }
+    
+        public void run() {
+            if (mCommand == 0) {
+                //调用LoadedApk.doConnected(mName, mService)连接ServerService组件
+                //mService即为ServerService组件内部的Binder对象。
+                doConnected(mName, mService);
+            } else if (mCommand == 1) {
+                doDeath(mName, mService);
+            }
+        }
+    
+        final ComponentName mName;
+        final IBinder mService;
+        final int mCommand;
+    }
+}
 ```
 
+该方法接着调用方法LoadedApk.doConnected(mName, mService)。
 
-
-### 
+### 26 LoadedApk.doConnected(ComponentName name, IBinder service)
 
 ```java
+final class LoadedApk {
+
+     public void doConnected(ComponentName name, IBinder service) {
+                ServiceDispatcher.ConnectionInfo old;
+                ServiceDispatcher.ConnectionInfo info;
+    
+                synchronized (this) {
+                    old = mActiveConnections.get(name);
+                    if (old != null && old.binder == service) {
+                        // Huh, already have this one.  Oh well!
+                        return;
+                    }
+    
+                    if (service != null) {
+                        // A new service is being connected... set it all up.
+                        mDied = false;
+                        info = new ConnectionInfo();
+                        info.binder = service;
+                        info.deathMonitor = new DeathMonitor(name, service);
+                        try {
+                            service.linkToDeath(info.deathMonitor, 0);
+                            mActiveConnections.put(name, info);
+                        } catch (RemoteException e) {
+                            // This service was dead before we got it...  just
+                            // don't do anything with it.
+                            mActiveConnections.remove(name);
+                            return;
+                        }
+    
+                    } else {
+                        // The named service is being disconnected... clean up.
+                        mActiveConnections.remove(name);
+                    }
+    
+                    if (old != null) {
+                        old.binder.unlinkToDeath(old.deathMonitor, 0);
+                    }
+                }
+    
+                //mConnection对象指向了我们在ClientActivity定义的一个ServiceConnection对象
+                // If there was an old service, it is not disconnected.
+                if (old != null) {
+                    mConnection.onServiceDisconnected(name);
+                }
+                // If there is a new service, it is now connected.
+                if (service != null) {
+                    mConnection.onServiceConnected(name, service);
+                }
+            }
+}
 
 ```
-
-
-### 
+### 27 ServiceConnection.onServiceConnected(ComponentName name, IBinder service)
 
 ```java
+public class ClientActivity extends AppCompatActivity  {
 
+    private IServerService serverService;
+    
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //获得ServerService，保存在IServerService serverService变量中，ServerService
+            //实现了接口IServerService。
+            serverService = ((ServerService.ServerBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serverService = null;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_service);
+
+        Intent intent = new Intent(ClientActivity.this, ServerService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+}
 ```
 
+在该方法中，调用getService()方法获得ServerService，保存在IServerService serverService变量中，ServerService实现了接口IServerService。
 
-### 
+到这一步，ServerService组件成功与ClientActivity组件绑定，整个流程比较长，我们再来总结一下。
+
+先看例子
+
+1 定义一个Activity，它将要绑定一个Service组件运行后台任务。
 
 ```java
+public class ClientActivity extends AppCompatActivity  {
 
+    private IServerService serverService;
+    
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            serverService = ((ServerService.ServerBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serverService = null;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_service);
+
+        Intent intent = new Intent(ClientActivity.this, ServerService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+}
 ```
 
+2 在定义一个ServerService，它即将要被一个Activity组件绑定。
 
+```java
+public class ServerService extends Service  {
+
+    private IBinder binder = new ServerBinder();
+
+    public class ServerBinder extends Binder {
+        public ServerService getCounterService() {
+            return ServerService.this;
+        }
+
+    }
+
+    public ServerService() {
+    }
+
+    /**
+     * 当Service组件被绑定时，onBind会被调用。
+     *
+     * @param intent intent
+     * @return IBinder
+     */
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+}
+```
+
+再看序列图
+
+**Service组件在程内绑定序列图**
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
+
+好，我们开始总结整个流程
+
+```
+1 ClientActivity组件向ActivityManagerService发送一个绑定ServerService组件的进程间通信请求。
+2 ActivityManagerService发现用来运行ServerService组件与ClientActivity组件运行在同一个进程里，它
+便直接通知该进程将该erverService组件启动起来。
+3 该erverService组件启动起来以后，ActivityManagerService就请求它返回一个Binder本地对象，以便
+ClientActivity组件可以通过这个Binder对象与ServerService组件建立连接。
+4 ActivityManagerService将从ServerService组件获得的Binder对象返回给调用者ClientActivity。
+5 ClientActivity获得到ActivityManagerService发送给它的Binder对象后，它就可以通过这个BInder对象
+获得ServerService组件的一个访问接口，从而获得ServerService的服务，这样便相当于ServerService组件
+绑定在ClientActivity组件内部了。
+```

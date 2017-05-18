@@ -19,3 +19,5 @@
 ServiceRecord
 
 IntentBindRecord
+
+ConnectionRecord
