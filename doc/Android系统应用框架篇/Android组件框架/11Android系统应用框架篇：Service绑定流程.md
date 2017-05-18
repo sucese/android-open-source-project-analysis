@@ -93,7 +93,7 @@ ClientActivity组件可以通过这个Binder对象与ServerService组件建立�
 绑定在ClientActivity组件内部了。
 ```
 
-Service组件在程内绑定序列图
+**Service组件在程内绑定序列图**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/10/service_bind_sequence.png">
 
