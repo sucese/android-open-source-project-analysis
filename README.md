@@ -106,15 +106,12 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 **Android内存框架**
 
 - Android系统底层框架篇：Ashmem匿名共享内存系统
-
-
 - Android系统基础篇：硬件抽象层
 - Android系统基础篇：智能指针
 - Android系统基础篇：ART/Dalvik 虚拟机
 - Android系统驱动篇：Binder进程通信系统
-- Android系统驱动篇：
 
-**Android系统编程思想篇**
+## Android系统编程思想篇
 
 - [1Android系统编程思想篇：单例模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/1Android系统编程思想篇：单例模式.md)
 - [2Android系统编程思想篇：建造者模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/2Android系统编程思想篇：建造者模式.md)

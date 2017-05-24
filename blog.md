@@ -20,7 +20,6 @@
 - [设计模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)
 - [数据结构与算法](https://github.com/guoxiaoxing?tab=repositories/blob/master/README.md)
 
-
 另外还有关于JavaScript与Python的学习笔记，这部分内容相对比较基础。
 
 - [JavaScript](https://github.com/guoxiaoxing/web-front-end-learning-route/blob/master/README.md)
