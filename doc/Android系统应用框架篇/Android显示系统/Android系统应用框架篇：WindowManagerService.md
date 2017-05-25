@@ -16,7 +16,9 @@
 本篇文章来分析Android显示系统中重要的一环WindowManagerService，在具体介绍这方面内容之前，我们先来了解与WindowManagerService
 相关的重要概念。
 
-**WindowToken**
+## 基本概念
+
+### WindowToken
 
 >WindowToken指代了一个应用组件，例如：ActivityInputMethod、Wallpaper等，它把属于一个应用组件的窗口组合在了一起。
 在进行窗口z-ordered排序时，会把属于同一个WindowToken的窗口放在一起。
@@ -115,6 +117,153 @@ WindowToken中定义了一些很关键的变量，我们来看看它们的作用
         }
     };
 ```
+### WindowState
+
+>WindowState表示窗口的各种属性，它持有Session、IWindow、WindowToken与AppWindowToken等各种属性
+，所以它描述了窗口的详细信息，有点像ActivityRecord、ServiceRecord这写类。
+
+我们来看看WindowState的构造函数的实现，借此理解一下窗口排布次序的原理。
+
+关于z-order
+
+>手机屏幕是以左上角为原点，向右为X轴方向，向下为Y轴方向的一个二维空间。为了方便管理窗口的显示次序，手机的屏幕被扩展为了
+一个三维的空间，即多定义了 一个Z轴，其方向为垂直于屏幕表面指向屏幕外。多个窗口依照其前后顺序排布在这个虚拟的Z轴上，因此
+窗口的显示次序又被称为Z序（Z order）。
+
+```java
+private final class WindowState implements WindowManagerPolicy.WindowState {
+    
+     WindowState(Session s, IWindow c, WindowToken token,
+                   WindowState attachedWindow, WindowManager.LayoutParams a,
+                   int viewVisibility) {
+                mSession = s;
+                mClient = c;
+                mToken = token;
+                mAttrs.copyFrom(a);
+                mViewVisibility = viewVisibility;
+                DeathRecipient deathRecipient = new DeathRecipient();
+                mAlpha = a.alpha;
+                if (localLOGV) Slog.v(
+                    TAG, "Window " + this + " client=" + c.asBinder()
+                    + " token=" + token + " (" + mAttrs.token + ")");
+                try {
+                    c.asBinder().linkToDeath(deathRecipient, 0);
+                } catch (RemoteException e) {
+                    mDeathRecipient = null;
+                    mAttachedWindow = null;
+                    mLayoutAttached = false;
+                    mIsImWindow = false;
+                    mIsWallpaper = false;
+                    mIsFloatingLayer = false;
+                    mBaseLayer = 0;
+                    mSubLayer = 0;
+                    return;
+                }
+                mDeathRecipient = deathRecipient;
+    
+                //为子窗口分配z-order
+                if ((mAttrs.type >= FIRST_SUB_WINDOW &&
+                        mAttrs.type <= LAST_SUB_WINDOW)) {
+                    // The multiplier here is to reserve space for multiple
+                    // windows in the same type layer.
+                    //主序
+                    mBaseLayer = mPolicy.windowTypeToLayerLw(
+                            attachedWindow.mAttrs.type) * TYPE_LAYER_MULTIPLIER
+                            + TYPE_LAYER_OFFSET;
+                    //子序
+                    mSubLayer = mPolicy.subWindowTypeToLayerLw(a.type);
+                    mAttachedWindow = attachedWindow;
+                    mAttachedWindow.mChildWindows.add(this);
+                    mLayoutAttached = mAttrs.type !=
+                            WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+                    mIsImWindow = attachedWindow.mAttrs.type == TYPE_INPUT_METHOD
+                            || attachedWindow.mAttrs.type == TYPE_INPUT_METHOD_DIALOG;
+                    mIsWallpaper = attachedWindow.mAttrs.type == TYPE_WALLPAPER;
+                    mIsFloatingLayer = mIsImWindow || mIsWallpaper;
+                } 
+                //为普通窗口分配z-order
+                else {
+                    // The multiplier here is to reserve space for multiple
+                    // windows in the same type layer.
+                    //主序
+                    mBaseLayer = mPolicy.windowTypeToLayerLw(a.type)
+                            * TYPE_LAYER_MULTIPLIER
+                            + TYPE_LAYER_OFFSET;
+                    //子序
+                    mSubLayer = 0;
+                    mAttachedWindow = null;
+                    mLayoutAttached = false;
+                    mIsImWindow = mAttrs.type == TYPE_INPUT_METHOD
+                            || mAttrs.type == TYPE_INPUT_METHOD_DIALOG;
+                    mIsWallpaper = mAttrs.type == TYPE_WALLPAPER;
+                    mIsFloatingLayer = mIsImWindow || mIsWallpaper;
+                }
+    
+                WindowState appWin = this;
+                while (appWin.mAttachedWindow != null) {
+                    appWin = mAttachedWindow;
+                }
+                WindowToken appToken = appWin.mToken;
+                while (appToken.appWindowToken == null) {
+                    WindowToken parent = mTokenMap.get(appToken.token);
+                    if (parent == null || appToken == parent) {
+                        break;
+                    }
+                    appToken = parent;
+                }
+                mRootToken = appToken;
+                mAppToken = appToken.appWindowToken;
+    
+                mSurface = null;
+                mRequestedWidth = 0;
+                mRequestedHeight = 0;
+                mLastRequestedWidth = 0;
+                mLastRequestedHeight = 0;
+                mXOffset = 0;
+                mYOffset = 0;
+                mLayer = 0;
+                mAnimLayer = 0;
+                mLastLayer = 0;
+            }
+    
+}
+```
+一个Window的次序有两个参数决定：
+
+```
+int mBaseLayer：用于描述窗口及其子窗口在所有窗口中的显示位置，主序越大，则窗口及其子窗口的显示位置相对于其他窗口的位置越靠前。
+int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，子序越大，则子窗口相对于其兄弟窗口的位置越靠前。
+```
+
+窗口的主序表
+
+|窗口类型|主序|
+|:------|:---|
+|TYPE_UNIVERSE_BACKGROUND|11000
+|TYPE_WALLPAPER|21000
+|TYPE_PHONE|31000
+|TYPE_SEARCH_BAR|41000
+|TYPE_RECENTS_OVERLAY|51000
+|TYPE_SYSTEM_DIALOG|51000
+|TYPE_TOAST|61000
+|TYPE_PRIORITY_PHONE|71000
+|TYPE_DREAM|81000
+|TYPE_SYSTEM_ALERT|91000
+|TYPE_INPUT_METHOD|101000
+|TYPE_INPUT_METHOD_DIALOG|111000
+|TYPE_KEYGUARD|121000
+|TYPE_KEYGUARD_DIALOG|131000
+|TYPE_STATUS_BAR_SUB_PANEL|141000
+|应用窗口与未知类型的窗口|21000
+ 
+窗口的子序表
+|子窗口类型|子序
+|:------|:---|
+|TYPE_APPLICATION_PANEL|1
+|TYPE_APPLICATION_ATTACHED_DIALOG|1
+|TYPE_APPLICATION_MEDIA|-2
+|TYPE_APPLICATION_MEDIA_OVERLAY|-1
+|TYPE_APPLICATION_SUB_PANEL|2
 
 
 ## 启动流程
@@ -279,7 +428,7 @@ public class WindowManagerService extends IWindowManager.Stub
     
             mInputManager.start();
     
-            //将自己添加到Watchdog的监控中
+            //将自己St添加到Watchdog的监控中
             // Add ourself to the Watchdog monitors.
             Watchdog.getInstance().addMonitor(this);
         }    
@@ -287,11 +436,6 @@ public class WindowManagerService extends IWindowManager.Stub
 ```
 从WindowManagerService的构造函数中可以看出，它主要做了mContext、mHaveInputMethods、mPowerManager等变量的保存，获取了ActivityManager
 以及创建了InputManager来处理输入事件，这些都是为了后续绘制界面以及处理用户输入做准备。
-
-**WindowState**
-
->WindowState表示窗口的各种属性，它持有Session、IWindow、WindowToken与AppWindowToken等各种属性
-，所以它描述了窗口的详细信息，有点像ActivityRecord、ServiceRecord这写类。
 
 ## 窗口管理
 
@@ -508,6 +652,7 @@ public class WindowManagerService extends IWindowManager.Stub
                     moveInputMethodWindowsIfNeededLocked(false);
                 }
     
+                //为所有的窗口分配最终额排列次序
                 assignLayersLocked();
                 // Don't do layout here, the window must call
                 // relayout to be displayed, so we'll do it there.
@@ -555,6 +700,14 @@ Rect outContentInsets：
 InputChannel outInputChannel：
 ```
 
+这个函数主要做了3件事情：
+
+```
+1 检查窗口权限，没有权限的客户端不能添加窗口
+2 根据客户端的attrs.token取出已经注册的WindowToken
+3 WindowMangerService要为添加的窗口创建一个WindowState对象，这个对象维护了窗口的所有状体信息
+```
+
 在这个函数中，我们看到2个重要的集合：
 
 ```
@@ -570,8 +723,6 @@ WindowToken具有令牌的作用，是对应用组件的行为进行规范管理
 另外，在创建系统类型的窗口时不需要提供一个有效的Token，WindwoManagerService会隐式地为其声明一个WindowToken，但是在addWindow()函数一开始
 的mPolicy.checkAddPermission()的目的就是如此。它要求客户端必须拥有SYSTEM_ALERT_WINDOW或INTERNAL_SYSTEM_WINDOW权限才能创建系统类
 型的窗口。
-
-该函数中还牵扯了一类型
 
 
 ```java
