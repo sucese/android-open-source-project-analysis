@@ -257,7 +257,8 @@ int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，�
 |应用窗口与未知类型的窗口|21000
  
 窗口的子序表
-|子窗口类型|子序
+
+|子窗口类型|子序|
 |:------|:---|
 |TYPE_APPLICATION_PANEL|1
 |TYPE_APPLICATION_ATTACHED_DIALOG|1
