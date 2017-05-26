@@ -1,4 +1,4 @@
-# Android系统应用框架篇：Window大小与位置的计算流程
+# Android系统应用框架篇：SurfaceFlinger渲染原理
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
@@ -13,10 +13,18 @@
 
 >作者的文章首发在[Github](https://github.com/guoxiaoxing)上，也会发在[简书](http://www.jianshu.com/users/66a47e04215b/latest_articles)与[CSDN](http://blog.csdn.net/allenwells)平台上，文章内容主要包含Android/Linux, Java/Kotlin/JVM，Python, JavaScript/React/ReactNative, 数据结构与算法等方面的内容。如果有什么问题，也欢迎发邮件与我交流。
 
-## Window大小的计算
+Android应用与SurfaceFlinger服务的连接流程
 
-**Window大小的计算序列图**
+http://blog.csdn.net/luoshengyang/article/details/7857163
 
-从前面的文章可知，Window大小的计算是从函数ViewRoot.performTraversals()开始，向WindowManagerService发送一个进程间通信请求，请求计算
-Window窗口大小。
+Android应用与SurfaceFlinger共享UI元数据（SharedClient）的创建流程
 
+http://blog.csdn.net/luoshengyang/article/details/7867340
+
+Android应用请求SurfaceFlinger服务创建Surface流程
+
+http://blog.csdn.net/luoshengyang/article/details/7884628
+
+Android应用请求SurfaceFlinger服务绘制Surface流程
+
+http://blog.csdn.net/luoshengyang/article/details/7932268
