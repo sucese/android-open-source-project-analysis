@@ -76,6 +76,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                 //mWinFrame用来保存Activity窗口的高度与宽度信息，注意该变量的高度和宽度可能会被WindowManagerService
                 //主动请求应用进程修改，修改后的值保存在mFrame中。
                 Rect frame = mWinFrame;
+                //mFirst为true则表示Activity窗口是第一次请求执行策略、布局与绘制操作，
                 if (mFirst) {
                     fullRedrawNeeded = true;
                     mLayoutRequested = true;
@@ -120,9 +121,20 @@ public final class ViewRoot extends Handler implements ViewParent,
 这端代码涉及的几个变量的含义。
 
 ```
-int mWidth：Activity窗口当前的宽度，它是由应用上一次请求WindowManagerService计算得到的，并且一直
-保持不变知道下次WindowManagerService重新计算为止。
-int mHeight;
+int mWidth：Activity窗口当前的宽度，它是由应用上一次请求WindowManagerService计算得到的，并且一直保持不变知道
+下次WindowManagerService重新计算为止。
+int mHeight：Activity窗口当前的高度，它是由应用上一次请求WindowManagerService计算得到的，并且一直保持不变知道
+下次WindowManagerService重新计算为止。
+React mWinFrame：该变量也保存了Activity窗口的宽度与高度，但是它保存的宽度与高度可能会被WindowManagerService
+主动请求应用进程修改。
+```
+所以你可以看到这两组值可能不相等。
+
+该函数片段主要做了以下事情：
+
+```
+1 mFirst为true则表示Activity窗口是第一次请求执行策略、布局与绘制操作，Activity窗口的宽高等于当前屏幕的宽高，否
+则等于mWinFrame保存的宽高。
 ```
 
         
