@@ -22,11 +22,11 @@
 从前面的文章可知，Window大小的计算是从函数ViewRoot.performTraversals()开始，向WindowManagerService发送一个进程间通信请求，请求计算
 Window窗口大小。
 
-### ViewRoot.performTraversals()
+### 1 ViewRoot.performTraversals()
 
 这个函数一共600多行代码，相对比较复杂，它主要用来计算窗口的大小。我们拆开一段段来看。
 
-1 获取Activity当前宽度desiredWindowWidth与当前高度desiredWindowHeight
+#### 1.1 获取Activity当前宽度desiredWindowWidth与当前高度desiredWindowHeight
 
 ```java
 public final class ViewRoot extends Handler implements ViewParent,
@@ -138,7 +138,7 @@ React mWinFrame：该变量也保存了Activity窗口的宽度与高度，但是
 则等于mWinFrame保存的宽高。
 2 当前宽高不等于上次计算的宽高，则说明窗口大小发生了变化，将windowResizesToFitContent置为true。
 ```
-2 在Activity窗口主动请求WindowManagerService计算窗口大小之前，对它的顶层视图进行一次测量操作。
+#### 1.2 在Activity窗口主动请求WindowManagerService计算窗口大小之前，对它的顶层视图进行一次测量操作。
 
 ```java
 public final class ViewRoot extends Handler implements ViewParent,
@@ -168,15 +168,25 @@ public final class ViewRoot extends Handler implements ViewParent,
                             // enqueued an action after being detached
                             getRunQueue().executeActions(attachInfo.mHandler);
                 
+                            //Activity窗口第一次请求执行测量、布局与绘制操作
                             if (mFirst) {
+                                //1 host指向的是顶级视图，调用View.fitSystemWindows设置它4个内边距
+                                //mPaddingLeft，mPaddingTop，mPaddingRight，mPaddingBottom，设置的值
+                                //为Activity窗口初始化时内容边距的大小，这样做的目的是为了在Activity窗口四周
+                                //留下足够的区域来设置状态栏等系统窗口
                                 host.fitSystemWindows(mAttachInfo.mContentInsets);
                                 // make sure touch mode code executes by setting cached value
                                 // to opposite of the added touch mode.
                                 mAttachInfo.mInTouchMode = !mAddedTouchMode;
                                 ensureTouchModeLocally(mAddedTouchMode);
-                            } else {
+                            } 
+                            //Activity窗口不是第一次请求执行测量、布局与绘制操作
+                            else {
+                                
+                                //2 检查WindowManagerService是否给Activity窗口设置了新的mContentInsets与mVisibleInsets
                                 if (!mAttachInfo.mContentInsets.equals(mPendingContentInsets)) {
                                     mAttachInfo.mContentInsets.set(mPendingContentInsets);
+                                    //mContentInsets发生变化，则重新设置顶层视图View的内容边距
                                     host.fitSystemWindows(mAttachInfo.mContentInsets);
                                     insetsChanged = true;
                                     if (DEBUG_LAYOUT) Log.v(TAG, "Content insets changing to: "
@@ -187,6 +197,11 @@ public final class ViewRoot extends Handler implements ViewParent,
                                     if (DEBUG_LAYOUT) Log.v(TAG, "Visible insets changing to: "
                                             + mAttachInfo.mVisibleInsets);
                                 }
+                                
+                                //当Activity窗口的宽高参数都被设置为WRAP_CONTENT时，标明Activity窗口的大小
+                                //要等于内容区域的大小，由于Activity窗口的大小是要覆盖整个屏幕的，所以它的宽
+                                //高还是被设置成屏幕的宽高。也就是说我们将Activity窗口的宽高设置为WRAP_CONTENT时
+                                //它实际上等于屏幕的宽高。
                                 if (lp.width == ViewGroup.LayoutParams.WRAP_CONTENT
                                         || lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
                                     windowResizesToFitContent = true;
@@ -198,19 +213,67 @@ public final class ViewRoot extends Handler implements ViewParent,
                                 }
                             }
                 
+                            //根据当前窗口的宽度与宽度测量规范获取它的顶层视图的测量规范
                             childWidthMeasureSpec = getRootMeasureSpec(desiredWindowWidth, lp.width);
+                            //根据Activity窗口的高度与高度测量规范获取它的顶层视图的测量规范
                             childHeightMeasureSpec = getRootMeasureSpec(desiredWindowHeight, lp.height);
                 
                             // Ask host how big it wants to be
                             if (DEBUG_ORIENTATION || DEBUG_LAYOUT) Log.v(TAG,
                                     "Measuring " + host + " in display " + desiredWindowWidth
                                     + "x" + desiredWindowHeight + "...");
+                            //3 对顶层视图host进行测量
                             host.measure(childWidthMeasureSpec, childHeightMeasureSpec);
                 
                             if (DBG) {
                                 System.out.println("======================================");
                                 System.out.println("performTraversals -- after measure");
                                 host.debug();
+                            }
+                        }
+                        
+                        if (attachInfo.mRecomputeGlobalAttributes) {
+                            //Log.i(TAG, "Computing screen on!");
+                            attachInfo.mRecomputeGlobalAttributes = false;
+                            boolean oldVal = attachInfo.mKeepScreenOn;
+                            attachInfo.mKeepScreenOn = false;
+                            host.dispatchCollectViewAttributes(0);
+                            if (attachInfo.mKeepScreenOn != oldVal) {
+                                params = lp;
+                                //Log.i(TAG, "Keep screen on changed: " + attachInfo.mKeepScreenOn);
+                            }
+                        }
+                
+                        if (mFirst || attachInfo.mViewVisibilityChanged) {
+                            attachInfo.mViewVisibilityChanged = false;
+                            int resizeMode = mSoftInputMode &
+                                    WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST;
+                            //根据Activity的resizeMode属性来调整窗口大小
+                            // If we are in auto resize mode, then we need to determine
+                            // what mode to use now.
+                            if (resizeMode == WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED) {
+                                final int N = attachInfo.mScrollContainers.size();
+                                for (int i=0; i<N; i++) {
+                                    if (attachInfo.mScrollContainers.get(i).isShown()) {
+                                        resizeMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
+                                    }
+                                }
+                                if (resizeMode == 0) {
+                                    resizeMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
+                                }
+                                if ((lp.softInputMode &
+                                        WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != resizeMode) {
+                                    lp.softInputMode = (lp.softInputMode &
+                                            ~WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) |
+                                            resizeMode;
+                                    params = lp;
+                                }
+                            }
+                        }
+                
+                        if (params != null && (host.mPrivateFlags & View.REQUEST_TRANSPARENT_REGIONS) != 0) {
+                            if (!PixelFormat.formatHasAlpha(params.format)) {
+                                params.format = PixelFormat.TRANSLUCENT;
                             }
                         }
             ...
@@ -226,62 +289,33 @@ final View.AttachInfo mAttachInfo;：用来描述Activity窗口的属性，它�
 mPendingContentInsets属性，它用来描述Activity窗口上一次请求WindowManagerService计算得到的窗口属性值。
 ```
 
->final Rect mPendingVisibleInsets = new Rect()：可见边距大小，由WindowManagerService主动请求Activity窗口设置。
-final Rect mPendingContentInsets = new Rect()：内容边距大小，由WindowManagerService主动请求Activity窗口设置。
-final View.AttachInfo mAttachInfo;：用来描述Activity窗口的属性，它内部也有mPendingVisibleInsets与mPendingContentInsets
-属性，它用来描述Activity窗口上一次请求WindowManagerService计算得到的窗口属性值。
-        
+这一段代码主要做了Activity窗口的顶层视图的测量：
+
+```
+1 Activity窗口第一次请求执行测量、布局与绘制操作（mFirst = true）
+
+调用View.fitSystemWindows设置它4个内边距mPaddingLeft，mPaddingTop，mPaddingRight，mPaddingBottom，
+设置的值为Activity窗口初始化时内容边距的大小，这样做的目的是为了在Activity窗口四周留下足够的区域来设置状态栏
+等系统窗口。
+
+Activity窗口不是第一次请求执行测量、布局与绘制操作（mFirst = false）
+
+检查WindowManagerService是否给Activity窗口设置了新的mContentInsets与mVisibleInsets，如果设置了则更新
+mAttachInfo里面对应的值，并更新顶层视图host的内容边距。
+
+2 根据当前窗口的宽度与宽度测量规范获取它的顶层视图的测量规范childWidthMeasureSpec，根据Activity窗口的高度与
+高度测量规范获取它的顶层视图的测量规范childHeightMeasureSpec，利用childWidthMeasureSpec与
+childHeightMeasureSpec对顶层视图host进行测量。
+```
+
+#### 1.3 检查是否需要处理Activity窗口大小变化事件以及Activity窗口是否需要指定额外的内容边距与可见边距
+
 ```java
 public final class ViewRoot extends Handler implements ViewParent,
         View.AttachInfo.Callbacks {
     
      private void performTraversals() {
             ...
-    
-            if (attachInfo.mRecomputeGlobalAttributes) {
-                //Log.i(TAG, "Computing screen on!");
-                attachInfo.mRecomputeGlobalAttributes = false;
-                boolean oldVal = attachInfo.mKeepScreenOn;
-                attachInfo.mKeepScreenOn = false;
-                host.dispatchCollectViewAttributes(0);
-                if (attachInfo.mKeepScreenOn != oldVal) {
-                    params = lp;
-                    //Log.i(TAG, "Keep screen on changed: " + attachInfo.mKeepScreenOn);
-                }
-            }
-    
-            if (mFirst || attachInfo.mViewVisibilityChanged) {
-                attachInfo.mViewVisibilityChanged = false;
-                int resizeMode = mSoftInputMode &
-                        WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST;
-                // If we are in auto resize mode, then we need to determine
-                // what mode to use now.
-                if (resizeMode == WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED) {
-                    final int N = attachInfo.mScrollContainers.size();
-                    for (int i=0; i<N; i++) {
-                        if (attachInfo.mScrollContainers.get(i).isShown()) {
-                            resizeMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
-                        }
-                    }
-                    if (resizeMode == 0) {
-                        resizeMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
-                    }
-                    if ((lp.softInputMode &
-                            WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != resizeMode) {
-                        lp.softInputMode = (lp.softInputMode &
-                                ~WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) |
-                                resizeMode;
-                        params = lp;
-                    }
-                }
-            }
-    
-            if (params != null && (host.mPrivateFlags & View.REQUEST_TRANSPARENT_REGIONS) != 0) {
-                if (!PixelFormat.formatHasAlpha(params.format)) {
-                    params.format = PixelFormat.TRANSLUCENT;
-                }
-            }
-    
             boolean windowShouldResize = mLayoutRequested && windowResizesToFitContent
                 && ((mWidth != host.mMeasuredWidth || mHeight != host.mMeasuredHeight)
                     || (lp.width == ViewGroup.LayoutParams.WRAP_CONTENT &&
@@ -291,7 +325,31 @@ public final class ViewRoot extends Handler implements ViewParent,
     
             final boolean computesInternalInsets =
                     attachInfo.mTreeObserver.hasComputeInternalInsetsListeners();
-            boolean insetsPending = false;
+            ...
+     }
+}
+```
+
+这段函数主要做了两件事情：
+
+1 检查是否需要处理Activity窗口大小变化事件，以下情形以下windowShouldResize被置为true，需要处理。
+
+```
+1 ViewRoot.mLayoutRequested = true，说明应用正在请求Activity窗口执行一次测量、布局与绘制操作。
+2 ViewRoot.windowResizesToFitContent = true，说明我们前面的代码检查到了Activity窗口的大小发生了辩护。
+3 如果测量出来的大小与当前的大小不相等时也认为窗口大小发生了变化。
+```
+2 检查Activity窗口是否需要指定额外的内容边距与课件可见边距，之所以这么做是为了放置一些额外的东西。
+
+#### 1.4 调用View.measure()完成Activity窗口的测量工作
+
+```java
+public final class ViewRoot extends Handler implements ViewParent,
+        View.AttachInfo.Callbacks {
+    
+     private void performTraversals() {
+            ...
+ boolean insetsPending = false;
             int relayoutResult = 0;
             if (mFirst || windowShouldResize || insetsChanged
                     || viewVisibilityChanged || params != null) {
@@ -306,6 +364,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                     // window, waiting until we can finish laying out this window
                     // and get back to the window manager with the ultimately
                     // computed insets.
+                    //insetsPending = true表示Activity窗口有额外的内容边距与可见边距等待指定
                     insetsPending = computesInternalInsets
                             && (mFirst || viewVisibilityChanged);
     
@@ -338,6 +397,11 @@ public final class ViewRoot extends Handler implements ViewParent,
                         Log.i(TAG, "host=w:" + host.mMeasuredWidth + ", h:" +
                                 host.mMeasuredHeight + ", params=" + params);
                     }
+                  
+                    //调用relayoutWindow()方法来请求WindowManagerService来计算Activity窗口的大小
+                    //以及内容边距和可见边距大小，计算完毕后Activity窗口的大小会保存在变量mWinFrame中
+                    //Activity窗口的内容边距大小保存在mPendingContentInsets中，可见边距保存中mPending
+                    //VisibleInsets中
                     relayoutResult = relayoutWindow(params, viewVisibility, insetsPending);
     
                     if (params != null) {
@@ -356,8 +420,10 @@ public final class ViewRoot extends Handler implements ViewParent,
                         mPendingConfiguration.seq = 0;
                     }
                     
+                    //Activity窗口内容边距是否发生变化
                     contentInsetsChanged = !mPendingContentInsets.equals(
                             mAttachInfo.mContentInsets);
+                    //Activity窗口可见边距是否发生变化
                     visibleInsetsChanged = !mPendingVisibleInsets.equals(
                             mAttachInfo.mVisibleInsets);
                     if (contentInsetsChanged) {
@@ -470,6 +536,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                             (int) (mHeight * appScale + 0.5f));
                 }
     
+                //检查是否需要重新测量Activity窗口的大小
                 boolean focusChangedDueToTouchMode = ensureTouchModeLocally(
                         (relayoutResult&WindowManagerImpl.RELAYOUT_IN_TOUCH_MODE) != 0);
                 if (focusChangedDueToTouchMode || mWidth != host.mMeasuredWidth
@@ -483,6 +550,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                             + " measuredHeight" + host.mMeasuredHeight
                             + " coveredInsetsChanged=" + contentInsetsChanged);
     
+                    //调用View.measure()方法进行测量
                      // Ask host how big it wants to be
                     host.measure(childWidthMeasureSpec, childHeightMeasureSpec);
     
@@ -515,8 +583,49 @@ public final class ViewRoot extends Handler implements ViewParent,
     
                     mLayoutRequested = true;
                 }
-            }
+            }            
+            ...
+     }
+}
+```
+
+先来说说这段代码前面的几个boolean值，也就是代码的执行条件：
+
+```
+1 mFirst = true：Activity窗口第一次执行策略、布局与绘制操作。
+2 windowShouldResize = true：Activity窗口的大小发生了变化。
+3 insetsChanged：Activity窗口的内容边距发生了变化。
+4 viewVisibilityChanged：Activity窗口的可见性发生了变化。
+5 params != null：变量params指向了一个WindowManagerParams对象，即Activity窗口的属性发生了变化。
+```
+
+这段代码主要做了以下几件事情：
+
+1 调用relayoutWindow()方法来请求WindowManagerService来计算Activity窗口的大小以及内容边距和可见边距大小，计算
+完毕后Activity窗口的大小会保存在变量mWinFrame中Activity窗口的内容边距大小保存在mPendingContentInsets中，可见
+边距保存中mPendingVisibleInsets中
+
+2 检查是否需要重新测量Activity窗口的大小，满足以下条件之一则需要重新测量：
+
+```
+1 focusChangedDueToTouchMode = true：即Activity窗口的触摸模式发生了变化，由此引发了Activity窗口获得当前
+焦点的控件发生了变化。
+2 Activity窗口新测量出来的宽度host.mMeasuredWidth和高度host.mMeasuredHeight不等于WindowManagerService
+服务计算出来的宽度mWidth和高度mHeight。
+3 contentInsetsChanged = true：Activity窗口的内容边距和可见边距发生了变化。
+```
+
+如果需要进行测量，则调用View.measure()方法进行测量。
+
+#### 1.5 调用View.layout()方法完成布局工作，并将Activity窗口指定的额外的内容边距与可见边距通过sWindowSession发送给WindowManagerService。
+
+```java
+public final class ViewRoot extends Handler implements ViewParent,
+        View.AttachInfo.Callbacks {
     
+     private void performTraversals() {
+            ...
+            
             final boolean didLayout = mLayoutRequested;
             boolean triggerGlobalLayoutListener = didLayout
                     || attachInfo.mRecomputeGlobalAttributes;
@@ -530,6 +639,8 @@ public final class ViewRoot extends Handler implements ViewParent,
                 if (Config.DEBUG && ViewDebug.profileLayout) {
                     startTime = SystemClock.elapsedRealtime();
                 }
+                
+                //调用View.layout()方法完成布局工作
                 host.layout(0, 0, host.mMeasuredWidth, host.mMeasuredHeight);
     
                 if (Config.DEBUG && ViewDebug.consistencyCheckEnabled) {
@@ -576,12 +687,14 @@ public final class ViewRoot extends Handler implements ViewParent,
                     host.debug();
                 }
             }
-    
+            
             if (triggerGlobalLayoutListener) {
                 attachInfo.mRecomputeGlobalAttributes = false;
                 attachInfo.mTreeObserver.dispatchOnGlobalLayout();
             }
     
+            //computesInternalInsets为true时表明Activity窗口指定了额外的内容边距与可见边距，这个时候需要
+            //通知WindowManagerService，以便WindowManagerService下次可以知道Activity的真实布局。
             if (computesInternalInsets) {
                 ViewTreeObserver.InternalInsetsInfo insets = attachInfo.mGivenInternalInsets;
                 final Rect givenContent = attachInfo.mGivenInternalInsets.contentInsets;
@@ -589,6 +702,8 @@ public final class ViewRoot extends Handler implements ViewParent,
                 givenContent.left = givenContent.top = givenContent.right
                         = givenContent.bottom = givenVisible.left = givenVisible.top
                         = givenVisible.right = givenVisible.bottom = 0;
+                //调用TreeObserver.dispatchOnComputeInternalInsets(insets)来计算Activity窗口额外指定的
+                //内容边距与可见边距的大小，计算完成后保存在变量attachInfo.mGivenInternalInsets中。
                 attachInfo.mTreeObserver.dispatchOnComputeInternalInsets(insets);
                 Rect contentInsets = insets.contentInsets;
                 Rect visibleInsets = insets.visibleInsets;
@@ -599,6 +714,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                 if (insetsPending || !mLastGivenInsets.equals(insets)) {
                     mLastGivenInsets.set(insets);
                     try {
+                        //sWindowSession是一个Binder代理对象，通过它将内容边距与可见边距设置到WindowManagerService中
                         sWindowSession.setInsets(mWindow, insets.mTouchableInsets,
                                 contentInsets, visibleInsets);
                     } catch (RemoteException e) {
@@ -684,7 +800,9 @@ public final class ViewRoot extends Handler implements ViewParent,
                 }
                 // Try again
                 scheduleTraversals();
-            }
-        }
+            }            
+     }
 }
 ```
+
+这段代码调用View.layout()方法完成布局工作，并将Activity窗口指定的额外的内容边距与可见边距通过sWindowSession发送给WindowManagerService。
