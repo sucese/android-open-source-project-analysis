@@ -110,6 +110,7 @@ public final class ViewRoot extends Handler implements ViewParent,
                                 "View " + host + " resized to: " + frame);
                         fullRedrawNeeded = true;
                         mLayoutRequested = true;
+                        //当前宽高不等于上次计算的宽高，则说明窗口大小发生了变化，将windowResizesToFitContent置为true
                         windowResizesToFitContent = true;
                     }
                 }  
@@ -135,8 +136,100 @@ React mWinFrame：该变量也保存了Activity窗口的宽度与高度，但是
 ```
 1 mFirst为true则表示Activity窗口是第一次请求执行策略、布局与绘制操作，Activity窗口的宽高等于当前屏幕的宽高，否
 则等于mWinFrame保存的宽高。
+2 当前宽高不等于上次计算的宽高，则说明窗口大小发生了变化，将windowResizesToFitContent置为true。
+```
+2 在Activity窗口主动请求WindowManagerService计算窗口大小之前，对它的顶层视图进行一次测量操作。
+
+```java
+public final class ViewRoot extends Handler implements ViewParent,
+        View.AttachInfo.Callbacks {
+    
+     private void performTraversals() {
+            ...
+            if (viewVisibilityChanged) {
+                            attachInfo.mWindowVisibility = viewVisibility;
+                            host.dispatchWindowVisibilityChanged(viewVisibility);
+                            if (viewVisibility != View.VISIBLE || mNewSurfaceNeeded) {
+                                if (mUseGL) {
+                                    destroyGL();
+                                }
+                            }
+                            if (viewVisibility == View.GONE) {
+                                // After making a window gone, we will count it as being
+                                // shown for the first time the next time it gets focus.
+                                mHasHadWindowFocus = false;
+                            }
+                        }
+                
+                        boolean insetsChanged = false;
+                
+                        if (mLayoutRequested) {
+                            // Execute enqueued actions on every layout in case a view that was detached
+                            // enqueued an action after being detached
+                            getRunQueue().executeActions(attachInfo.mHandler);
+                
+                            if (mFirst) {
+                                host.fitSystemWindows(mAttachInfo.mContentInsets);
+                                // make sure touch mode code executes by setting cached value
+                                // to opposite of the added touch mode.
+                                mAttachInfo.mInTouchMode = !mAddedTouchMode;
+                                ensureTouchModeLocally(mAddedTouchMode);
+                            } else {
+                                if (!mAttachInfo.mContentInsets.equals(mPendingContentInsets)) {
+                                    mAttachInfo.mContentInsets.set(mPendingContentInsets);
+                                    host.fitSystemWindows(mAttachInfo.mContentInsets);
+                                    insetsChanged = true;
+                                    if (DEBUG_LAYOUT) Log.v(TAG, "Content insets changing to: "
+                                            + mAttachInfo.mContentInsets);
+                                }
+                                if (!mAttachInfo.mVisibleInsets.equals(mPendingVisibleInsets)) {
+                                    mAttachInfo.mVisibleInsets.set(mPendingVisibleInsets);
+                                    if (DEBUG_LAYOUT) Log.v(TAG, "Visible insets changing to: "
+                                            + mAttachInfo.mVisibleInsets);
+                                }
+                                if (lp.width == ViewGroup.LayoutParams.WRAP_CONTENT
+                                        || lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                                    windowResizesToFitContent = true;
+                
+                                    DisplayMetrics packageMetrics =
+                                        mView.getContext().getResources().getDisplayMetrics();
+                                    desiredWindowWidth = packageMetrics.widthPixels;
+                                    desiredWindowHeight = packageMetrics.heightPixels;
+                                }
+                            }
+                
+                            childWidthMeasureSpec = getRootMeasureSpec(desiredWindowWidth, lp.width);
+                            childHeightMeasureSpec = getRootMeasureSpec(desiredWindowHeight, lp.height);
+                
+                            // Ask host how big it wants to be
+                            if (DEBUG_ORIENTATION || DEBUG_LAYOUT) Log.v(TAG,
+                                    "Measuring " + host + " in display " + desiredWindowWidth
+                                    + "x" + desiredWindowHeight + "...");
+                            host.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+                
+                            if (DBG) {
+                                System.out.println("======================================");
+                                System.out.println("performTraversals -- after measure");
+                                host.debug();
+                            }
+                        }
+            ...
+    }
+}
+```
+我们先来了解一下本小段函数牵扯的几个变量的含义：
+
+```
+final Rect mPendingVisibleInsets = new Rect()：可见边距大小，由WindowManagerService主动请求Activity窗口设置。
+final Rect mPendingContentInsets = new Rect()：内容边距大小，由WindowManagerService主动请求Activity窗口设置。
+final View.AttachInfo mAttachInfo;：用来描述Activity窗口的属性，它内部也有mPendingVisibleInsets与mPendingContentInsets
+属性，它用来描述Activity窗口上一次请求WindowManagerService计算得到的窗口属性值。
 ```
 
+>final Rect mPendingVisibleInsets = new Rect()：可见边距大小，由WindowManagerService主动请求Activity窗口设置。
+final Rect mPendingContentInsets = new Rect()：内容边距大小，由WindowManagerService主动请求Activity窗口设置。
+final View.AttachInfo mAttachInfo;：用来描述Activity窗口的属性，它内部也有mPendingVisibleInsets与mPendingContentInsets
+属性，它用来描述Activity窗口上一次请求WindowManagerService计算得到的窗口属性值。
         
 ```java
 public final class ViewRoot extends Handler implements ViewParent,
@@ -144,74 +237,6 @@ public final class ViewRoot extends Handler implements ViewParent,
     
      private void performTraversals() {
             ...
-    
-            if (viewVisibilityChanged) {
-                attachInfo.mWindowVisibility = viewVisibility;
-                host.dispatchWindowVisibilityChanged(viewVisibility);
-                if (viewVisibility != View.VISIBLE || mNewSurfaceNeeded) {
-                    if (mUseGL) {
-                        destroyGL();
-                    }
-                }
-                if (viewVisibility == View.GONE) {
-                    // After making a window gone, we will count it as being
-                    // shown for the first time the next time it gets focus.
-                    mHasHadWindowFocus = false;
-                }
-            }
-    
-            boolean insetsChanged = false;
-    
-            if (mLayoutRequested) {
-                // Execute enqueued actions on every layout in case a view that was detached
-                // enqueued an action after being detached
-                getRunQueue().executeActions(attachInfo.mHandler);
-    
-                if (mFirst) {
-                    host.fitSystemWindows(mAttachInfo.mContentInsets);
-                    // make sure touch mode code executes by setting cached value
-                    // to opposite of the added touch mode.
-                    mAttachInfo.mInTouchMode = !mAddedTouchMode;
-                    ensureTouchModeLocally(mAddedTouchMode);
-                } else {
-                    if (!mAttachInfo.mContentInsets.equals(mPendingContentInsets)) {
-                        mAttachInfo.mContentInsets.set(mPendingContentInsets);
-                        host.fitSystemWindows(mAttachInfo.mContentInsets);
-                        insetsChanged = true;
-                        if (DEBUG_LAYOUT) Log.v(TAG, "Content insets changing to: "
-                                + mAttachInfo.mContentInsets);
-                    }
-                    if (!mAttachInfo.mVisibleInsets.equals(mPendingVisibleInsets)) {
-                        mAttachInfo.mVisibleInsets.set(mPendingVisibleInsets);
-                        if (DEBUG_LAYOUT) Log.v(TAG, "Visible insets changing to: "
-                                + mAttachInfo.mVisibleInsets);
-                    }
-                    if (lp.width == ViewGroup.LayoutParams.WRAP_CONTENT
-                            || lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-                        windowResizesToFitContent = true;
-    
-                        DisplayMetrics packageMetrics =
-                            mView.getContext().getResources().getDisplayMetrics();
-                        desiredWindowWidth = packageMetrics.widthPixels;
-                        desiredWindowHeight = packageMetrics.heightPixels;
-                    }
-                }
-    
-                childWidthMeasureSpec = getRootMeasureSpec(desiredWindowWidth, lp.width);
-                childHeightMeasureSpec = getRootMeasureSpec(desiredWindowHeight, lp.height);
-    
-                // Ask host how big it wants to be
-                if (DEBUG_ORIENTATION || DEBUG_LAYOUT) Log.v(TAG,
-                        "Measuring " + host + " in display " + desiredWindowWidth
-                        + "x" + desiredWindowHeight + "...");
-                host.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-    
-                if (DBG) {
-                    System.out.println("======================================");
-                    System.out.println("performTraversals -- after measure");
-                    host.debug();
-                }
-            }
     
             if (attachInfo.mRecomputeGlobalAttributes) {
                 //Log.i(TAG, "Computing screen on!");
