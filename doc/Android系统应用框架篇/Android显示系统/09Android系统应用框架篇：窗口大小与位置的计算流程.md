@@ -13,7 +13,11 @@
 
 >作者的文章首发在[Github](https://github.com/guoxiaoxing)上，也会发在[简书](http://www.jianshu.com/users/66a47e04215b/latest_articles)与[CSDN](http://blog.csdn.net/allenwells)平台上，文章内容主要包含Android/Linux, Java/Kotlin/JVM，Python, JavaScript/React/ReactNative, 数据结构与算法等方面的内容。如果有什么问题，也欢迎发邮件与我交流。
 
-本篇文章主要分析窗口大小与位置（X轴、Y轴与Z轴）的计算流程。
+本篇文章主要分析窗口大小与位置（X轴、Y轴与Z轴）的计算流程，在介绍窗口的计算流程之前，我们先来了解一下窗口的组成。
+
+窗口有内容窗口（Content Region），内容边距（Content Inset）与可见边距（Visible Inset）组成，如下图：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/view/09/window_inset.png"/>
 
 ## 窗口大小的计算
 
@@ -1575,6 +1579,13 @@ ArrayList<WindowState> mWindows：WindowState的列表，该列表保存了系�
 到大排列在这个列表中。WindowState用来描述窗口的各种信息。
 ```
 
+该函数的执行流程主要分为3个阶段：
+
+```
+1 调用PhoneWindowManager.beginLayoutLw()来设置屏幕大小
+2 调用PhoneWindowManager.layoutWindowLw()来计算各个窗口的大小、内容边距以及可见边距大小
+3 调用PhoneWindowManager.finishLayoutLw()来执行一些清理工作
+```
 
 
 
