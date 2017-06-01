@@ -1587,15 +1587,270 @@ ArrayList<WindowState> mWindows：WindowState的列表，该列表保存了系�
 3 调用PhoneWindowManager.finishLayoutLw()来执行一些清理工作
 ```
 
+我们继续来看这三个函数的执行过程。
 
-
-```java
-
-```
+### 8 PhoneWindowManager.beginLayoutLw(int displayWidth, int displayHeight)
 
 ```java
+public class PhoneWindowManager implements WindowManagerPolicy {
+
+	//用来描述系统状态栏窗口
+	WindowState mStatusBar = null;  
+  
+  	//当前屏幕的宽度与高度
+    // The current size of the screen.  
+    int mW, mH;  
+
+    //用来描述我们前面提到的可见边距
+    // During layout, the current screen borders with all outer decoration  
+    // (status bar, input method dock) accounted for.  
+    int mCurLeft, mCurTop, mCurRight, mCurBottom;  
+
+    //用来描述我们前面提到的内容边距
+    // During layout, the frame in which content should be displayed  
+    // to the user, accounting for all screen decoration except for any  
+    // space they deem as available for other content.  This is usually  
+    // the same as mCur*, but may be larger if the screen decor has supplied  
+    // content insets.  
+    int mContentLeft, mContentTop, mContentRight, mContentBottom;  
+
+    //用来描述这轮窗口大小计算过程中输入法所占据的位置
+    // During layout, the current screen borders along with input method  
+    // windows are placed.  
+    int mDockLeft, mDockTop, mDockRight, mDockBottom;  
+
+    //描述输入法窗口所在Z轴的位置
+    // During layout, the layer at which the doc window is placed.  
+    int mDockLayer;  
+      
+    //它们是一组临时的Rect区域，用来作为参数传递给具体的窗口计算大小的，避免每次都创建一组
+    //新的Rect区域做作为参数传递给窗口
+    static final Rect mTmpParentFrame = new Rect();  
+    static final Rect mTmpDisplayFrame = new Rect();  
+    static final Rect mTmpContentFrame = new Rect();  
+    static final Rect mTmpVisibleFrame = new Rect();  
+
+	public void beginLayoutLw(int displayWidth, int displayHeight) {
+
+		//1 初始化变量，设置mDockRight = mContentRight = mCurRight等于屏幕宽度
+		//设置mDockBottom = mContentBottom = mCurBottom 为屏幕高度，设置mDockLayer
+		//为0x10000000，这使得输入法的层级非常大，这样它就可以存在于所有窗口之上。
+        mW = displayWidth;
+        mH = displayHeight;
+        mDockLeft = mContentLeft = mCurLeft = 0;
+        mDockTop = mContentTop = mCurTop = 0;
+        mDockRight = mContentRight = mCurRight = displayWidth;
+        mDockBottom = mContentBottom = mCurBottom = displayHeight;
+        mDockLayer = 0x10000000;
+
+        // decide where the status bar goes ahead of time
+        if (mStatusBar != null) {
+            final Rect pf = mTmpParentFrame;
+            final Rect df = mTmpDisplayFrame;
+            final Rect vf = mTmpVisibleFrame;
+            pf.left = df.left = vf.left = 0;
+            pf.top = df.top = vf.top = 0;
+            pf.right = df.right = vf.right = displayWidth;
+            pf.bottom = df.bottom = vf.bottom = displayHeight;
+            
+            //2 计算状态栏的大小，如果状态栏可见，则将mDockTop = mContentTop = mCurTop限制为
+            //剔除状态栏区域之后得到的屏幕区域
+            mStatusBar.computeFrameLw(pf, df, vf, vf);
+            if (mStatusBar.isVisibleLw()) {
+                // If the status bar is hidden, we don't want to cause
+                // windows behind it to scroll.
+                mDockTop = mContentTop = mCurTop = mStatusBar.getFrameLw().bottom;
+                if (DEBUG_LAYOUT) Log.v(TAG, "Status bar: mDockBottom="
+                        + mDockBottom + " mContentBottom="
+                        + mContentBottom + " mCurBottom=" + mCurBottom);
+            }
+        }
+    }	
+}
+```
+该方法主要是做了些准备工作，首先我们要理解一下关键的成员变量。
 
 ```
+int mW, mH; //当前屏幕的宽度与高度
+int mCurLeft, mCurTop, mCurRight, mCurBottom;//用来描述我们前面提到的可见边距 
+int mContentLeft, mContentTop, mContentRight, mContentBottom;//用来描述这轮窗口大小计算过程中输入法所占据的位置
+int mDockLeft, mDockTop, mDockRight, mDockBottom;//用来描述这轮窗口大小计算过程中输入法所占据的位置 
+int mDockLayer;//描述输入法窗口所在Z轴的位置   
+```
+这个方法主要做了2件事情：
+
+```
+1 初始化变量，设置mDockRight = mContentRight = mCurRight等于屏幕宽度
+设置mDockBottom = mContentBottom = mCurBottom 为屏幕高度，设置mDockLayer
+为0x10000000，这使得输入法的层级非常大，这样它就可以存在于所有窗口之上。
+
+2 计算状态栏的大小，如果状态栏可见，则将mDockTop = mContentTop = mCurTop限制为
+剔除状态栏区域之后得到的屏幕区域。
+```
+
+### 9 PhoneWindowManager.layoutWindowLw(WindowState win, WindowManager.LayoutParams attrs, WindowState attached)
+
+```java
+public class PhoneWindowManager implements WindowManagerPolicy {
+
+	  public void layoutWindowLw(WindowState win, WindowManager.LayoutParams attrs,
+            WindowState attached) {
+        // we've already done the status bar
+        if (win == mStatusBar) {
+            return;
+        }
+
+        if (false) {
+            if ("com.google.android.youtube".equals(attrs.packageName)
+                    && attrs.type == WindowManager.LayoutParams.TYPE_APPLICATION_PANEL) {
+                Log.i(TAG, "GOTCHA!");
+            }
+        }
+        
+        final int fl = attrs.flags;
+        final int sim = attrs.softInputMode;
+        
+        final Rect pf = mTmpParentFrame;
+        final Rect df = mTmpDisplayFrame;
+        final Rect cf = mTmpContentFrame;
+        final Rect vf = mTmpVisibleFrame;
+        
+        if (attrs.type == TYPE_INPUT_METHOD) {
+            pf.left = df.left = cf.left = vf.left = mDockLeft;
+            pf.top = df.top = cf.top = vf.top = mDockTop;
+            pf.right = df.right = cf.right = vf.right = mDockRight;
+            pf.bottom = df.bottom = cf.bottom = vf.bottom = mDockBottom;
+            // IM dock windows always go to the bottom of the screen.
+            attrs.gravity = Gravity.BOTTOM;
+            mDockLayer = win.getSurfaceLayer();
+        } else {
+            if ((fl &
+                    (FLAG_LAYOUT_IN_SCREEN | FLAG_FULLSCREEN | FLAG_LAYOUT_INSET_DECOR))
+                    == (FLAG_LAYOUT_IN_SCREEN | FLAG_LAYOUT_INSET_DECOR)) {
+                // This is the case for a normal activity window: we want it
+                // to cover all of the screen space, and it can take care of
+                // moving its contents to account for screen decorations that
+                // intrude into that space.
+                if (attached != null) {
+                    // If this window is attached to another, our display
+                    // frame is the same as the one we are attached to.
+                    setAttachedWindowFrames(win, fl, sim, attached, true, pf, df, cf, vf);
+                } else {
+                    pf.left = df.left = 0;
+                    pf.top = df.top = 0;
+                    pf.right = df.right = mW;
+                    pf.bottom = df.bottom = mH;
+                    if ((sim & SOFT_INPUT_MASK_ADJUST) != SOFT_INPUT_ADJUST_RESIZE) {
+                        cf.left = mDockLeft;
+                        cf.top = mDockTop;
+                        cf.right = mDockRight;
+                        cf.bottom = mDockBottom;
+                    } else {
+                        cf.left = mContentLeft;
+                        cf.top = mContentTop;
+                        cf.right = mContentRight;
+                        cf.bottom = mContentBottom;
+                    }
+                    vf.left = mCurLeft;
+                    vf.top = mCurTop;
+                    vf.right = mCurRight;
+                    vf.bottom = mCurBottom;
+                }
+            } else if ((fl & FLAG_LAYOUT_IN_SCREEN) != 0) {
+                // A window that has requested to fill the entire screen just
+                // gets everything, period.
+                pf.left = df.left = cf.left = 0;
+                pf.top = df.top = cf.top = 0;
+                pf.right = df.right = cf.right = mW;
+                pf.bottom = df.bottom = cf.bottom = mH;
+                vf.left = mCurLeft;
+                vf.top = mCurTop;
+                vf.right = mCurRight;
+                vf.bottom = mCurBottom;
+            } else if (attached != null) {
+                // A child window should be placed inside of the same visible
+                // frame that its parent had.
+                setAttachedWindowFrames(win, fl, sim, attached, false, pf, df, cf, vf);
+            } else {
+                // Otherwise, a normal window must be placed inside the content
+                // of all screen decorations.
+                pf.left = mContentLeft;
+                pf.top = mContentTop;
+                pf.right = mContentRight;
+                pf.bottom = mContentBottom;
+                if ((sim & SOFT_INPUT_MASK_ADJUST) != SOFT_INPUT_ADJUST_RESIZE) {
+                    df.left = cf.left = mDockLeft;
+                    df.top = cf.top = mDockTop;
+                    df.right = cf.right = mDockRight;
+                    df.bottom = cf.bottom = mDockBottom;
+                } else {
+                    df.left = cf.left = mContentLeft;
+                    df.top = cf.top = mContentTop;
+                    df.right = cf.right = mContentRight;
+                    df.bottom = cf.bottom = mContentBottom;
+                }
+                vf.left = mCurLeft;
+                vf.top = mCurTop;
+                vf.right = mCurRight;
+                vf.bottom = mCurBottom;
+            }
+        }
+        
+        if ((fl & FLAG_LAYOUT_NO_LIMITS) != 0) {
+            df.left = df.top = cf.left = cf.top = vf.left = vf.top = -10000;
+            df.right = df.bottom = cf.right = cf.bottom = vf.right = vf.bottom = 10000;
+        }
+
+        if (DEBUG_LAYOUT) Log.v(TAG, "Compute frame " + attrs.getTitle()
+                + ": sim=#" + Integer.toHexString(sim)
+                + " pf=" + pf.toShortString() + " df=" + df.toShortString()
+                + " cf=" + cf.toShortString() + " vf=" + vf.toShortString());
+        
+        if (false) {
+            if ("com.google.android.youtube".equals(attrs.packageName)
+                    && attrs.type == WindowManager.LayoutParams.TYPE_APPLICATION_PANEL) {
+                if (true || localLOGV) Log.v(TAG, "Computing frame of " + win +
+                        ": sim=#" + Integer.toHexString(sim)
+                        + " pf=" + pf.toShortString() + " df=" + df.toShortString()
+                        + " cf=" + cf.toShortString() + " vf=" + vf.toShortString());
+            }
+        }
+        
+        win.computeFrameLw(pf, df, cf, vf);
+        
+        // Dock windows carve out the bottom of the screen, so normal windows
+        // can't appear underneath them.
+        if (attrs.type == TYPE_INPUT_METHOD && !win.getGivenInsetsPendingLw()) {
+            int top = win.getContentFrameLw().top;
+            top += win.getGivenContentInsetsLw().top;
+            if (mContentBottom > top) {
+                mContentBottom = top;
+            }
+            top = win.getVisibleFrameLw().top;
+            top += win.getGivenVisibleInsetsLw().top;
+            if (mCurBottom > top) {
+                mCurBottom = top;
+            }
+            if (DEBUG_LAYOUT) Log.v(TAG, "Input method: mDockBottom="
+                    + mDockBottom + " mContentBottom="
+                    + mContentBottom + " mCurBottom=" + mCurBottom);
+        }
+    }
+
+}
+```
+终于走到了我们最为核心的函数，该函数就是用来计算窗口的大小，窗口按照从属关系可以分为父窗口与子窗口，判断标准取决于WindowState.mLayoutAttached
+的值：
+
+WindowState.mLayoutAttached = false ：父窗口
+WindowState.mLayoutAttached = true ：子窗口
+
+子窗口的计算是依赖于父窗口的，所以整个计算流程可以概括为：
+
+```
+1 
+```
+
 ```java
 
 ```
