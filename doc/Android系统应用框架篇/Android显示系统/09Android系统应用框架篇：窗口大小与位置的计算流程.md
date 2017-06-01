@@ -17,6 +17,9 @@
 
 窗口有内容窗口（Content Region），内容边距（Content Inset）与可见边距（Visible Inset）组成，如下图：
 
+content-left、content-right、content-top、content-bottom分别用来描述内容区域与窗口区域的左右上下边界距离。
+visible-left、visible-right、visible-top、visible-bottom分别用来描述可见区域与窗口区域的左右上下边界距离。
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/view/09/window_inset.png"/>
 
 ## 窗口大小的计算
@@ -1601,12 +1604,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // The current size of the screen.  
     int mW, mH;  
 
-    //用来描述我们前面提到的可见边距
+    //描述可见区域的位置（四个坐标）
     // During layout, the current screen borders with all outer decoration  
     // (status bar, input method dock) accounted for.  
     int mCurLeft, mCurTop, mCurRight, mCurBottom;  
 
-    //用来描述我们前面提到的内容边距
+    //描述内容区域的位置（四个坐标）
     // During layout, the frame in which content should be displayed  
     // to the user, accounting for all screen decoration except for any  
     // space they deem as available for other content.  This is usually  
@@ -1614,7 +1617,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // content insets.  
     int mContentLeft, mContentTop, mContentRight, mContentBottom;  
 
-    //用来描述这轮窗口大小计算过程中输入法所占据的位置
+    //描述输入法所在的位置（四个坐标）
     // During layout, the current screen borders along with input method  
     // windows are placed.  
     int mDockLeft, mDockTop, mDockRight, mDockBottom;  
@@ -1672,20 +1675,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
 ```
 int mW, mH; //当前屏幕的宽度与高度
-int mCurLeft, mCurTop, mCurRight, mCurBottom;//用来描述我们前面提到的可见边距 
-int mContentLeft, mContentTop, mContentRight, mContentBottom;//用来描述这轮窗口大小计算过程中输入法所占据的位置
-int mDockLeft, mDockTop, mDockRight, mDockBottom;//用来描述这轮窗口大小计算过程中输入法所占据的位置 
+int mCurLeft, mCurTop, mCurRight, mCurBottom;//描述可见区域的位置（四个坐标）
+int mContentLeft, mContentTop, mContentRight, mContentBottom;//描述内容区域的位置（四个坐标）
+int mDockLeft, mDockTop, mDockRight, mDockBottom;//描述输入法所在的位置（四个坐标）
 int mDockLayer;//描述输入法窗口所在Z轴的位置   
 ```
 这个方法主要做了2件事情：
 
 ```
-1 初始化变量，设置mDockRight = mContentRight = mCurRight等于屏幕宽度
-设置mDockBottom = mContentBottom = mCurBottom 为屏幕高度，设置mDockLayer
-为0x10000000，这使得输入法的层级非常大，这样它就可以存在于所有窗口之上。
+1 初始化变量，设置mDockRight = mContentRight = mCurRight等于屏幕宽度设置mDockBottom = mContentBottom = 
+mCurBottom 为屏幕高度，设置mDockLayer为0x10000000，这使得输入法的层级非常大，这样它就可以存在于所有窗口之上。
 
-2 计算状态栏的大小，如果状态栏可见，则将mDockTop = mContentTop = mCurTop限制为
-剔除状态栏区域之后得到的屏幕区域。
+2 计算状态栏的大小，如果状态栏可见，则将mDockTop = mContentTop = mCurTop限制为剔除状态栏区域之后得到的屏幕区域。
 ```
 
 ### 9 PhoneWindowManager.layoutWindowLw(WindowState win, WindowManager.LayoutParams attrs, WindowState attached)
@@ -1710,11 +1711,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int fl = attrs.flags;
         final int sim = attrs.softInputMode;
         
+        //父窗口大小
         final Rect pf = mTmpParentFrame;
+        //屏幕大小
         final Rect df = mTmpDisplayFrame;
+        //内容区域大小
         final Rect cf = mTmpContentFrame;
+        //可见区域大小
         final Rect vf = mTmpVisibleFrame;
         
+        //如果是输入法窗口，则pf，df，cf，vf这四个区域都等于前面定义的输入法窗口大小mDoc*
         if (attrs.type == TYPE_INPUT_METHOD) {
             pf.left = df.left = cf.left = vf.left = mDockLeft;
             pf.top = df.top = cf.top = vf.top = mDockTop;
@@ -1724,6 +1730,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             attrs.gravity = Gravity.BOTTOM;
             mDockLayer = win.getSurfaceLayer();
         } else {
+        	//如果是非全屏Activity窗口
             if ((fl &
                     (FLAG_LAYOUT_IN_SCREEN | FLAG_FULLSCREEN | FLAG_LAYOUT_INSET_DECOR))
                     == (FLAG_LAYOUT_IN_SCREEN | FLAG_LAYOUT_INSET_DECOR)) {
@@ -1731,26 +1738,36 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // to cover all of the screen space, and it can take care of
                 // moving its contents to account for screen decorations that
                 // intrude into that space.
+                //具有父窗口
                 if (attached != null) {
                     // If this window is attached to another, our display
                     // frame is the same as the one we are attached to.
                     setAttachedWindowFrames(win, fl, sim, attached, true, pf, df, cf, vf);
-                } else {
+                } 
+                //没有父窗口
+                else {
+                	//1 父窗口大小会被设置为屏幕大小
                     pf.left = df.left = 0;
                     pf.top = df.top = 0;
                     pf.right = df.right = mW;
                     pf.bottom = df.bottom = mH;
+                    //根据Activity里设置的输入法模式来设置内容边距
                     if ((sim & SOFT_INPUT_MASK_ADJUST) != SOFT_INPUT_ADJUST_RESIZE) {
+                    	//如果是SOFT_INPUT_MASK_ADJUST模式则说明在弹出输入法窗口时，win的窗口
+                    	//不需要重新排布，此时win的内容区域大小等于mDock*。
                         cf.left = mDockLeft;
                         cf.top = mDockTop;
                         cf.right = mDockRight;
                         cf.bottom = mDockBottom;
                     } else {
+                    	//如果是SOFT_INPUT_ADJUST_RESIZE模式，则说明弹出输入法窗口时，布局要重新
+                    	//排布，此时win的内容区域大小等于mContent*
                         cf.left = mContentLeft;
                         cf.top = mContentTop;
                         cf.right = mContentRight;
                         cf.bottom = mContentBottom;
                     }
+                    //3 设置可见区域大小
                     vf.left = mCurLeft;
                     vf.top = mCurTop;
                     vf.right = mCurRight;
@@ -1816,8 +1833,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
         
+        //计算窗口大小
         win.computeFrameLw(pf, df, cf, vf);
         
+
+        //如果是输入法窗口，且指定了额外的内容边距与可见变量，则调整mContentBottom与mCurBottom的值
         // Dock windows carve out the bottom of the screen, so normal windows
         // can't appear underneath them.
         if (attrs.type == TYPE_INPUT_METHOD && !win.getGivenInsetsPendingLw()) {
@@ -1842,25 +1862,198 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 终于走到了我们最为核心的函数，该函数就是用来计算窗口的大小，窗口按照从属关系可以分为父窗口与子窗口，判断标准取决于WindowState.mLayoutAttached
 的值：
 
-WindowState.mLayoutAttached = false ：父窗口
-WindowState.mLayoutAttached = true ：子窗口
+- WindowState.mLayoutAttached = false ：父窗口
+- WindowState.mLayoutAttached = true ：子窗口
 
-子窗口的计算是依赖于父窗口的，所以整个计算流程可以概括为：
+子窗口的计算是依赖于父窗口的，有父窗口的会先计算父窗口，再计算子窗口，具体说来：
 
 ```
-1 
+1 先计算父窗口的大小，一般来说，能作为父窗口的一般是Activity窗口（该类窗口的WindowState对象里的mAppToken执行一个AppWindowToken
+对象，该对象用来描述一个Activity，它与ActivityRecord对应。），但是父窗口只有在以下2种情况下才会去计算大小：
+
+(1) 窗口是可见的，窗口在以下情况时不可见：
+
+① 窗口本身是不可见的，即WindowState.mViewVisibility = View.GONE
+② 窗口本身处于退出状态，即WindowState.mExiting = true
+③ 窗口本身处于正在销毁状态，即WindowState.mDestorying = true
+④ 它的父窗口处于不可见状态，即WindowState.mAttachedHidden = true
+⑤ 它所在窗口树的根窗口处于不可见状态，即WindowState.mRootToken.hidden = true
+⑥ 它所属的Activity处于不可见状态，即WindowState.mAppToken.hiddenRequested = true
+
+
+(2) 窗口还没有计算过大小。即WindowState.mHaveFrame = false
+
+2 然后计算子窗口的大小，在计算父窗口大小的过程中，会记录位于系统最上面的一个字窗口在mWindows（ArrayList）中的位置topAttached，接下来
+从这个位置开始依次向下计算每一个子窗口的大小。一个子窗口在以下两种情况下，才会被计算大小：
+
+(1) 窗口本身是可见的，即WindowState != View.GONE
+(2) 窗口还没有计算过大小。即WindowState.mHaveFrame = false
+
 ```
+
+我们先来看看该函数的参数：
+
+```
+indowState win：当前要计算的窗口
+WindowManager.LayoutParams attrs：当前要计算窗口的参数
+WindowState attached：当前窗口的父窗口
+```
+
+该函数片段主要做了以下事情：
+
+```
+1 计算四组值，不同情况下值的计算方式不同，具体可参见代码注释。
+
+//父窗口大小
+final Rect pf = mTmpParentFrame;
+//屏幕大小
+final Rect df = mTmpDisplayFrame;
+//内容区域大小
+final Rect cf = mTmpContentFrame;
+//可见区域大小
+final Rect vf = mTmpVisibleFrame;
+
+2 根据上面计算的值，调用WindowState.computeFrameLw()计算窗口大小。
+
+```
+我们在接着来看WindowState.computeFrameLw()的实现。
+
+### 10 WindowState.computeFrameLw(Rect pf, Rect df, Rect cf, Rect vf)
 
 ```java
+public class WindowManagerService extends IWindowManager.Stub  
+        implements Watchdog.Monitor {  
+
+	private final class WindowState implements WindowManagerPolicy.WindowState {
+
+		public void computeFrameLw(Rect pf, Rect df, Rect cf, Rect vf) {
+
+			//用来描述窗口大小是否已经计算过了
+            mHaveFrame = true;
+
+           	//mContainingFrame表示当前正在处理的窗口的父窗口大小
+            final Rect container = mContainingFrame;
+            container.set(pf);
+			//mContainingFrame表示当前正在处理的窗口的屏幕大小
+            final Rect display = mDisplayFrame;
+            display.set(df);
+
+           	//兼容模式
+            if ((mAttrs.flags & FLAG_COMPATIBLE_WINDOW) != 0) {
+                container.intersect(mCompatibleScreenFrame);
+                if ((mAttrs.flags & FLAG_LAYOUT_NO_LIMITS) == 0) {
+                    display.intersect(mCompatibleScreenFrame);
+                }
+            }
+
+            final int pw = container.right - container.left;
+            final int ph = container.bottom - container.top;
+
+            //1 计算内容区域的宽高
+            int w,h;
+            if ((mAttrs.flags & mAttrs.FLAG_SCALED) != 0) {
+                w = mAttrs.width < 0 ? pw : mAttrs.width;
+                h = mAttrs.height< 0 ? ph : mAttrs.height;
+            } else {
+
+            	//是否指定了窗口大小等于父窗口大小，如果等于则设置为pw与ph描述的宽度与高度
+            	//如果不等于则设置为WIndowManagerService所所设置的大小，即mRequestedWidth与mRequestedHeight
+                w = mAttrs.width == mAttrs.MATCH_PARENT ? pw : mRequestedWidth与;
+                h = mAttrs.height== mAttrs.MATCH_PARENT ? ph : mRequestedHeight;
+            }
+
+            final Rect content = mContentFrame;
+            content.set(cf);
+
+            final Rect visible = mVisibleFrame;
+            visible.set(vf);
+
+            final Rect frame = mFrame;
+            final int fw = frame.width();
+            final int fh = frame.height();
+
+            //System.out.println("In: w=" + w + " h=" + h + " container=" +
+            //                   container + " x=" + mAttrs.x + " y=" + mAttrs.y);
+
+            //根据窗口的gravity值，位置，初始大小以及窗口大小来计算窗口大小，并保存在frame变量中。
+            Gravity.apply(mAttrs.gravity, w, h, container,
+                    (int) (mAttrs.x + mAttrs.horizontalMargin * pw),
+                    (int) (mAttrs.y + mAttrs.verticalMargin * ph), frame);
+
+            //System.out.println("Out: " + mFrame);
+
+           	//前面计算的窗口大小没有考虑屏幕大小，这里调用Gravity.applyDisplay()方法将前面计算得到
+           	//的窗口限制在屏幕区域中。即限制咋WindowState.mDisplayFrame所描述的区域中。
+            // Now make sure the window fits in the overall display.
+            Gravity.applyDisplay(mAttrs.gravity, df, frame);
+
+            //保证窗口的内容区域与可见区域包含在整个窗口区域中
+            // Make sure the content and visible frames are inside of the
+            // final window frame.
+            if (content.left < frame.left) content.left = frame.left;
+            if (content.top < frame.top) content.top = frame.top;
+            if (content.right > frame.right) content.right = frame.right;
+            if (content.bottom > frame.bottom) content.bottom = frame.bottom;
+            if (visible.left < frame.left) visible.left = frame.left;
+            if (visible.top < frame.top) visible.top = frame.top;
+            if (visible.right > frame.right) visible.right = frame.right;
+            if (visible.bottom > frame.bottom) visible.bottom = frame.bottom;
+
+            //2 计算内容边距
+            final Rect contentInsets = mContentInsets;
+            contentInsets.left = content.left-frame.left;
+            contentInsets.top = content.top-frame.top;
+            contentInsets.right = frame.right-content.right;
+            contentInsets.bottom = frame.bottom-content.bottom;
+
+            //3 计算可见边距
+            final Rect visibleInsets = mVisibleInsets;
+            visibleInsets.left = visible.left-frame.left;
+            visibleInsets.top = visible.top-frame.top;
+            visibleInsets.right = frame.right-visible.right;
+            visibleInsets.bottom = frame.bottom-visible.bottom;
+
+            if (mIsWallpaper && (fw != frame.width() || fh != frame.height())) {
+                updateWallpaperOffsetLocked(this, mDisplay.getWidth(),
+                        mDisplay.getHeight(), false);
+            }
+
+            if (localLOGV) {
+                //if ("com.google.android.youtube".equals(mAttrs.packageName)
+                //        && mAttrs.type == WindowManager.LayoutParams.TYPE_APPLICATION_PANEL) {
+                    Slog.v(TAG, "Resolving (mRequestedWidth="
+                            + mRequestedWidth + ", mRequestedheight="
+                            + mRequestedHeight + ") to" + " (pw=" + pw + ", ph=" + ph
+                            + "): frame=" + mFrame.toShortString()
+                            + " ci=" + contentInsets.toShortString()
+                            + " vi=" + visibleInsets.toShortString());
+                //}
+            }
+        }
+	}
+}
+```
+该函数主要做了以下事情：
 
 ```
+1 计算内容区域的宽高，根据窗口的gravity值，位置，初始大小以及窗口大小调用Gravity.apply()方法计算窗口大小，并保存在
+frame变量中。
+2 计算内容边距
+3 计算可见边距
+```
+
+### 11 PhoneWindowManager.finishLayoutLw() 
+
 ```java
+public class PhoneWindowManager implements WindowManagerPolicy {
 
+	public int finishLayoutLw() {
+        return 0;
+    }
+}
 ```
-```java
 
-```
-
+最后一步调用finishLayoutLw()函数，该函数是个空实现，它什么也不做。
 
 
 
