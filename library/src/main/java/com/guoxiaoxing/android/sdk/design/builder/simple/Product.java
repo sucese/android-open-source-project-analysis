@@ -12,33 +12,52 @@ package com.guoxiaoxing.android.sdk.design.builder.simple;
  */
 public class Product {
 
-    public String board;
-    public String display;
-    public String os;
+    private String board;
+    private String display;
+    private String os;
 
-    class Builder {
+    /**
+     * get config which the user set
+     * @return String
+     */
+    public String getBoard() {
+        return board;
+    }
 
-        private Product product;
+    public String getDisplay() {
+        return display;
+    }
 
-        public Builder() {
-            product = new Product();
-        }
+    public String getOs() {
+        return os;
+    }
 
-        private String board;
-        private String display;
-        private String os;
+    private Product(Builder builder) {
+        this.board = builder.board;
+        this.display = builder.display;
+        this.os = builder.os;
+    }
+
+    public static class Builder {
+        private String board = "default value";
+        private String display = "default value";
+        private String os = "default value";
 
         public void setBoard(String board) {
-            product.board = board;
+            this.board = board;
         }
 
         public void setDisplay(String display) {
-            product.display = display;
+            this.display = display;
         }
 
         public void setOs(String os) {
-            product.os = os;
+            this.os = os;
+        }
+
+
+        public Product build() {
+            return new Product(this);
         }
     }
-
 }

@@ -246,9 +246,7 @@ public class Direactor {
 日常编程中，我们的建造者通常只有一个，这个时候我们可以使用简化版的建造者模式
 
 ```java
-package com.guoxiaoxing.android.sdk.design.builder.simple;
-
-/**
+**
  * 如果系统中只需要一个具体建造者的话，可以省略掉抽象建造者。在具体建造者只有一个的情况下，如果抽象建造者角色已经被省略
  * 掉，那么还可以省略指挥者角色，让Builder角色扮演指挥者与建造者双重角色。
  * <p>
@@ -260,37 +258,54 @@ package com.guoxiaoxing.android.sdk.design.builder.simple;
  */
 public class Product {
 
-    public String board;
-    public String display;
-    public String os;
+    private String board;
+    private String display;
+    private String os;
 
-    class Builder {
+    /**
+     * get config which the user set
+     * @return String
+     */
+    public String getBoard() {
+        return board;
+    }
 
-        private Product product;
+    public String getDisplay() {
+        return display;
+    }
 
-        public Builder() {
-            product = new Product();
-        }
+    public String getOs() {
+        return os;
+    }
 
-        private String board;
-        private String display;
-        private String os;
+    private Product(Builder builder) {
+        this.board = builder.board;
+        this.display = builder.display;
+        this.os = builder.os;
+    }
+
+    public static class Builder {
+        private String board = "default value";
+        private String display = "default value";
+        private String os = "default value";
 
         public void setBoard(String board) {
-            product.board = board;
+            this.board = board;
         }
 
         public void setDisplay(String display) {
-            product.display = display;
+            this.display = display;
         }
 
         public void setOs(String os) {
-            product.os = os;
+            this.os = os;
+        }
+
+
+        public Product build() {
+            return new Product(this);
         }
     }
-
-}
-
 ```
 
 ## 模式实践
