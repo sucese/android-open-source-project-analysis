@@ -1,4 +1,4 @@
-# Android系统应用框架篇：SurfaceFlinger家族
+# Android系统应用框架篇：SurfaceFlinger服务的创建与连接
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
@@ -14,6 +14,8 @@
 >作者的文章首发在[Github](https://github.com/guoxiaoxing)上，也会发在[简书](http://www.jianshu.com/users/66a47e04215b/latest_articles)与[CSDN](http://blog.csdn.net/allenwells)平台上，文章内容主要包含Android/Linux, Java/Kotlin/JVM，Python, JavaScript/React/ReactNative, 数据结构与算法等方面的内容。如果有什么问题，也欢迎发邮件与我交流。
 
 >SurfaceFlinger运行在Android系统的System进程中，管理着Android系统的帧缓冲区（Frame Buffer），负责渲染整个系统的UI。
+
+## SurfaceFlinger服务概述
 
 Android应用与SurfaceFlinger服务运行在不同的进程中，它们通过Binder进程间通信机制来进行通信。Android应用在通知SurfaceFlinger服务绘制
 自己的UI的时候，需要将UI元数据传递给SurfaceFlinger服务。当我们的应用界面很多时，这些元数据的量是非常大的，在这种情况下，通过Binder来传递
@@ -56,3 +58,14 @@ SharedBufferStack都对应着应用中的一个Surface。所以最终SharedBuffe
 是已经使用的缓冲区，它去这些缓冲区读取UI元数据进行绘制。
 
 为了方便对SharedBufferStack的访问，Android系统分别使用SharedBufferClient与SharedBufferServer来描述
+
+## SurfaceFlinger服务与应用的连接流程
+
+上文中提到SurfaceFlinger服务与应用运行在不同的进程中，应用需要与SurfaceFlinger服务建立连接，然后通过这个连接去请求SurfaceFlinger服务创建与渲染Surface。
+
+我们以Android系统开机动画为例来分析服务的连接流程。
+
+Android系统开机动画是由应用程序BootAnimation，它是一个由C++写的应用，实现在BootAnimation.cpp中。BootAnimation继承了Thread类
+
+frameworks/base/cmds/bootanimation/BootAnimation.cpp
+
