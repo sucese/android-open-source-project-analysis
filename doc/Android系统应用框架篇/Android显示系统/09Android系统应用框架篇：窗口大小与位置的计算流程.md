@@ -1,17 +1,19 @@
 # Android系统应用框架篇：Window大小与位置的计算流程
 
-作者: 郭孝星  
-邮箱: guoxiaoxingse@163.com  
-博客: http://blog.csdn.net/allenwells   
-简书: http://www.jianshu.com/users/66a47e04215b/latest_articles  
-
 **关于作者**
 
->郭孝星，非著名程序员，主要从事Android平台基础架构与中间件方面的工作。技术栈主要涉及Android/Linux, Java/Kotlin/JVM，Python, JavaScript/React/ReactNative，数据结构与算法等方面。热爱编程与吉他，喜欢有趣的事物和人。
+>郭孝星，非著名程序员，主要从事Android平台基础架构与中间件方面的工作，爱好广泛，技术栈主要涉及以下几个方面
+>
+>- Android/Linux
+>- Java/Kotlin/JVM
+>- Python
+>- JavaScript/React/ReactNative
+>- DataStructure/Algorithm
+>
+>文章首发于[Github](https://github.com/guoxiaoxing)，后续也会同步在[简书](http://www.jianshu.com/users/66a47e04215b/latest_articles)与
+[CSDN](http://blog.csdn.net/allenwells)等博客平台上。文章中如果有什么问题，欢迎发邮件与我交流，邮件可发至guoxiaoxingse@163.com。
 
-**关于文章**
-
->作者的文章首发在[Github](https://github.com/guoxiaoxing)上，也会发在[简书](http://www.jianshu.com/users/66a47e04215b/latest_articles)与[CSDN](http://blog.csdn.net/allenwells)平台上，文章内容主要包含Android/Linux, Java/Kotlin/JVM，Python, JavaScript/React/ReactNative, 数据结构与算法等方面的内容。如果有什么问题，也欢迎发邮件与我交流。
+第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 本篇文章主要分析窗口大小与位置（X轴、Y轴与Z轴）的计算流程，在介绍窗口的计算流程之前，我们先来了解一下窗口的组成。
 
