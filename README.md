@@ -70,17 +70,17 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **Android组件框架**
 
-- [01Android组件框架：Android组件系统概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/01Android组件框架：组件框架概述.md)
-- [02Android组件框架：Context家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/02Android组件框架：Context家族.md)
-- [03Android组件框架：ActivityThread家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/03Android组件框架：ActivityThread家族.md)
-- [04Android组件框架：ActivityManagerService家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/04Android组件框架：ActivityManagerService家族.md)
-- [05Android组件框架：Activity源码概览](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/005Android组件框架：Activity源码概览.md)
-- [06Android组件框架：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/06Android组件框架：Activity启动流程(一).md)
-- [07Android组件框架：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/07Android组件框架：Activity启动流程(二).md)
-- [08Android组件框架：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/08Android组件框架：Activity启动流程(三).md)
+- [01Android组件框架：Android组件框架概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/01Android组件框架：组件框架概述.md)
+- [02Android组件框架：Context家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/02Android组件框架：Context家族.md)
+- [03Android组件框架：ActivityThread家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/03Android组件框架：ActivityThread家族.md)
+- [04Android组件框架：ActivityManagerService家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/04Android组件框架：ActivityManagerService家族.md)
+- [05Android组件框架：Activity源码概览](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/005Android组件框架：Activity源码概览.md)
+- [06Android组件框架：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/06Android组件框架：Activity启动流程(一).md)
+- [07Android组件框架：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/07Android组件框架：Activity启动流程(二).md)
+- [08Android组件框架：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/08Android组件框架：Activity启动流程(三).md)
 - [09Android组件框架：Service源码概览]()
-- [10Android组件框架：Service启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/10Android组件框架：Service启动流程.md)
-- [11Android组件框架：Service绑定流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/11Android组件框架：Service绑定流程.md)
+- [10Android组件框架：Service启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/10Android组件框架：Service启动流程.md)
+- [11Android组件框架：Service绑定流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/11Android组件框架：Service绑定流程.md)
 - 12Android组件框架：Broadcast Receiver源码概览
 - 13Android组件框架：Broadcast Receiver注册流程
 - 14Android组件框架：Broadcast Receiver发送流程
