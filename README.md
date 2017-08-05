@@ -47,36 +47,47 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 ## Android系统应用框架篇
 
-**Android显示系统**
+**Android显示框架**
 
-- 01Android系统应用框架篇：Window源码概览
-- 02Android系统应用框架篇：Window源码概览
-- 03Android系统应用框架篇：Window创建里程
-- 04Android系统应用框架篇：Window内部机制
-- 05Android系统应用框架篇：View源码概览
-- 06Android系统应用框架篇：View工作原理
-- 07Android系统应用框架篇：View事件体系
+- 01Android显示框架：Android显示框架概述
+- 02Android显示框架：SufaceFlinger服务概述
+- 03Android显示框架：SufaceFlinger服务启动流程分析
+- 04Android显示框架：SufaceFlinger服务创建与绘制Surface流程
+- 05Android显示框架：SufaceFlinger服务与应用的连接流程
+- 06Android显示框架：SufaceFlinger服务渲染应用UI流程
+- 07Android显示框架：WndowManagerService概述
+- 08Android显示框架：WindowManagerService窗口大小与位置的计算
+- 09Android显示框架：WindowManagerService窗口的组织方式
+- 10Android显示框架：WindowManagerService窗口Z轴位置的计算流程
+- 11Android显示框架：WindowManagerService中Activity窗口的显示与切换流程
+- 12Android显示框架：WindowManagerService中Activity窗口动画的显示流程
+- 13Android显示框架：Window概述
+- 14Android显示框架：Window的创建、显示与销毁流程
+- 15Android显示框架：View概述
+- 16Android显示框架：View的创建、显示与销毁流程
+- 17Android显示框架：View的测量、布局与绘制流程
+- 18Android显示框架：View的事件分发与处理
 
-**Android组件系统**
+**Android组件框架**
 
-- [01Android系统应用框架篇：Android组件系统概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/01Android系统应用框架篇：组件框架概述.md)
-- [02Android系统应用框架篇：Context家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/02Android系统应用框架篇：Context家族.md)
-- [03Android系统应用框架篇：ActivityThread家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/03Android系统应用框架篇：ActivityThread家族.md)
-- [04Android系统应用框架篇：ActivityManagerService家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/04Android系统应用框架篇：ActivityManagerService家族.md)
-- [05Android系统应用框架篇：Activity源码概览](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/005Android系统应用框架篇：Activity源码概览.md)
-- [06Android系统应用框架篇：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/06Android系统应用框架篇：Activity启动流程(一).md)
-- [07Android系统应用框架篇：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/07Android系统应用框架篇：Activity启动流程(二).md)
-- [08Android系统应用框架篇：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/08Android系统应用框架篇：Activity启动流程(三).md)
-- 09Android系统应用框架篇：Service源码概览
-- [10Android系统应用框架篇：Service启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/10Android系统应用框架篇：Service启动流程.md)
-- [11Android系统应用框架篇：Service绑定流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件系统/11Android系统应用框架篇：Service绑定流程.md)
-- 12Android系统应用框架篇：Broadcast Receiver源码概览
-- 13Android系统应用框架篇：Broadcast Receiver注册流程
-- 14Android系统应用框架篇：Broadcast Receiver发送流程
-- 15Android系统应用框架篇：Content Provider源码概览
-- 16Android系统应用框架篇：Content Provider启动流程
-- 17Android系统应用框架篇：Content Provider共享原理
-- 18Android系统应用框架篇：Content Provider更新机制
+- [01Android组件框架：Android组件系统概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/01Android组件框架：组件框架概述.md)
+- [02Android组件框架：Context家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/02Android组件框架：Context家族.md)
+- [03Android组件框架：ActivityThread家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/03Android组件框架：ActivityThread家族.md)
+- [04Android组件框架：ActivityManagerService家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/04Android组件框架：ActivityManagerService家族.md)
+- [05Android组件框架：Activity源码概览](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/005Android组件框架：Activity源码概览.md)
+- [06Android组件框架：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/06Android组件框架：Activity启动流程(一).md)
+- [07Android组件框架：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/07Android组件框架：Activity启动流程(二).md)
+- [08Android组件框架：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/08Android组件框架：Activity启动流程(三).md)
+- [09Android组件框架：Service源码概览]()
+- [10Android组件框架：Service启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/10Android组件框架：Service启动流程.md)
+- [11Android组件框架：Service绑定流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android组件框架/Android组件系统/11Android组件框架：Service绑定流程.md)
+- 12Android组件框架：Broadcast Receiver源码概览
+- 13Android组件框架：Broadcast Receiver注册流程
+- 14Android组件框架：Broadcast Receiver发送流程
+- 15Android组件框架：Content Provider源码概览
+- 16Android组件框架：Content Provider启动流程
+- 17Android组件框架：Content Provider共享原理
+- 18Android组件框架：Content Provider更新机制
 
 ## Android系统底层框架篇
 

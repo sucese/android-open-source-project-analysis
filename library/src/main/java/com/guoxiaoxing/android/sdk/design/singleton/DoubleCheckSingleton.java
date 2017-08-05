@@ -11,7 +11,7 @@ import java.util.Objects;
  * @since 2017/3/20 上午11:24
  */
 public class DoubleCheckSingleton {
-    private static DoubleCheckSingleton instance;
+    private static volatile DoubleCheckSingleton instance;
 
     private DoubleCheckSingleton() {
     }
