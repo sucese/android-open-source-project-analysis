@@ -6,11 +6,17 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-http://blog.csdn.net/luoshengyang/article/details/8498908
 
-http://blog.csdn.net/luoshengyang/article/details/8526644
+<font face="黑体">我是黑体字</font>
+<font face="微软雅黑">我是微软雅黑</font>
+<font face="STCAIYUN">我是华文彩云</font>
+<font color=#0099ff size=7 face="黑体">color=#0099ff size=72 face="黑体"</font>
+<font color=#00ffff size=72>color=#00ffff</font>
+<font color=gray size=72>color=gray</font>
 
-http://blog.csdn.net/luoshengyang/article/details/8550820
+
+<table><tr><td bgcolor=orange>背景色是：orange</td></tr></table>
+
 
 Android系统的窗口与Activity类似，也是以堆栈的方式组织在WindowManagerService之中，其中Z轴位置较低的窗口位于Z轴位置较高的窗口下面。
 

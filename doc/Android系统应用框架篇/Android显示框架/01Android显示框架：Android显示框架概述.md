@@ -15,3 +15,5 @@
 - SurfaceFlinger层：将WindowManagerService管理的窗口按照一定的次序显示在屏幕上
 
 接下来的文章将会从上到下依次分析整个Android的显示系统。
+
+
