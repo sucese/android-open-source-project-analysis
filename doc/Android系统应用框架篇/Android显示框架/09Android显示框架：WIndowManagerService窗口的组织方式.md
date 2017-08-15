@@ -18,6 +18,16 @@
 <table><tr><td bgcolor=orange>背景色是：orange</td></tr></table>
 
 
+```diff
++ this will be highlighted in green
+- this will be highlighted in red
+
+---- Edit-------
+
+or use svg file like inHTML, there is an sources
+[sources url](https://gist.github.com/CyberShadow/95621a949b07db295000)
+
+
 Android系统的窗口与Activity类似，也是以堆栈的方式组织在WindowManagerService之中，其中Z轴位置较低的窗口位于Z轴位置较高的窗口下面。
 
 WindowManagerService之中定义了三个类：
