@@ -25,6 +25,7 @@
             android:process="com.guoxiaoxing.main.process" />
         <activity
             android:name=".application.activity.SubInNewProcessActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:process="com.guoxiaoxing.new.process" />
 
         <service

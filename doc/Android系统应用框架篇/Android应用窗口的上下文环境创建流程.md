@@ -8,14 +8,11 @@
 
 **文章目录**
 
-- 一 Context类图关系
-- 二 ContextImpl的创建流程
-    - 2.1 流程角色
-    - 2.2 关键的分析
-
-
-## 一 Context类图关系
-
+- 一 Context的创建
+   - 1.1 主要角色
+   - 1.2 关键点的分析
+- 二 Window的创建
+ 
 Android应用在运行的过程中需要访问一些特定的资源和类，这些特定的资源或者类构成了Android应用运行的上下文环境，即Context。Context是一个抽象类，ContextImpl继承了Context，
 并实现它的抽象方法。
 
@@ -43,7 +40,7 @@ ContextImpl() {
 }
 ```
 
-## 二 ContextImpl的创建流程
+## 一 Context的创建
 
 我们之前分析过Activity的启动流程，可以得知这个流程的最后一步是调用ActivityThread.perforLaunchActivity()方法在应用进程中创建一个Activity实例，并为它蛇者一个
 上下文环境，即创建一个ContexImpl对象。
@@ -52,17 +49,17 @@ ContexImpl的创建流程如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_sequence.png" height="500"/>
 
-## 2.1 流程角色
+## 1.1 主要角色
 
 - Instrumenttation：记录应用与系统的交互过程
 - Contextrapper: ContextImpl的代理类，包装了ContextImpl里的相关操作。
 - ContextThemeWrapper：用来维护一个应用的窗口主题
 
-## 2.2 关键点分析
+## 1.2 关键点分析
 
 整个流程还是比较简单清晰的，我们着重分析里面的关键点。
 
-**ActivityThread.performLaunchActivity(ActivityClientRecord r, Intent customIntent)**
+**关键点1：ActivityThread.performLaunchActivity(ActivityClientRecord r, Intent customIntent)**
 
 这个方法完成了Activity启动以及ContextImpl创建的主要流程，它完成的工作有：
 
@@ -201,6 +198,8 @@ public final class ActivityThread {
 }
 ```
 
+**关键点2：Activity.attach()**
+
 Activity在被类加载器加载时调用的是默认的构造方法，这个方法什么都没有做，只是创建了个实例，真正的初始化流程在attach()方法里完成。
 
 你可以看到attach()方法会调用ContextWrapper.attachBaseContext(context)进一步设置Context信息，这个方法就是将创建的ContextImpl赋值
@@ -212,9 +211,6 @@ Activity在被类加载器加载时调用的是默认的构造方法，这个方
 转发这些事件给它关联的Activity，转发操作通过Window.Callback接口实现。
 - 2 将Activity运行的一些关键信息带入Activity。
 
-关键信息如下：
-
-- 
 
 后续的UI绘制就砸Window上完成，并被Window设置了WindowManager。
 
@@ -274,4 +270,146 @@ mBase指向的是一个ContextImpl对象。
 中，用来描述一个具体的Android应用程序窗口。
 3 Activity组件在创建的最后，即在它的子类所重写的成员函数onCreate中，会调用父类Activity的成员函数setContentView来创建
 一个Android应用程序窗口的视图。
+```
+
+## 二 Window的创建
+
+从上面的Activity.attach()方法的分析我们得知了ContextImpl的创建流程，我们发现它不仅创建了上下文环境Context，它还创建了Window对象，用来描述一个具体的应用窗口，可以看出
+Activity只不过是一个高度抽象的UI组件，它的具体UI实现是由它的一系列对象来完成的，它们的类图关系如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Window_class.png" height="500"/>
+
+从上文的描述我们可以知道，Windows是在Activity的attach()方法中开始创建的，我们来看下它的创建流程。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Window_sequence.png" height="500"/>
+
+### 2.1 主要角色
+
+- PhoneWindow：Window的子类，应用视图窗口。
+- WindowManagerImpl：实现了WIndowManager接口，用来管理窗口。
+
+### 2.2 关键点分析
+
+
+**关键点1：PhoneWindow(Context context)**
+
+
+PolicyManager.makeNewWindow(this)用来创建Window对象，该函数通过反射最终调用Policy.makeNewWindow(Context context)，在这个
+方法里调用了PhoneWindow的构造函数，返回了一个PhoneWindow对象。
+
+在PhoneWindow的构造函数里，我们很惊奇的发现它返回了一个LayoutInflater对象。这货就是我们用来绘制xml里面UI的东西。
+
+
+```java
+public PhoneWindow(Context context) {
+    super(context);
+    mLayoutInflater = LayoutInflater.from(context);
+}
+```
+
+PhoneWindow其实就是我们最终要用的视图窗口了，除了mLayoutInflater，它里面还有两个重要的成员变量：
+
+-  private DecorView mDecor：顶级View视图，它由mLayoutInflater来创建。
+-  private ViewGroup mContentParent：视图容器。
+
+**关键点2：Window.setCallback(this)**
+
+Activity实现了Window.Callback接口，将Activity关联给Window，Window就可以将一些事件交由Activity处理，具体有哪些事情呢？
+
+```java
+ public interface Callback {
+
+        //键盘事件分发
+        public boolean dispatchKeyEvent(KeyEvent event);
+        
+        //触摸事件分发
+        public boolean dispatchTouchEvent(MotionEvent event);
+        
+        //轨迹球事件分发
+        public boolean dispatchTrackballEvent(MotionEvent event);
+
+        //可见性事件分发
+        public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event);
+
+        //创建Panel View
+        public View onCreatePanelView(int featureId);
+
+        //创建menu
+        public boolean onCreatePanelMenu(int featureId, Menu menu);
+
+        //画板准备好时回调
+        public boolean onPreparePanel(int featureId, View view, Menu menu);
+
+        //menu打开时回调
+        public boolean onMenuOpened(int featureId, Menu menu);
+
+        //menu item被选择时回调
+        public boolean onMenuItemSelected(int featureId, MenuItem item);
+
+        //Window Attributes发生变化时回调
+        public void onWindowAttributesChanged(WindowManager.LayoutParams attrs);
+
+        //Content View发生变化时回调
+        public void onContentChanged();
+
+        //窗口焦点发生变化时回调
+        public void onWindowFocusChanged(boolean hasFocus);
+
+        //Window被添加到WIndowManager时回调
+        public void onAttachedToWindow();
+        
+        //Window被从WIndowManager中移除时回调
+        public void onDetachedFromWindow();
+        
+         */
+        //画板关闭时回调
+        public void onPanelClosed(int featureId, Menu menu);
+        
+        //用户开始执行搜索操作时回调
+        public boolean onSearchRequested();
+    }
+```
+
+**关键点3：Window.setSoftInputMode(int mode)**
+
+这个我们就比较熟悉了，我们会在AndroidManifest.xml里Activity的标签下设置android:windowSoftInputMode="adjustNothing"，来控制输入键盘显示行为。
+
+可选的有6个参数，源码里也有6个值与之对应：
+
+- SOFT_INPUT_STATE_UNSPECIFIED：没有指定软键盘输入区域的显示状态。
+- SOFT_INPUT_STATE_UNCHANGED：不要改变软键盘输入区域的显示状态。
+- SOFT_INPUT_STATE_HIDDEN：在合适的时候隐藏软键盘输入区域，例如，当用户导航到当前窗口时。
+- SOFT_INPUT_STATE_ALWAYS_HIDDEN：当窗口获得焦点时，总是隐藏软键盘输入区域。
+- SOFT_INPUT_STATE_VISIBLE：在合适的时候显示软键盘输入区域，例如，当用户导航到当前窗口时。
+- SOFT_INPUT_STATE_ALWAYS_VISIBLE：当窗口获得焦点时，总是显示软键盘输入区域。
+
+**关键点4： Window.setWindowManager(WindowManager wm, IBinder appToken, String appName)**
+
+```java
+public void setWindowManager(WindowManager wm,
+        IBinder appToken, String appName) {
+    mAppToken = appToken;
+    mAppName = appName;
+    if (wm == null) {
+        wm = WindowManagerImpl.getDefault();
+    }
+    mWindowManager = new LocalWindowManager(wm);
+}
+```
+
+上述的Activity.attach()最后会调用Window.setWindowManager(WindowManager wm, IBinder appToken, String appName)来为已经创建的Window对象
+设置一个WindowManger，用来管理Window。
+
+这个LocalWindowManager我们来说道说道，它是Window的一个内部类，实现了WIndowManager接口，它主要用来管理两个内部变量
+
+- private final WindowManager mWindowManager：真正的Window管理者，它的实现类是WindowManagerImpl，可以通过WindowManagerImpl.getDefault()获得。
+- private final Display mDefaultDisplay：它是一个Display对象，它描述了屏幕的相关信息。
+
+到这为止，我们的Window对象就创建完成了，我们来总结一下。
+
+```
+1 一个Activity组件所关联的应用程序窗口对象的类型为PhoneWindow。
+2 这个类型为PhoneWindow的应用程序窗口是通过一个类型为LocalWindowManager的本地窗口管理器来维护的。
+3 这个类型为LocalWindowManager的本地窗口管理器又是通过一个类型为WindowManagerImpl的窗口管理器来维护应用程序窗口的。
+4 这个类型为PhoneWindow的应用程序窗口内部有一个类型为DecorView的视图对象，这个视图对象才是真正用来描述一个Activity组件的UI的
 ```
