@@ -8,10 +8,11 @@
 
 **文章目录**
 
-- 一 Context的创建
+- 一 创建应用上下文环境Context
    - 1.1 主要角色
    - 1.2 关键点的分析
-- 二 Window的创建
+- 二 创建应用窗口Window
+- 三 创建应用视图View
  
 Android应用在运行的过程中需要访问一些特定的资源和类，这些特定的资源或者类构成了Android应用运行的上下文环境，即Context。Context是一个抽象类，ContextImpl继承了Context，
 并实现它的抽象方法。
@@ -40,7 +41,7 @@ ContextImpl() {
 }
 ```
 
-## 一 Context的创建
+## 一 创建应用上下文环境Context
 
 我们之前分析过Activity的启动流程，可以得知这个流程的最后一步是调用ActivityThread.perforLaunchActivity()方法在应用进程中创建一个Activity实例，并为它蛇者一个
 上下文环境，即创建一个ContexImpl对象。
@@ -272,7 +273,7 @@ mBase指向的是一个ContextImpl对象。
 一个Android应用程序窗口的视图。
 ```
 
-## 二 Window的创建
+## 二 创建应用窗口Window
 
 从上面的Activity.attach()方法的分析我们得知了ContextImpl的创建流程，我们发现它不仅创建了上下文环境Context，它还创建了Window对象，用来描述一个具体的应用窗口，可以看出
 Activity只不过是一个高度抽象的UI组件，它的具体UI实现是由它的一系列对象来完成的，它们的类图关系如下所示：
@@ -410,6 +411,564 @@ public void setWindowManager(WindowManager wm,
 ```
 1 一个Activity组件所关联的应用程序窗口对象的类型为PhoneWindow。
 2 这个类型为PhoneWindow的应用程序窗口是通过一个类型为LocalWindowManager的本地窗口管理器来维护的。
-3 这个类型为LocalWindowManager的本地窗口管理器又是通过一个类型为WindowManagerImpl的窗口管理器来维护应用程序窗口的。
-4 这个类型为PhoneWindow的应用程序窗口内部有一个类型为DecorView的视图对象，这个视图对象才是真正用来描述一个Activity组件的UI的
+3 这个类型为LocalWindowManager的本地窗口管理器又是通过一个类型为WindowManagerImpl的窗口管理器来维护应用
+程序窗口的。
+4 这个类型为PhoneWindow的应用程序窗口内部有一个类型为DecorView的视图对象，这个视图对象才是真正用来描述一个
+Activity组件的UI的
 ```
+
+## 三 创建应用视图View
+
+从上文分析可知，每个Activity组件关联一个Window对象（PhoneWindow），而每个Window内部又包含一个View对象（DecorView），用来描述应用视图。
+它们的类图关系如下：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Window_class.png" height="500"/>
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/View_class.png" height="500"/>
+
+我们来看下View的创建流程
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/View_class.png" height="500"/>
+
+**关键点1：ActivityThread.handleLaunchActivity(ActivityClientRecord r, Intent customIntent)**
+
+```java
+public final class ActivityThread{
+    
+    private final void handleLaunchActivity(ActivityClientRecord r, Intent customIntent) {
+            // If we are getting ready to gc after going to the background, well
+            // we are back active so skip it.
+            unscheduleGcIdler();
+    
+            if (localLOGV) Slog.v(
+                TAG, "Handling launch of " + r);
+            Activity a = performLaunchActivity(r, customIntent);
+    
+            if (a != null) {
+                r.createdConfig = new Configuration(mConfiguration);
+                Bundle oldState = r.state;
+                handleResumeActivity(r.token, false, r.isForward);
+    
+                if (!r.activity.mFinished && r.startsNotResumed) {
+                    // The activity manager actually wants this one to start out
+                    // paused, because it needs to be visible but isn't in the
+                    // foreground.  We accomplish this by going through the
+                    // normal startup (because activities expect to go through
+                    // onResume() the first time they run, before their window
+                    // is displayed), and then pausing it.  However, in this case
+                    // we do -not- need to do the full pause cycle (of freezing
+                    // and such) because the activity manager assumes it can just
+                    // retain the current state it has.
+                    try {
+                        r.activity.mCalled = false;
+                        mInstrumentation.callActivityOnPause(r.activity);
+                        // We need to keep around the original state, in case
+                        // we need to be created again.
+                        r.state = oldState;
+                        if (!r.activity.mCalled) {
+                            throw new SuperNotCalledException(
+                                "Activity " + r.intent.getComponent().toShortString() +
+                                " did not call through to super.onPause()");
+                        }
+    
+                    } catch (SuperNotCalledException e) {
+                        throw e;
+    
+                    } catch (Exception e) {
+                        if (!mInstrumentation.onException(r.activity, e)) {
+                            throw new RuntimeException(
+                                    "Unable to pause activity "
+                                    + r.intent.getComponent().toShortString()
+                                    + ": " + e.toString(), e);
+                        }
+                    }
+                    r.paused = true;
+                }
+            } else {
+                // If there was an error, for any reason, tell the activity
+                // manager to stop us.
+                try {
+                    ActivityManagerNative.getDefault()
+                        .finishActivity(r.token, Activity.RESULT_CANCELED, null);
+                } catch (RemoteException ex) {
+                }
+            }
+        }
+       
+}
+ 
+```
+在Activity启动流程的文章里我们分析过这个方法是ActivityManagerService接收到SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求是触发的。
+
+它的执行流程如下：
+
+1. 先去调用performLaunchActivity()方法，创建Context、Window等对象。最终会调用到Activity.onCreate()方法。
+2. 再去调用handleResumeActivity()方法，handleResumeActivity()会调用performResumeActivity()来通知Activity组件它将要被激活，最终会调用
+Activity.onResume()方法。
+
+
+**关键点2：PhoneWindow.setContentView(int layoutResID)**
+
+在上面的描述中，我们知道ActivityThread.performLaunchActivity()方法会去调用Activity.onCreate()方法。当我们在覆写Activity的onCreate()方法
+时，里面有个非常熟悉的方法setContentView()，它实际上调用的是Window.setContentView()。我们来看看Window子类PhoneWindow里
+对这个方法的实现。
+
+```java
+public class PhoneWindow extends Window implements MenuBuilder.Callback {
+ 
+        // This is the top-level view of the window, containing the window decor.
+        private DecorView mDecor;
+    
+        // This is the view in which the window contents are placed. It is either
+        // mDecor itself, or a child of mDecor where the contents go.
+        private ViewGroup mContentParent;
+        
+        @Override
+        public void setContentView(int layoutResID) {
+            if (mContentParent == null) {
+                installDecor();
+            } else {
+                mContentParent.removeAllViews();
+            }
+            mLayoutInflater.inflate(layoutResID, mContentParent);
+            final Callback cb = getCallback();
+            if (cb != null) {
+                cb.onContentChanged();
+            }
+        }
+        
+        private void installDecor() {
+            if (mDecor == null) {
+                mDecor = generateDecor();
+                mDecor.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                mDecor.setIsRootNamespace(true);
+            }
+            if (mContentParent == null) {
+                mContentParent = generateLayout(mDecor);
+    
+                mTitleView = (TextView)findViewById(com.android.internal.R.id.title);
+                if (mTitleView != null) {
+                    if ((getLocalFeatures() & (1 << FEATURE_NO_TITLE)) != 0) {
+                        View titleContainer = findViewById(com.android.internal.R.id.title_container);
+                        if (titleContainer != null) {
+                            titleContainer.setVisibility(View.GONE);
+                        } else {
+                            mTitleView.setVisibility(View.GONE);
+                        }
+                        if (mContentParent instanceof FrameLayout) {
+                            ((FrameLayout)mContentParent).setForeground(null);
+                        }
+                    } else {
+                        mTitleView.setText(mTitle);
+                    }
+                }
+            }
+        }
+}
+```
+mContentParent用来描述一个类型为DecorView的视图对象，如果它为空，则调用installDecor()方法创建窗口视图。如果不空则清除原来的UI。
+然后根据mLayoutInflater根据layoutResID去构建UI，并通过Window.Callback通知窗口视图内容已经发生变化。通过前面的分析，我们知道
+Activity实现了该Callback，因此最终调用的是Activity里的nContentChanged()方法。
+
+我们再来看看installDecor()方法：
+
+1. 如果mDecor为空则通过generateDecor()调用DecorView的构造方法构建一个DecorView对象。
+2. 如果mContentParent为空，则通过generateLayout(mDecor)构建一个mContentParent对象。
+
+generateLayout(mDecor)这个方法比较长
+
+彩蛋：你在installDecor()这个方法里还可以我们经常用来隐藏标题栏的状态标志位FEATURE_NO_TITLE。
+
+我们从里也了解到了源码里xml文件的id，就不往这里贴了，它主要用来设置窗口的标志位，mContentParent通过
+
+```java
+public static final int ID_ANDROID_CONTENT = com.android.internal.R.id.content;
+
+ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
+```
+
+通过上面的描述，我们还了解到了一些源码内部的View Id：
+
+- com.android.internal.R.id.title：标题
+- com.android.internal.R.id.title_container：标题容器
+- com.android.internal.R.id.content：内容
+
+**关键点3：ActivityThread.handleResumeActivity(IBinder token, boolean clearHide, boolean isForward)** 
+
+```java
+public final class ActivityThread{
+     
+        final void handleResumeActivity(IBinder token, boolean clearHide, boolean isForward) {
+                // If we are getting ready to gc after going to the background, well
+                // we are back active so skip it.
+                unscheduleGcIdler();
+        
+                //1. 调用performResumeActivity()来通知Activity组件它将要被激活，最终会调用Activity.onResume()方法。该方法还返回一个ActivityClientRecord
+                ActivityClientRecord r = performResumeActivity(token, clearHide);
+        
+                if (r != null) {
+                    final Activity a = r.activity;
+        
+                    if (localLOGV) Slog.v(
+                        TAG, "Resume " + r + " started activity: " +
+                        a.mStartedActivity + ", hideForNow: " + r.hideForNow
+                        + ", finished: " + a.mFinished);
+        
+                    final int forwardBit = isForward ?
+                            WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION : 0;
+        
+                    // If the window hasn't yet been added to the window manager,
+                    // and this guy didn't finish itself or start another activity,
+                    // then go ahead and add the window.
+                    boolean willBeVisible = !a.mStartedActivity;
+                    if (!willBeVisible) {
+                        try {
+                            willBeVisible = ActivityManagerNative.getDefault().willActivityBeVisible(
+                                    a.getActivityToken());
+                        } catch (RemoteException e) {
+                        }
+                    }
+                    if (r.window == null && !a.mFinished && willBeVisible) {
+                        r.window = r.activity.getWindow();
+                        View decor = r.window.getDecorView();
+                        decor.setVisibility(View.INVISIBLE);
+                        ViewManager wm = a.getWindowManager();
+                        WindowManager.LayoutParams l = r.window.getAttributes();
+                        a.mDecor = decor;
+                        l.type = WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
+                        l.softInputMode |= forwardBit;
+                        if (a.mVisibleFromClient) {
+                            a.mWindowAdded = true;
+                            wm.addView(decor, l);
+                        }
+        
+                    // If the window has already been added, but during resume
+                    // we started another activity, then don't yet make the
+                    // window visible.
+                    } else if (!willBeVisible) {
+                        if (localLOGV) Slog.v(
+                            TAG, "Launch " + r + " mStartedActivity set");
+                        r.hideForNow = true;
+                    }
+        
+                    // The window is now visible if it has been added, we are not
+                    // simply finishing, and we are not starting another activity.
+                    
+                    //2. 判断将要激活的Activity组件是否可见，即willBeVisible的值。Activity里有个成员变量mStartedActivity描述一个Activity组件是否正在启动一个新的
+                    //Activity组件，并且等待这个Activity的执行结果，也就是startActivityForResult()的情况。这种情况下mStartedActivity为true，那么在这个新的Activity
+                    //组件返回之前，这个Activity始终处于不可见状态，但是，如果这个新的Activity组件不是全屏的，那么即便mStartedActivity == true，willBeVisible也要设置
+                    //为true，即该Activity组件可见。
+                    if (!r.activity.mFinished && willBeVisible
+                            && r.activity.mDecor != null && !r.hideForNow) {
+                        if (r.newConfig != null) {
+                            if (DEBUG_CONFIGURATION) Slog.v(TAG, "Resuming activity "
+                                    + r.activityInfo.name + " with newConfig " + r.newConfig);
+                            performConfigurationChanged(r.activity, r.newConfig);
+                            r.newConfig = null;
+                        }
+                        if (localLOGV) Slog.v(TAG, "Resuming " + r + " with isForward="
+                                + isForward);
+                        WindowManager.LayoutParams l = r.window.getAttributes();
+                        if ((l.softInputMode
+                                & WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION)
+                                != forwardBit) {
+                            l.softInputMode = (l.softInputMode
+                                    & (~WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION))
+                                    | forwardBit;
+                            if (r.activity.mVisibleFromClient) {
+                                ViewManager wm = a.getWindowManager();
+                                View decor = r.window.getDecorView();
+                                wm.updateViewLayout(decor, l);
+                            }
+                        }
+                        r.activity.mVisibleFromServer = true;
+                        mNumVisibleActivities++;
+                        if (r.activity.mVisibleFromClient) {
+                            r.activity.makeVisible();
+                        }
+                    }
+        
+                    r.nextIdle = mNewActivities;
+                    mNewActivities = r;
+                    if (localLOGV) Slog.v(
+                        TAG, "Scheduling idle handler for " + r);
+                    Looper.myQueue().addIdleHandler(new Idler());
+        
+                } else {
+                    // If an exception was thrown when trying to resume, then
+                    // just end this activity.
+                    try {
+                        ActivityManagerNative.getDefault()
+                            .finishActivity(token, Activity.RESULT_CANCELED, null);
+                    } catch (RemoteException ex) {
+                    }
+                }
+            }
+}
+```
+
+这个方法主要用来处理Activity.onCreate()之后Activity.onResume()的流程，它的主要流程如下：
+
+1. 调用performResumeActivity()来通知Activity组件它将要被激活，最终会调用Activity.onResume()方法。该方法还返回一个ActivityClientRecord
+对象，该对象描述正在激活的Activity组件。
+2. 判断将要激活的Activity组件是否可见，即willBeVisible的值。Activity里有个成员变量mStartedActivity描述一个Activity组件是否正在启动一个新的
+Activity组件，并且等待这个Activity的执行结果，也就是startActivityForResult()的情况。这种情况下mStartedActivity为true，那么在这个新的Activity
+组件返回之前，这个Activity始终处于不可见状态，但是，如果这个新的Activity组件不是全屏的，那么即便mStartedActivity == true，willBeVisible也要设置
+为true，即该Activity组件可见。
+3. 调用WIndowManager.addView()方法为当前正在激活的Activity组件关联一个ViewRoot对象，调用链比较长，可以参考序列图。
+
+关于LocalWindowManager、WindowManager与WindowManagerImpl的关系我们前面已经分析过，我们直接来看WindowManagerImpl.addView()方法。
+
+
+**关键点4：WindowManagerImpl.addView(View view, ViewGroup.LayoutParams params, boolean nest)**
+
+```java
+public class WindowManagerImpl implements WindowManager {
+    
+    private View[] mViews;
+    private ViewRoot[] mRoots;
+    private WindowManager.LayoutParams[] mParams;
+    
+    private void addView(View view, ViewGroup.LayoutParams params, boolean nest)
+        {
+            if (Config.LOGV) Log.v("WindowManager", "addView view=" + view);
+    
+            if (!(params instanceof WindowManager.LayoutParams)) {
+                throw new IllegalArgumentException(
+                        "Params must be WindowManager.LayoutParams");
+            }
+    
+            final WindowManager.LayoutParams wparams
+                    = (WindowManager.LayoutParams)params;
+            
+            ViewRoot root;
+            View panelParentView = null;
+            
+            synchronized (this) {
+                // Here's an odd/questionable case: if someone tries to add a
+                // view multiple times, then we simply bump up a nesting count
+                // and they need to remove the view the corresponding number of
+                // times to have it actually removed from the window manager.
+                // This is useful specifically for the notification manager,
+                // which can continually add/remove the same view as a
+                // notification gets updated.
+                int index = findViewLocked(view, false);
+                if (index >= 0) {
+                    if (!nest) {
+                        throw new IllegalStateException("View " + view
+                                + " has already been added to the window manager.");
+                    }
+                    root = mRoots[index];
+                    root.mAddNesting++;
+                    // Update layout parameters.
+                    view.setLayoutParams(wparams);
+                    root.setLayoutParams(wparams, true);
+                    return;
+                }
+                
+                // If this is a panel window, then find the window it is being
+                // attached to for future reference.
+                if (wparams.type >= WindowManager.LayoutParams.FIRST_SUB_WINDOW &&
+                        wparams.type <= WindowManager.LayoutParams.LAST_SUB_WINDOW) {
+                    final int count = mViews != null ? mViews.length : 0;
+                    for (int i=0; i<count; i++) {
+                        if (mRoots[i].mWindow.asBinder() == wparams.token) {
+                            panelParentView = mViews[i];
+                        }
+                    }
+                }
+                
+                root = new ViewRoot(view.getContext());
+                root.mAddNesting = 1;
+    
+                view.setLayoutParams(wparams);
+                
+                if (mViews == null) {
+                    index = 1;
+                    mViews = new View[1];
+                    mRoots = new ViewRoot[1];
+                    mParams = new WindowManager.LayoutParams[1];
+                } else {
+                    index = mViews.length + 1;
+                    Object[] old = mViews;
+                    mViews = new View[index];
+                    System.arraycopy(old, 0, mViews, 0, index-1);
+                    old = mRoots;
+                    mRoots = new ViewRoot[index];
+                    System.arraycopy(old, 0, mRoots, 0, index-1);
+                    old = mParams;
+                    mParams = new WindowManager.LayoutParams[index];
+                    System.arraycopy(old, 0, mParams, 0, index-1);
+                }
+                index--;
+    
+                mViews[index] = view;
+                mRoots[index] = root;
+                mParams[index] = wparams;
+            }
+            // do this last because it fires off messages to start doing things
+            root.setView(view, wparams, panelParentView);
+        }
+}
+```
+
+你可以看到在WIndowManagerImpl这个类了有三个数组，这三个数组的大小始终都是相等的。
+
+- private View[] mViews：View对象
+- private ViewRoot[] mRoots：与View关联的ViewRoot对象
+- private WindowManager.LayoutParams[] mParams：与View关联的WindowManager.LayoutParams对象，它用来描述窗口视图的布局属性。
+
+如果mViews包含目标View，则说明View已经关联过ViewRoot与WindowManager.LayoutParams，则直接查找对应位置的索引。
+如果mViews不包含目标View，则创建新的ViewRoot，并添加到这三个数组中。
+
+**关键点5：ViewRoot.setView(View view, WindowManager.LayoutParams attrs, View panelParentView)**
+
+```java
+public final class ViewRoot extends Handler implements ViewParent,
+        View.AttachInfo.Callbacks {
+    
+    public void setView(View view, WindowManager.LayoutParams attrs,
+                View panelParentView) {
+            synchronized (this) {
+                if (mView == null) {
+                    mView = view;
+                    mWindowAttributes.copyFrom(attrs);
+                    attrs = mWindowAttributes;
+                    if (view instanceof RootViewSurfaceTaker) {
+                        mSurfaceHolderCallback =
+                                ((RootViewSurfaceTaker)view).willYouTakeTheSurface();
+                        if (mSurfaceHolderCallback != null) {
+                            mSurfaceHolder = new TakenSurfaceHolder();
+                            mSurfaceHolder.setFormat(PixelFormat.UNKNOWN);
+                        }
+                    }
+                    Resources resources = mView.getContext().getResources();
+                    CompatibilityInfo compatibilityInfo = resources.getCompatibilityInfo();
+                    mTranslator = compatibilityInfo.getTranslator();
+    
+                    if (mTranslator != null || !compatibilityInfo.supportsScreen()) {
+                        mSurface.setCompatibleDisplayMetrics(resources.getDisplayMetrics(),
+                                mTranslator);
+                    }
+    
+                    boolean restore = false;
+                    if (mTranslator != null) {
+                        restore = true;
+                        attrs.backup();
+                        mTranslator.translateWindowLayout(attrs);
+                    }
+                    if (DEBUG_LAYOUT) Log.d(TAG, "WindowLayout in setView:" + attrs);
+    
+                    if (!compatibilityInfo.supportsScreen()) {
+                        attrs.flags |= WindowManager.LayoutParams.FLAG_COMPATIBLE_WINDOW;
+                    }
+    
+                    mSoftInputMode = attrs.softInputMode;
+                    mWindowAttributesChanged = true;
+                    mAttachInfo.mRootView = view;
+                    mAttachInfo.mScalingRequired = mTranslator != null;
+                    mAttachInfo.mApplicationScale =
+                            mTranslator == null ? 1.0f : mTranslator.applicationScale;
+                    if (panelParentView != null) {
+                        mAttachInfo.mPanelParentWindowToken
+                                = panelParentView.getApplicationWindowToken();
+                    }
+                    mAdded = true;
+                    int res; /* = WindowManagerImpl.ADD_OKAY; */
+    
+                    // Schedule the first layout -before- adding to the window
+                    // manager, to make sure we do the relayout before receiving
+                    // any other events from the system.
+                    requestLayout();
+                    mInputChannel = new InputChannel();
+                    try {
+                        res = sWindowSession.add(mWindow, mWindowAttributes,
+                                getHostVisibility(), mAttachInfo.mContentInsets,
+                                mInputChannel);
+                    } catch (RemoteException e) {
+                        mAdded = false;
+                        mView = null;
+                        mAttachInfo.mRootView = null;
+                        mInputChannel = null;
+                        unscheduleTraversals();
+                        throw new RuntimeException("Adding window failed", e);
+                    } finally {
+                        if (restore) {
+                            attrs.restore();
+                        }
+                    }
+                    
+                    if (mTranslator != null) {
+                        mTranslator.translateRectInScreenToAppWindow(mAttachInfo.mContentInsets);
+                    }
+                    mPendingContentInsets.set(mAttachInfo.mContentInsets);
+                    mPendingVisibleInsets.set(0, 0, 0, 0);
+                    if (Config.LOGV) Log.v(TAG, "Added window " + mWindow);
+                    if (res < WindowManagerImpl.ADD_OKAY) {
+                        mView = null;
+                        mAttachInfo.mRootView = null;
+                        mAdded = false;
+                        unscheduleTraversals();
+                        switch (res) {
+                            case WindowManagerImpl.ADD_BAD_APP_TOKEN:
+                            case WindowManagerImpl.ADD_BAD_SUBWINDOW_TOKEN:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window -- token " + attrs.token
+                                    + " is not valid; is your activity running?");
+                            case WindowManagerImpl.ADD_NOT_APP_TOKEN:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window -- token " + attrs.token
+                                    + " is not for an application");
+                            case WindowManagerImpl.ADD_APP_EXITING:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window -- app for token " + attrs.token
+                                    + " is exiting");
+                            case WindowManagerImpl.ADD_DUPLICATE_ADD:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window -- window " + mWindow
+                                    + " has already been added");
+                            case WindowManagerImpl.ADD_STARTING_NOT_NEEDED:
+                                // Silently ignore -- we would have just removed it
+                                // right away, anyway.
+                                return;
+                            case WindowManagerImpl.ADD_MULTIPLE_SINGLETON:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window " + mWindow +
+                                    " -- another window of this type already exists");
+                            case WindowManagerImpl.ADD_PERMISSION_DENIED:
+                                throw new WindowManagerImpl.BadTokenException(
+                                    "Unable to add window " + mWindow +
+                                    " -- permission denied for this window type");
+                        }
+                        throw new RuntimeException(
+                            "Unable to add window -- unknown error code " + res);
+                    }
+    
+                    if (view instanceof RootViewSurfaceTaker) {
+                        mInputQueueCallback =
+                            ((RootViewSurfaceTaker)view).willYouTakeTheInputQueue();
+                    }
+                    if (mInputQueueCallback != null) {
+                        mInputQueue = new InputQueue(mInputChannel);
+                        mInputQueueCallback.onInputQueueCreated(mInputQueue);
+                    } else {
+                        InputQueue.registerInputChannel(mInputChannel, mInputHandler,
+                                Looper.myQueue());
+                    }
+                    
+                    view.assignParent(this);
+                    mAddedTouchMode = (res&WindowManagerImpl.ADD_FLAG_IN_TOUCH_MODE) != 0;
+                    mAppVisible = (res&WindowManagerImpl.ADD_FLAG_APP_VISIBLE) != 0;
+                }
+            }
+        }
+}
+```
+
+这个函数主要做了三件事情：
+
+1. 保存上一步传递进来的View view, WindowManager.LayoutParams attrs等参数。
+2. 调用ViewRoot.requestLayout()方法进行应用窗口UI的第一次布局。
+3. 调用ViewRoot.sWindowSession.add(方法来请求WindowManagerService增加一个WindowState对象，以便可以描述当前ViewRoot正在处理的应用的窗口。
+
+走到这里，我们的Window对象就创建完成了。
