@@ -1,4 +1,4 @@
-# Android系统应用框架篇：SurfaceFlinger服务启动流程分析
+# Android显示框架：Android应用窗口的上下文环境创建流程
 
 **关于作者**
 
