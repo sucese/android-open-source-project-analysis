@@ -1,4 +1,4 @@
-# Android显示框架：Android应用窗口的上下文环境创建流程
+# Android显示框架：Activity应用视图的创建流程
 
 **关于作者**
 
@@ -8,11 +8,9 @@
 
 **文章目录**
 
-- 一 创建应用上下文环境Context
-   - 1.1 主要角色
-   - 1.2 关键点的分析
-- 二 创建应用窗口Window
-- 三 创建应用视图View
+- 一 创建应用上下文环境
+- 二 创建应用窗口
+- 三 创建应用视图
  
 Android应用在运行的过程中需要访问一些特定的资源和类，这些特定的资源或者类构成了Android应用运行的上下文环境，即Context。Context是一个抽象类，ContextImpl继承了Context，
 并实现它的抽象方法。
@@ -41,7 +39,7 @@ ContextImpl() {
 }
 ```
 
-## 一 创建应用上下文环境Context
+## 一 创建应用上下文环境C
 
 我们之前分析过Activity的启动流程，可以得知这个流程的最后一步是调用ActivityThread.perforLaunchActivity()方法在应用进程中创建一个Activity实例，并为它蛇者一个
 上下文环境，即创建一个ContexImpl对象。
@@ -50,13 +48,11 @@ ContexImpl的创建流程如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_sequence.png" height="500"/>
 
-## 1.1 主要角色
+主要角色：
 
 - Instrumenttation：记录应用与系统的交互过程
 - Contextrapper: ContextImpl的代理类，包装了ContextImpl里的相关操作。
 - ContextThemeWrapper：用来维护一个应用的窗口主题
-
-## 1.2 关键点分析
 
 整个流程还是比较简单清晰的，我们着重分析里面的关键点。
 
@@ -284,16 +280,12 @@ Activity只不过是一个高度抽象的UI组件，它的具体UI实现是由�
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Window_sequence.png" height="500"/>
 
-### 2.1 主要角色
+主要角色：
 
 - PhoneWindow：Window的子类，应用视图窗口。
 - WindowManagerImpl：实现了WIndowManager接口，用来管理窗口。
 
-### 2.2 关键点分析
-
-
 **关键点1：PhoneWindow(Context context)**
-
 
 PolicyManager.makeNewWindow(this)用来创建Window对象，该函数通过反射最终调用Policy.makeNewWindow(Context context)，在这个
 方法里调用了PhoneWindow的构造函数，返回了一个PhoneWindow对象。
@@ -421,8 +413,6 @@ Activity组件的UI的
 
 从上文分析可知，每个Activity组件关联一个Window对象（PhoneWindow），而每个Window内部又包含一个View对象（DecorView），用来描述应用视图。
 它们的类图关系如下：
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Window_class.png" height="500"/>
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/View_class.png" height="500"/>
 
@@ -971,4 +961,4 @@ public final class ViewRoot extends Handler implements ViewParent,
 2. 调用ViewRoot.requestLayout()方法进行应用窗口UI的第一次布局。
 3. 调用ViewRoot.sWindowSession.add(方法来请求WindowManagerService增加一个WindowState对象，以便可以描述当前ViewRoot正在处理的应用的窗口。
 
-走到这里，我们的Window对象就创建完成了。
+走到这里，我们的应用视图View就创建完成了。
