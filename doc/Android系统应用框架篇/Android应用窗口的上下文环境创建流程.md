@@ -11,4 +11,4 @@ Android应用在运行的过程中需要访问一些特定的资源和类，这�
 
 因此，每个Activity组件关联的是ContextImpl对象，它们的类图关系如下：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_class.png" height="300"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_class.png" height="500"/>
