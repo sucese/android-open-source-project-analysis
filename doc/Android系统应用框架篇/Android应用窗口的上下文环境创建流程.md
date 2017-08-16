@@ -39,7 +39,7 @@ ContextImpl() {
 }
 ```
 
-## 一 创建应用上下文环境C
+## 一 创建应用上下文环境
 
 我们之前分析过Activity的启动流程，可以得知这个流程的最后一步是调用ActivityThread.perforLaunchActivity()方法在应用进程中创建一个Activity实例，并为它蛇者一个
 上下文环境，即创建一个ContexImpl对象。
