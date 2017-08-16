@@ -50,7 +50,7 @@ ContextImpl() {
 
 ContexImpl的创建流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_class.png" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Context_sequence.png" height="500"/>
 
 ## 2.1 流程角色
 
