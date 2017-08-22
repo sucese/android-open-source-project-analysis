@@ -1,6 +1,6 @@
 # Android Open Source Project Analysis
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_7_nougat.jpg" width="1000"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_logo.png" width="1000"/>
 
 **关于作者**
 
