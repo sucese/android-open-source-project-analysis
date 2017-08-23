@@ -50,23 +50,9 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 **Android显示框架**
 
 - 01Android显示框架：Android显示框架概述
-- 02Android显示框架：SufaceFlinger服务概述
-- 03Android显示框架：SufaceFlinger服务启动流程分析
-- 04Android显示框架：SufaceFlinger服务创建与绘制Surface流程
-- 05Android显示框架：SufaceFlinger服务与应用的连接流程
-- 06Android显示框架：SufaceFlinger服务渲染应用UI流程
-- 07Android显示框架：WndowManagerService概述
-- 08Android显示框架：WindowManagerService窗口大小与位置的计算
-- 09Android显示框架：WindowManagerService窗口的组织方式
-- 10Android显示框架：WindowManagerService窗口Z轴位置的计算流程
-- 11Android显示框架：WindowManagerService中Activity窗口的显示与切换流程
-- 12Android显示框架：WindowManagerService中Activity窗口动画的显示流程
-- 13Android显示框架：Window概述
-- 14Android显示框架：Window的创建、显示与销毁流程
-- 15Android显示框架：View概述
-- 16Android显示框架：View的创建、显示与销毁流程
-- 17Android显示框架：View的测量、布局与绘制流程
-- 18Android显示框架：View的事件分发与处理
+- 02Android显示框架：SurfaceFlinger服务创建与连接流程
+- 03Android显示框架：SurfaceFlinger绘制与渲染UI流程
+- [04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/04Android显示框架：Activity应用视图的创建流程.md)
 
 **Android组件框架**
 
