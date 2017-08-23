@@ -8,9 +8,10 @@
 
 **文章目录**
 
-- 一 创建应用上下文环境
-- 二 创建应用窗口
-- 三 创建应用视图
+- 一 创建Context对象
+- 二 创建Window对象
+- 三 创建View对象
+- 四 创建WindowState对象
  
 Android应用在运行的过程中需要访问一些特定的资源和类，这些特定的资源或者类构成了Android应用运行的上下文环境，即Context。Context是一个抽象类，ContextImpl继承了Context，
 并实现它的抽象方法。
@@ -39,7 +40,7 @@ ContextImpl() {
 }
 ```
 
-## 一 创建应用上下文环境
+## 一 创建Context对象
 
 我们之前分析过Activity的启动流程，可以得知这个流程的最后一步是调用ActivityThread.perforLaunchActivity()方法在应用进程中创建一个Activity实例，并为它蛇者一个
 上下文环境，即创建一个ContexImpl对象。
@@ -269,7 +270,7 @@ mBase指向的是一个ContextImpl对象。
 一个Android应用程序窗口的视图。
 ```
 
-## 二 创建应用窗口Window
+## 二 创建Window对象
 
 从上面的Activity.attach()方法的分析我们得知了ContextImpl的创建流程，我们发现它不仅创建了上下文环境Context，它还创建了Window对象，用来描述一个具体的应用窗口，可以看出
 Activity只不过是一个高度抽象的UI组件，它的具体UI实现是由它的一系列对象来完成的，它们的类图关系如下所示：
@@ -409,7 +410,7 @@ public void setWindowManager(WindowManager wm,
 Activity组件的UI的
 ```
 
-## 三 创建应用视图View
+## 三 创建View对象
 
 从上文分析可知，每个Activity组件关联一个Window对象（PhoneWindow），而每个Window内部又包含一个View对象（DecorView），用来描述应用视图。
 它们的类图关系如下：
@@ -962,3 +963,388 @@ public final class ViewRoot extends Handler implements ViewParent,
 3. 调用ViewRoot.sWindowSession.add(方法来请求WindowManagerService增加一个WindowState对象，以便可以描述当前ViewRoot正在处理的应用的窗口。
 
 走到这里，我们的应用视图View就创建完成了。
+
+## 四 创建WindowState对象
+
+前面我们就说过，WindowState对象是由WIndowManagerService创建的，用来描述窗口相关信息，创建WindowState对象的过程也是与WindowManagerService连接的过程。
+
+1. 当我们启动应用的第一个Activity组件时，它会打开一个到WindowManagerService的连接，这个连接用应用进程从WIndowManagerService服务处获取的一个实现了IWindowSession接口
+的Session代理对象来表示，
+2. 在应用这一侧，每个Activity对象都关联了一个实现了IWindow接口的对象W，这个W对象在Activity视图创建完毕后，就会通过Session对象传递给WIndowManagerService，
+3. WIndowManagerService接收到这个对象后，就会在内部创建一个WindowState对象来描述与该W对象关联的Activity窗口的状态，并且以后通过这个W对象控制对应的Activity的窗口状态。
+
+它们的关系如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/WindowManagerService_structure.png" height="500"/>
+
+**主要角色**
+
+- Session：实现了IWindowSession接口，它保存在ViewRoot的静态变量sWindowSession中，用来与WindowManagerService通信。调用Session.add()方法将一个关联的W对象传递
+给WIndowManagerService，调用Session.remove()方法移除WIndowManagerService之前为Activity窗口创建的WindowState对象。调用Session.relayout()方法来请求WindowManagerService
+来对Activity组件的UI进行布局。
+- W：继承于IWindow.Stub，是ViewRoot的一个静态内部类，它同样也是ViewRoot的一个包装类，内部的功能通过调用ViewRoot的方法来完成，WIndowManagerService可以通过它在内部创建的
+WindowState对象的成员变量IWindow mClient来要求运行在应用进程这一侧的Activity组件配合管理窗口的状态。
+- WindowState：WIndowManagerService的一个内部类，由WIndowManagerService创建，用来描述应用窗口的状态。
+
+它们的类图如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/WindowManagerService_class.png" height="500"/>
+
+理解了一些基本的概念，我们来分析WindowState对象的创建流程。
+
+WindowState对象的创建可以细分为三步：
+
+1. 创建AppWindowToken对象
+2. 创建Session对象
+3. 创建WindowState对象
+
+整个流程序列图如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/WindowManagerService_sequence.png" height="500"/>
+
+Activity组件在创建过程中，会调用ActivityStack.startActivityLocked()方法，该函数会请求WindowManagerService为正在启动的Activity组件创建一个AppWindowToken对象。
+
+注：AppWindowToken继承与WindowToken，只不过WindowToken可以用来描述多种窗口类型，AppWindowToken只用来描述Activity的窗口。
+
+**关键点分析**
+
+**关键点1：AppWindowToken**
+
+```java
+WindowToken(IBinder _token, int type, boolean _explicit) {
+    token = _token;//指向的是ActivityRecord对象的IBinder接口，用来标志一个Activity组件的窗口
+    windowType = type;//窗口类型，Activity窗口的类型为WIndowManager.LayoutParams.TYPE_APPLICATION
+    explicit = _explicit;//表示窗口是否由应用进程请求添加的
+}
+```
+
+```java
+AppWindowToken(IApplicationToken _token) {
+    super(_token.asBinder(),
+            WindowManager.LayoutParams.TYPE_APPLICATION, true);
+    appWindowToken = this;//appWindowToken是类WindowToken的成员变量，指向它自己
+    appToken = _token;//当它不为空的时候，它描述的就是Activity组件窗口
+}
+```
+
+**关键点2：Session(IInputMethodClient client, IInputContext inputContext) )**
+
+
+从上面的序列图我们可以看出，ViewRoot在创建的时候会调用WIndowManagerService.openSession()来创建Session。
+
+```java
+private final class Session extends IWindowSession.Stub
+        implements IBinder.DeathRecipient {
+    
+      public Session(IInputMethodClient client, IInputContext inputContext) {
+                mClient = client;
+                mInputContext = inputContext;
+                mUid = Binder.getCallingUid();
+                mPid = Binder.getCallingPid();
+                StringBuilder sb = new StringBuilder();
+                sb.append("Session{");
+                sb.append(Integer.toHexString(System.identityHashCode(this)));
+                sb.append(" uid ");
+                sb.append(mUid);
+                sb.append("}");
+                mStringName = sb.toString();
+    
+                synchronized (mWindowMap) {
+                    //1 检查检查是否需要获得系统中输入法管理服务
+                    if (mInputMethodManager == null && mHaveInputMethods) {
+                        IBinder b = ServiceManager.getService(
+                                Context.INPUT_METHOD_SERVICE);
+                        mInputMethodManager = IInputMethodManager.Stub.asInterface(b);
+                    }
+                }
+                long ident = Binder.clearCallingIdentity();
+                try {
+                    // Note: it is safe to call in to the input method manager
+                    // here because we are not holding our lock.
+                    if (mInputMethodManager != null) {
+                        //2 为正在请求与 WIndowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
+                        mInputMethodManager.addClient(client, inputContext,
+                                mUid, mPid);
+                    } else {
+                        client.setUsingInputMethod(false);
+                    }
+                    client.asBinder().linkToDeath(this, 0);
+                } catch (RemoteException e) {
+                    // The caller has died, so we can just forget about this.
+                    try {
+                        if (mInputMethodManager != null) {
+                            mInputMethodManager.removeClient(client);
+                        }
+                    } catch (RemoteException ee) {
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(ident);
+                }
+            }
+}
+```
+
+我们先来看下该构造函数的两个参数：
+
+- IInputMethodClient client：从应用进程传递过来的输入法客户端对象。
+- IInputContext inputContext：从应用进程传递过来的输入法上下文对象。
+
+它主要做了两件事情：
+
+1. 检查检查是否需要获得系统中输入法管理服务。
+2. 为正在请求与 WIndowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
+
+**关键点3：WindowManagerService.addWindow()**
+
+前面我们已经了解了Session对象的创建过程中，该对象保存在ViewRoot中，用来与WIndowManagerService通信，接下来它会调用自己的add()方法来请求
+WIndowManagerService创建爱女WindowState对象。从上面的序列图我们可以知道，该方法最终会调用WindowManagerService.addWindow()方法。
+
+```java
+public class WindowManagerService extends IWindowManager.Stub
+        implements Watchdog.Monitor {
+    
+  public int addWindow(Session session, IWindow client,
+              WindowManager.LayoutParams attrs, int viewVisibility,
+              Rect outContentInsets, InputChannel outInputChannel) {
+          int res = mPolicy.checkAddPermission(attrs);
+          if (res != WindowManagerImpl.ADD_OKAY) {
+              return res;
+          }
+  
+          boolean reportNewConfig = false;
+          WindowState attachedWindow = null;
+          WindowState win = null;
+  
+          synchronized(mWindowMap) {
+              // Instantiating a Display requires talking with the simulator,
+              // so don't do it until we know the system is mostly up and
+              // running.
+              if (mDisplay == null) {
+                  WindowManager wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
+                  mDisplay = wm.getDefaultDisplay();
+                  mInitialDisplayWidth = mDisplay.getWidth();
+                  mInitialDisplayHeight = mDisplay.getHeight();
+                  mInputManager.setDisplaySize(0, mInitialDisplayWidth, mInitialDisplayHeight);
+                  reportNewConfig = true;
+              }
+  
+              //如果已经包含该窗口，则返回ADD_DUPLICATE_ADD
+              if (mWindowMap.containsKey(client.asBinder())) {
+                  Slog.w(TAG, "Window " + client + " is already added");
+                  return WindowManagerImpl.ADD_DUPLICATE_ADD;
+              }
+  
+              //如果type大于FIRST_SUB_WINDOW且小于LAST_SUB_WINDOW，说明在添加一个子窗口，则需要寻找它的父窗口
+              if (attrs.type >= FIRST_SUB_WINDOW && attrs.type <= LAST_SUB_WINDOW) {
+                  attachedWindow = windowForClientLocked(null, attrs.token, false);
+                  if (attachedWindow == null) {
+                      Slog.w(TAG, "Attempted to add window with token that is not a window: "
+                            + attrs.token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_BAD_SUBWINDOW_TOKEN;
+                  }
+                  if (attachedWindow.mAttrs.type >= FIRST_SUB_WINDOW
+                          && attachedWindow.mAttrs.type <= LAST_SUB_WINDOW) {
+                      Slog.w(TAG, "Attempted to add window with token that is a sub-window: "
+                              + attrs.token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_BAD_SUBWINDOW_TOKEN;
+                  }
+              }
+  
+              boolean addToken = false;
+              WindowToken token = mTokenMap.get(attrs.token);
+              //如果token为null，则说明窗口还未创建该窗口，则检测窗口的类型
+              if (token == null) {
+                  //应用窗口
+                  if (attrs.type >= FIRST_APPLICATION_WINDOW
+                          && attrs.type <= LAST_APPLICATION_WINDOW) {
+                      Slog.w(TAG, "Attempted to add application window with unknown token "
+                            + attrs.token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_BAD_APP_TOKEN;
+                  }
+                  //输入法窗口
+                  if (attrs.type == TYPE_INPUT_METHOD) {
+                      Slog.w(TAG, "Attempted to add input method window with unknown token "
+                            + attrs.token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_BAD_APP_TOKEN;
+                  }
+                  //壁纸窗口
+                  if (attrs.type == TYPE_WALLPAPER) {
+                      Slog.w(TAG, "Attempted to add wallpaper window with unknown token "
+                            + attrs.token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_BAD_APP_TOKEN;
+                  }
+                  token = new WindowToken(attrs.token, -1, false);
+                  addToken = true;
+              } else if (attrs.type >= FIRST_APPLICATION_WINDOW
+                      && attrs.type <= LAST_APPLICATION_WINDOW) {
+                  AppWindowToken atoken = token.appWindowToken;
+                  if (atoken == null) {
+                      Slog.w(TAG, "Attempted to add window with non-application token "
+                            + token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_NOT_APP_TOKEN;
+                  } else if (atoken.removed) {
+                      Slog.w(TAG, "Attempted to add window with exiting application token "
+                            + token + ".  Aborting.");
+                      return WindowManagerImpl.ADD_APP_EXITING;
+                  }
+                  if (attrs.type == TYPE_APPLICATION_STARTING && atoken.firstWindowDrawn) {
+                      // No need for this guy!
+                      if (localLOGV) Slog.v(
+                              TAG, "**** NO NEED TO START: " + attrs.getTitle());
+                      return WindowManagerImpl.ADD_STARTING_NOT_NEEDED;
+                  }
+              } else if (attrs.type == TYPE_INPUT_METHOD) {
+                  if (token.windowType != TYPE_INPUT_METHOD) {
+                      Slog.w(TAG, "Attempted to add input method window with bad token "
+                              + attrs.token + ".  Aborting.");
+                        return WindowManagerImpl.ADD_BAD_APP_TOKEN;
+                  }
+              } else if (attrs.type == TYPE_WALLPAPER) {
+                  if (token.windowType != TYPE_WALLPAPER) {
+                      Slog.w(TAG, "Attempted to add wallpaper window with bad token "
+                              + attrs.token + ".  Aborting.");
+                        return WindowManagerImpl.ADD_BAD_APP_TOKEN;
+                  }
+              }
+  
+              //创建WindowState对象
+              win = new WindowState(session, client, token,
+                      attachedWindow, attrs, viewVisibility);
+              if (win.mDeathRecipient == null) {
+                  // Client has apparently died, so there is no reason to
+                  // continue.
+                  Slog.w(TAG, "Adding window client " + client.asBinder()
+                          + " that is dead, aborting.");
+                  return WindowManagerImpl.ADD_APP_EXITING;
+              }
+  
+              //调整当前正在增加的窗口的布局参数
+              mPolicy.adjustWindowParamsLw(win.mAttrs);
+  
+              //检查当前应用进程请求增加的窗口是否合法
+              res = mPolicy.prepareAddWindowLw(win, attrs);
+              if (res != WindowManagerImpl.ADD_OKAY) {
+                  return res;
+              }
+              
+              //创建IO输入事件，以便正在增加的窗口可以接收到系统所发生的键盘与触摸事件
+              if (outInputChannel != null) {
+                  String name = win.makeInputChannelName();
+                  InputChannel[] inputChannels = InputChannel.openInputChannelPair(name);
+                  win.mInputChannel = inputChannels[0];
+                  inputChannels[1].transferToBinderOutParameter(outInputChannel);
+                  
+                  mInputManager.registerInputChannel(win.mInputChannel);
+              }
+  
+              // From now on, no exceptions or errors allowed!
+  
+              res = WindowManagerImpl.ADD_OKAY;
+  
+              final long origId = Binder.clearCallingIdentity();
+  
+              //新创建的token添加到mTokenMap与mTokenList中
+              if (addToken) {
+                  mTokenMap.put(attrs.token, token);
+                  mTokenList.add(token);
+              }
+              
+              //为当前正在增加的窗口创建一个用来连接到SurfaceFlinger服务的SurfaceSession对象，用来与SurfaceFlinger通信
+              win.attach();
+              mWindowMap.put(client.asBinder(), win);
+  
+              if (attrs.type == TYPE_APPLICATION_STARTING &&
+                      token.appWindowToken != null) {
+                  token.appWindowToken.startingWindow = win;
+              }
+  
+              boolean imMayMove = true;
+  
+              //将创建的WindowState添加合适的位置
+              if (attrs.type == TYPE_INPUT_METHOD) {
+                  mInputMethodWindow = win;
+                  //如果是一个输入法窗口，则按照Z轴坐标从大到小的顺序检查当前是哪一个窗口是需要输入法窗口的
+                  //找到了这个位于最上面的需要输入法的窗口之后，就可以将输入法窗口放在它上面
+                  addInputMethodWindowToListLocked(win);
+                  imMayMove = false;
+              } else if (attrs.type == TYPE_INPUT_METHOD_DIALOG) {
+                  mInputMethodDialogs.add(win);
+                  //如果是一个对话框窗口，则将WindowState对象win添加到mWindows中，然后调整win在mWindows中的
+                  //位置，是它位于输入法窗口之上
+                  addWindowToListInOrderLocked(win, true);
+                  adjustInputMethodDialogsLocked();
+                  imMayMove = false;
+              } else {
+                  //如果是个应用窗口或者壁纸窗口，则将WindowState对象win添加到mWindows中，如果是壁纸窗口则进一步
+                  //将其Z轴的位置，是其他窗口都在壁纸窗口下面
+                  addWindowToListInOrderLocked(win, true);
+                  if (attrs.type == TYPE_WALLPAPER) {
+                      mLastWallpaperTimeoutTime = 0;
+                      adjustWallpaperWindowsLocked();
+                  } else if ((attrs.flags&FLAG_SHOW_WALLPAPER) != 0) {
+                      adjustWallpaperWindowsLocked();
+                  }
+              }
+  
+              //即将进入窗口动画
+              win.mEnterAnimationPending = true;
+  
+              //获取当前窗口的UI内容的边距大小，这通常用来排除屏幕边框和状态栏所占据的屏幕区域
+              mPolicy.getContentInsetHintLw(attrs, outContentInsets);
+  
+              //是否处于触屏模式
+              if (mInTouchMode) {
+                  res |= WindowManagerImpl.ADD_FLAG_IN_TOUCH_MODE;
+              }
+              if (win == null || win.mAppToken == null || !win.mAppToken.clientHidden) {
+                  res |= WindowManagerImpl.ADD_FLAG_APP_VISIBLE;
+              }
+  
+              //是否可见
+              boolean focusChanged = false;
+              if (win.canReceiveKeys()) {
+                  focusChanged = updateFocusedWindowLocked(UPDATE_FOCUS_WILL_ASSIGN_LAYERS);
+                  if (focusChanged) {
+                      imMayMove = false;
+                  }
+              }
+  
+              if (imMayMove) {
+                  moveInputMethodWindowsIfNeededLocked(false);
+              }
+  
+              assignLayersLocked();
+              // Don't do layout here, the window must call
+              // relayout to be displayed, so we'll do it there.
+  
+              //dump();
+  
+              if (focusChanged) {
+                  finishUpdateFocusedWindowAfterAssignLayersLocked();
+              }
+              
+              if (localLOGV) Slog.v(
+                  TAG, "New client " + client.asBinder()
+                  + ": window=" + win);
+              
+              if (win.isVisibleOrAdding() && updateOrientationFromAppTokensLocked()) {
+                  reportNewConfig = true;
+              }
+          }
+  
+          // sendNewConfiguration() checks caller permissions so we must call it with
+          // privilege.  updateOrientationFromAppTokens() clears and resets the caller
+          // identity anyway, so it's safe to just clear & restore around this whole
+          // block.
+          final long origId = Binder.clearCallingIdentity();
+          if (reportNewConfig) {
+              sendNewConfiguration();
+          }
+          Binder.restoreCallingIdentity(origId);
+  
+          return res;
+      }
+}
+```
+
+关键点
