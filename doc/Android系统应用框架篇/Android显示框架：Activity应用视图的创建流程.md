@@ -1347,4 +1347,117 @@ public class WindowManagerService extends IWindowManager.Stub
 }
 ```
 
-关键点
+**关键点4：WindowState**
+
+```java
+private final class WindowState implements WindowManagerPolicy.WindowState {
+    
+    WindowState(Session s, IWindow c, WindowToken token,
+                   WindowState attachedWindow, WindowManager.LayoutParams a,
+                   int viewVisibility) {
+                //指向一个类型为Session的Binder本地对象，表示当前创建的WindowState对象属于哪个应用进程
+                mSession = s;
+                //指向一个实现了IWindow接口的Binder代理对象，它引用了运行在应用进程这一侧的一个类型为W的Binder对象
+                mClient = c;
+                //指向一个WindowToken对象，通过它可以唯一标识一个窗口
+                mToken = token;
+                //指向一个WIndowManager.LayoutParams对象，表示窗口布局参数
+                mAttrs.copyFrom(a);
+                //窗口可见性
+                mViewVisibility = viewVisibility;
+                //兼容mClient所引用的对象，如果这个Binder对象死亡了之后，就说明这个应用进程关闭了，它用来接收死亡通知
+                DeathRecipient deathRecipient = new DeathRecipient();
+                mAlpha = a.alpha;
+                if (localLOGV) Slog.v(
+                    TAG, "Window " + this + " client=" + c.asBinder()
+                    + " token=" + token + " (" + mAttrs.token + ")");
+                try {
+                    c.asBinder().linkToDeath(deathRecipient, 0);
+                } catch (RemoteException e) {
+                    mDeathRecipient = null;
+                    mAttachedWindow = null;
+                    mLayoutAttached = false;
+                    mIsImWindow = false;
+                    mIsWallpaper = false;
+                    mIsFloatingLayer = false;
+                    mBaseLayer = 0;
+                    mSubLayer = 0;
+                    return;
+                }
+                mDeathRecipient = deathRecipient;
+    
+                if ((mAttrs.type >= FIRST_SUB_WINDOW &&
+                        mAttrs.type <= LAST_SUB_WINDOW)) {
+                    // The multiplier here is to reserve space for multiple
+                    // windows in the same type layer.
+                    //int型，描述一个窗口的基础Z轴位置
+                    mBaseLayer = mPolicy.windowTypeToLayerLw(
+                            attachedWindow.mAttrs.type) * TYPE_LAYER_MULTIPLIER
+                            + TYPE_LAYER_OFFSET;
+                    //int型，描述一个子窗口相对其父窗口的Z轴偏移值
+                    mSubLayer = mPolicy.subWindowTypeToLayerLw(a.type);
+                    //WindowState对象，描述子窗口的父窗口
+                    mAttachedWindow = attachedWindow;
+                    mAttachedWindow.mChildWindows.add(this);
+                    //boolean型，描述一个子窗口的视图是否嵌入在父窗口视图里面
+                    mLayoutAttached = mAttrs.type !=
+                            WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+                    //boolean型，表示当前创建的对象WindowState对象所描述的窗口是否是一个输入法窗口或者输入法对话框
+                    mIsImWindow = attachedWindow.mAttrs.type == TYPE_INPUT_METHOD
+                            || attachedWindow.mAttrs.type == TYPE_INPUT_METHOD_DIALOG;
+                    //boolean型，表示当前创建的对象WindowState对象所描述的窗口是否是一个壁纸窗口
+                    mIsWallpaper = attachedWindow.mAttrs.type == TYPE_WALLPAPER;
+                    //boolean型，表示当前创建的对象WindowState对象所描述的窗口是否是一个浮动壁纸窗口
+                    mIsFloatingLayer = mIsImWindow || mIsWallpaper;
+                } else {
+                    // The multiplier here is to reserve space for multiple
+                    // windows in the same type layer.
+                    mBaseLayer = mPolicy.windowTypeToLayerLw(a.type)
+                            * TYPE_LAYER_MULTIPLIER
+                            + TYPE_LAYER_OFFSET;
+                    mSubLayer = 0;
+                    mAttachedWindow = null;
+                    mLayoutAttached = false;
+                    mIsImWindow = mAttrs.type == TYPE_INPUT_METHOD
+                            || mAttrs.type == TYPE_INPUT_METHOD_DIALOG;
+                    mIsWallpaper = mAttrs.type == TYPE_WALLPAPER;
+                    mIsFloatingLayer = mIsImWindow || mIsWallpaper;
+                }
+    
+                WindowState appWin = this;
+                while (appWin.mAttachedWindow != null) {
+                    appWin = mAttachedWindow;
+                }
+                WindowToken appToken = appWin.mToken;
+                while (appToken.appWindowToken == null) {
+                    WindowToken parent = mTokenMap.get(appToken.token);
+                    if (parent == null || appToken == parent) {
+                        break;
+                    }
+                    appToken = parent;
+                }
+                mRootToken = appToken;
+                mAppToken = appToken.appWindowToken;
+    
+                mSurface = null;
+                mRequestedWidth = 0;
+                mRequestedHeight = 0;
+                mLastRequestedWidth = 0;
+                mLastRequestedHeight = 0;
+                mXOffset = 0;
+                mYOffset = 0;
+                mLayer = 0;
+                mAnimLayer = 0;
+                mLastLayer = 0;
+            }
+}
+```
+
+以上便是WindowState对象的创建过程，截止到目前我们已经完成了对
+
+- 一 创建Context对象
+- 二 创建Window对象
+- 三 创建View对象
+- 四 创建WindowState对象
+
+的分析。
