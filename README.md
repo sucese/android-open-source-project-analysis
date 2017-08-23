@@ -1,6 +1,6 @@
 # Android Open Source Project Analysis
 
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_logo.png" width="1000"/>
+<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/android_logo.jpg" width="1000"/>
 
 **关于作者**
 
@@ -16,7 +16,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **代码版本**
 
->[android-7.1.1_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
+>[android-8.0.0_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
 
 **分析思路**
 
