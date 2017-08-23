@@ -1453,11 +1453,24 @@ private final class WindowState implements WindowManagerPolicy.WindowState {
 }
 ```
 
-以上便是WindowState对象的创建过程，截止到目前我们已经完成了对
+以上便是WindowState对象的创建过程。
 
-- 一 创建Context对象
-- 二 创建Window对象
-- 三 创建View对象
-- 四 创建WindowState对象
+##五 创建Surface对象
 
-的分析。
+前面我们分析了应用窗口连接到WndowManagerService服务的过程，在这个过程中WindowManagerService会为应用窗口创建一个到SurfaceFlinger的连接，通过这个连接，WindowManagerService就
+可以为Activity创建绘图表面Surface，进而可以在Surface上渲染UI。
+
+Java层实现的应用窗口的绘图表面通过两个Surface对象来描述，一个在应用进程这一侧创建的，一个在WindowManagerService侧创建的，它们对应了SurfaceFlinger这一侧同一个Layer对象，如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Surface_class.png" height="500"/>
+
+- 在应用进程这一侧，每一个Activity组件都要一个关联的Surface对象，这个Surface对象保存在一个关联的ViewRoot对象的成员变量mSurface中。它负责绘制应用窗口的UI，即
+往应用窗口的图形缓冲区填充UI数据，
+- 在WindowManagerService这一侧，每个Activity组件都有一个对应的WindowState对象，每个WindowState对象的成员变量同样指向一个Surface对象。它负责设置应用窗口的属性。
+
+可以看到同样是Surface，完成的工作却不一样，之所以会有这样的差别，是因为绘制应用窗口是独立的，由应用进程来完成，而设置应用窗口属性却需要全局考虑，即由WindowManagerService来统筹安排。
+
+从上面的创建View对象的分析我们可以知道，当一个应用窗口被激活且它的视图对象View创建之后就会调用View.requestLayout()方法对UI进行布局以及显示，整个流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Surface_sequence.png" height="500"/>
+
