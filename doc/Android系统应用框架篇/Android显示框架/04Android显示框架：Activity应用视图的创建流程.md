@@ -1474,3 +1474,295 @@ Java层实现的应用窗口的绘图表面通过两个Surface对象来描述，
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Surface_sequence.png" height="500"/>
 
+**主要角色**
+
+**关键点1：ViewRoot.performTraversals()**
+
+从上面的序列图我们可以看出ViewRoot发送的DO_TRAVERSAL消息由performTraversals()函数来进行处理。
+
+```java
+public final class ViewRoot extends Handler implements ViewParent,  
+        View.AttachInfo.Callbacks {  
+    ... 
+  
+    View mView;  
+    ...
+  
+    boolean mLayoutRequested;  
+    boolean mFirst;  
+    ...
+    boolean mFullRedrawNeeded;  
+    ...
+  
+    private final Surface mSurface = new Surface();  
+    ... 
+  
+    private void performTraversals() {  
+        ...
+  
+        final View host = mView;  
+        ... 
+  
+        mTraversalScheduled = false;  
+        ...
+        boolean fullRedrawNeeded = mFullRedrawNeeded;  
+        boolean newSurface = false;  
+        ...
+  
+        if (mLayoutRequested) {  
+            ... 
+  
+            host.measure(childWidthMeasureSpec, childHeightMeasureSpec);  
+              
+            ...
+        }  
+  
+        ... 
+  
+        int relayoutResult = 0;  
+        if (mFirst || windowShouldResize || insetsChanged  
+                || viewVisibilityChanged || params != null) {  
+            ... 
+  
+            boolean hadSurface = mSurface.isValid();  
+            try {  
+                ...
+  
+                relayoutResult = relayoutWindow(params, viewVisibility, insetsPending);  
+                ...
+  
+                if (!hadSurface) {  
+                    if (mSurface.isValid()) {  
+                        ...
+                        newSurface = true;  
+                        fullRedrawNeeded = true;  
+                        ...
+                    }  
+                }   
+                ...
+            } catch (RemoteException e) {  
+            }  
+            ....
+        }  
+  
+        final boolean didLayout = mLayoutRequested;  
+        ...
+  
+        if (didLayout) {  
+            mLayoutRequested = false;  
+            ...
+  
+            host.layout(0, 0, host.mMeasuredWidth, host.mMeasuredHeight);  
+  
+            ...
+        }  
+  
+        ...
+  
+        mFirst = false;  
+        ...
+  
+        boolean cancelDraw = attachInfo.mTreeObserver.dispatchOnPreDraw();  
+  
+        if (!cancelDraw && !newSurface) {  
+            mFullRedrawNeeded = false;  
+            draw(fullRedrawNeeded);  
+  
+            ...
+        } else {  
+            ....
+  
+            // Try again  
+            scheduleTraversals();  
+        }  
+    }    
+}
+```
+这其实是个相当复杂的函数，它完成了measure，layout，draw等过程，这个我们下篇文章再详细讨论，这个部分我们关注的还是
+Surface的创建。
+
+1. 可以看到这里有个mSurface变量，它指向的是一个Surface对象，但是它还没有和C++层的Surface对象进行关联，因此它是一个无效的Surface对象
+（UI绘制最终在C++层完成），因此我们要借助WindowManagerService来让它变得有效。
+2. 可以发现该方法会继续调用realyoutWindow()方法来请求系统重新布局系统中所有窗口，这个其实是由Sesssion对象请求WindowManagerService来完成的，WindowManagerService在处理应用窗口时会为当期应用窗口创建一个有效的Surface。
+3. WindowManagerService.realyoutWindow()会继续调用WindowState.createSurfaceLocked()来完成与C++层Surface对象的关联，使之成为有效的
+Surface。
+
+**关键点2：WindowState.createSurfaceLocked**
+
+```java
+ private final class WindowState implements WindowManagerPolicy.WindowState {
+ 	Surface createSurfaceLocked() {
+            if (mSurface == null) {
+                mReportDestroySurface = false;
+                mSurfacePendingDestroy = false;
+                mDrawPending = true;
+                mCommitDrawPending = false;
+                mReadyToShow = false;
+                if (mAppToken != null) {
+                    mAppToken.allDrawn = false;
+                }
+
+                int flags = 0;
+                if (mAttrs.memoryType == MEMORY_TYPE_PUSH_BUFFERS) {
+                    flags |= Surface.PUSH_BUFFERS;
+                }
+
+                if ((mAttrs.flags&WindowManager.LayoutParams.FLAG_SECURE) != 0) {
+                    flags |= Surface.SECURE;
+                }
+                if (DEBUG_VISIBILITY) Slog.v(
+                    TAG, "Creating surface in session "
+                    + mSession.mSurfaceSession + " window " + this
+                    + " w=" + mFrame.width()
+                    + " h=" + mFrame.height() + " format="
+                    + mAttrs.format + " flags=" + flags);
+
+                int w = mFrame.width();
+                int h = mFrame.height();
+                if ((mAttrs.flags & LayoutParams.FLAG_SCALED) != 0) {
+                    // for a scaled surface, we always want the requested
+                    // size.
+                    w = mRequestedWidth;
+                    h = mRequestedHeight;
+                }
+
+                // Something is wrong and SurfaceFlinger will not like this,
+                // try to revert to sane values
+                if (w <= 0) w = 1;
+                if (h <= 0) h = 1;
+
+                mSurfaceShown = false;
+                mSurfaceLayer = 0;
+                mSurfaceAlpha = 1;
+                mSurfaceX = 0;
+                mSurfaceY = 0;
+                mSurfaceW = w;
+                mSurfaceH = h;
+                try {
+                		//构造Surface对象
+                    mSurface = new Surface(
+                            mSession.mSurfaceSession, mSession.mPid,
+                            mAttrs.getTitle().toString(),
+                            0, w, h, mAttrs.format, flags);
+                    if (SHOW_TRANSACTIONS) Slog.i(TAG, "  CREATE SURFACE "
+                            + mSurface + " IN SESSION "
+                            + mSession.mSurfaceSession
+                            + ": pid=" + mSession.mPid + " format="
+                            + mAttrs.format + " flags=0x"
+                            + Integer.toHexString(flags)
+                            + " / " + this);
+                } catch (Surface.OutOfResourcesException e) {
+                    Slog.w(TAG, "OutOfResourcesException creating surface");
+                    reclaimSomeSurfaceMemoryLocked(this, "create");
+                    return null;
+                } catch (Exception e) {
+                    Slog.e(TAG, "Exception creating surface", e);
+                    return null;
+                }
+
+                if (localLOGV) Slog.v(
+                    TAG, "Got surface: " + mSurface
+                    + ", set left=" + mFrame.left + " top=" + mFrame.top
+                    + ", animLayer=" + mAnimLayer);
+                if (SHOW_TRANSACTIONS) {
+                    Slog.i(TAG, ">>> OPEN TRANSACTION");
+                    if (SHOW_TRANSACTIONS) logSurface(this,
+                            "CREATE pos=(" + mFrame.left + "," + mFrame.top + ") (" +
+                            mFrame.width() + "x" + mFrame.height() + "), layer=" +
+                            mAnimLayer + " HIDE", null);
+                }
+                Surface.openTransaction();
+                try {
+                    try {
+                        mSurfaceX = mFrame.left + mXOffset;
+                        mSurfaceY = mFrame.top + mYOffset;
+                        mSurface.setPosition(mSurfaceX, mSurfaceY);
+                        mSurfaceLayer = mAnimLayer;
+                        mSurface.setLayer(mAnimLayer);
+                        mSurfaceShown = false;
+                        mSurface.hide();
+                        if ((mAttrs.flags&WindowManager.LayoutParams.FLAG_DITHER) != 0) {
+                            if (SHOW_TRANSACTIONS) logSurface(this, "DITHER", null);
+                            mSurface.setFlags(Surface.SURFACE_DITHER,
+                                    Surface.SURFACE_DITHER);
+                        }
+                    } catch (RuntimeException e) {
+                        Slog.w(TAG, "Error creating surface in " + w, e);
+                        reclaimSomeSurfaceMemoryLocked(this, "create-init");
+                    }
+                    mLastHidden = true;
+                } finally {
+                    if (SHOW_TRANSACTIONS) Slog.i(TAG, "<<< CLOSE TRANSACTION");
+                    Surface.closeTransaction();
+                }
+                if (localLOGV) Slog.v(
+                        TAG, "Created surface " + this);
+            }
+            return mSurface;
+        }
+ }
+```
+在创建Surface之前，我们需要以下数据：
+
+1. WindowState.mPid：应用窗口所在应用进程的PID
+2. WindowState.mSurfaceSession：与应用窗口所在应用进程所关联的SurfaceSession对象
+3. WindowState.mAttr.getTitle(): 应用窗口标题
+4. WindowState.mAttr.getFormat(): 应用窗口像素格式
+5. WindowState.mFrame; 应用窗口宽度/高度
+6. WindowState.mAttr.getMemoryType(): 应用窗口图形缓冲区属性标志
+
+准备好以上数据后，就调用Surface构造方法来构造Surface对象，构造好Surface对象后，还会在事务中处理窗口的以下属性：
+
+1. X/Y轴位置：当一个WindowState对象所描述的应用程序窗口是一个壁纸窗口时，该WindowState对象的成员变量mXOffset和mYOffset用来描述壁纸窗口相对当前要显示的窗口在X轴和Y轴上的偏移量。 mFrame.left + mXOffset即得到X轴位置，mSurfaceY = mFrame.top + mYOffset即得到Y轴位置。
+2. Z轴位置：WindowState类的成员变量mAnimLayer用来描述一个应用程序窗口的Z轴位置，这里将其赋值给mSurfaceLayer，再调用setLayer()方法将其传递给SurfaceFlinger。
+3. 抖动标志：mAttrs.flags标志位WindowManager.LayoutParams.FLAG_DITHER不等于0时，图形缓冲区需要做抖动处理。
+4. 显示状态：刚刚创建的Surface，需要用SurfaceFLinger将它隐藏一起。
+
+注：为了避免SurfaceFlinger没设置一个窗口的属性就重新渲染一次，属性的设置需要在事务中进行，这样可以避免界面闪烁。
+
+关键点3：
+
+```java
+public class Surface implements Parcelable {
+
+    @SuppressWarnings("unused")
+    private int mSurfaceControl;
+    @SuppressWarnings("unused")
+    private int mSaveCount;
+    @SuppressWarnings("unused")
+    private Canvas mCanvas;
+    @SuppressWarnings("unused")
+    private int mNativeSurface;
+    private String mName;
+
+	 public Surface(SurfaceSession s,
+            int pid, int display, int w, int h, int format, int flags)
+        throws OutOfResourcesException {
+        if (DEBUG_RELEASE) {
+            mCreationStack = new Exception();
+        }
+        mCanvas = new CompatibleCanvas();
+        init(s,pid,null,display,w,h,format,flags);
+    }
+}
+
+private native void init(SurfaceSession s,
+            int pid, String name, int display, int w, int h, int format, int flags)
+```
+
+可以看出Surface里有三个主要成员变量：
+
+1. private int mSurfaceControl: 保存的是在C++层的一个SurfaceControl对象的地址值。
+2. private Canvas mCanvas：用来描述一块类型为CompatibleCanvas的画布，画布是真正用来绘制UI的地方。
+3. private String mName：用来描述画布的名词。
+
+讲到这里，Surface的创建流程分析完了，我们来总结一下。
+
+1. 每一个应用程序窗口都对应有两个Java层的Surface对象，其中一个是在WindowManagerService服务这一侧创建的，而另外一个是在应用程序进程这一侧创建的。
+2. 在WindowManagerService服务这一侧创建的Java层的Surface对象在C++层关联有一个SurfaceControl对象，用来设置应用窗口的属性，例如，大小和位置等。
+3. 在应用程序进程这一侧创建的ava层的Surface对象在C++层关联有一个Surface对象，用来绘制应用程序窗品的UI。
+
+好，本篇文章至此结束，本篇文章完成了Context、Window、View、WindowState与Surface对象创建流程的分析，这样我们就可以在应用界面上绘制UI了，下篇文章
+就来分析UI的绘制流程。
+
+ 
