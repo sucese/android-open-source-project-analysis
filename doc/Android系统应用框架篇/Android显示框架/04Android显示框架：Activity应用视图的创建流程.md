@@ -12,6 +12,7 @@
 - 二 创建Window对象
 - 三 创建View对象
 - 四 创建WindowState对象
+- 四 创建Surface对象
  
 Android应用在运行的过程中需要访问一些特定的资源和类，这些特定的资源或者类构成了Android应用运行的上下文环境，即Context。Context是一个抽象类，ContextImpl继承了Context，
 并实现它的抽象方法。
