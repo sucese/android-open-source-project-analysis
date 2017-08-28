@@ -345,8 +345,6 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
 该方法检查mPrivateFlags的DRAWN位与HAS_BOUNDS是否被置1，说明上一次请求执行的UI绘制已经完成了，这个时候才能执行新的UI绘制操作，在执行新的UI绘制操作之前，还会将
 这两个标志位置0，然后调用ViewParent.invalidateChild()方法来完成绘制操作，这个ViewParent指向的是ViewRoot对象。
 
-
-
 ## 绘制流程
 
 >Draw过程最终将View绘制在屏幕上。
