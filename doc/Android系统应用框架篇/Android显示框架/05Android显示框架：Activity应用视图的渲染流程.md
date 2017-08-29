@@ -8,6 +8,10 @@
 
 **文章目录**
 
+- 一 测量流程
+- 二 布局流程
+- 三 绘制流程
+
 在上篇文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 中我们分析了Activity应用视图的创建流程，这样我们便可以进行UI的绘制了。一个Android应用窗口里包含了很多UI元素，它们是以树形结构来组织的，即父子关系。在绘制UI的过程中，我们
 要先确定父UI元素的大小及位置，再确定子UI元素的大小及位置，才能进行绘制。
@@ -21,7 +25,7 @@ View的绘制流程从ViewRoot.performTraversals()开始，整个流程分为三
 在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制
 操作的。
 
-## 测量流程
+## 一 测量流程
 
 >Measure过程决定了View的宽高，该过程完成后，通常都可以通过getMeasuredWith()/getMeasuredHeight()获得宽高。
 
@@ -308,7 +312,7 @@ mForegroundPaddingLeft ，mForegroundPaddingRight，mForegroundPaddingTop ，mFo
 以上便是Measure的整个流程，该流程完成以后，我们可以通过getMeasuredWidth()与getMeasuredHeight()来获得View的宽高。但是在某些情况下，系统需要经过多次Measure才能确定
 最终的宽高，因此在onMeasure()方法中拿到的宽高很可能是不正确的，比较好的做法是在onLayout()方法中获取View的宽高。
 
-## 布局流程
+## 二 布局流程
 
 >Layout过程决定了View的父容器里四个坐标点的位置，该过程完成后可以通过getTop()、getBottom()、getLeft()和getRight()来拿到View四个顶点的位置，并可以通过
 getWidth()/getHeigth()获得View的最终宽高。
@@ -429,7 +433,7 @@ public class FrameLayout extends ViewGroup {
 接着，该方法就会遍历它的每一个子View，并获取它的左上角的坐标位置：childLeft，childTop。这两个位置信息会根据gravity来进行计算。
 最后会调用子View的layout()方法循环布局操作，直到所有的布局都完成为止。
 
-## 绘制流程
+## 三 绘制流程
 
 >Draw过程最终将View绘制在屏幕上。
 
@@ -1297,9 +1301,10 @@ ViewGroup.drawChild(Canvas canvas, View child, long drawingTime)用来完成子�
 
 6 恢复画布的堆栈状态，以便在绘制完当前子视图的UI后，可以继续绘制其他子视图的UI。
 
-至此，Android应用程序窗口的渲染流程，从中就可以看出：
+**总结**
 
-1 渲染Android应用视图的渲染流程：测量、布局、绘制。
+至此，Android应用程序窗口的渲染流程就分析完了，我们再来总结一下。
 
+1 渲染Android应用视图的渲染流程，测量流程用来确定视图的大小、布局流程用来确定视图的位置、绘制流程最终将视图绘制在应用窗口上。
 2 Android应用程序窗口UI首先是使用Skia图形库API来绘制在一块画布上，实际地是绘制在这块画布里面的一个图形缓冲区中，这个图形缓冲区最终会被交给SurfaceFlinger服
 务，而SurfaceFlinger服务再使用OpenGL图形库API来将这个图形缓冲区渲染到硬件帧缓冲区中。
