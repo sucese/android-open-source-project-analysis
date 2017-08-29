@@ -1,4 +1,4 @@
-# Android显示框架：Android应用视图的渲染流程
+# Android显示框架：Activity应用视图的渲染流程
 
 **关于作者**
 
