@@ -22,8 +22,7 @@ View的绘制流程从ViewRoot.performTraversals()开始，整个流程分为三
 2. layout：确定View在父容器里的位置
 3. draw：将View绘制在屏幕上
 
-在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制
-操作的。
+在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制操作。
 
 ## 一 测量流程
 
@@ -1305,6 +1304,6 @@ ViewGroup.drawChild(Canvas canvas, View child, long drawingTime)用来完成子�
 
 至此，Android应用程序窗口的渲染流程就分析完了，我们再来总结一下。
 
-1 渲染Android应用视图的渲染流程，测量流程用来确定视图的大小、布局流程用来确定视图的位置、绘制流程最终将视图绘制在应用窗口上。
-2 Android应用程序窗口UI首先是使用Skia图形库API来绘制在一块画布上，实际地是绘制在这块画布里面的一个图形缓冲区中，这个图形缓冲区最终会被交给SurfaceFlinger服
+1. 渲染Android应用视图的渲染流程，测量流程用来确定视图的大小、布局流程用来确定视图的位置、绘制流程最终将视图绘制在应用窗口上。
+2. Android应用程序窗口UI首先是使用Skia图形库API来绘制在一块画布上，实际地是绘制在这块画布里面的一个图形缓冲区中，这个图形缓冲区最终会被交给SurfaceFlinger服
 务，而SurfaceFlinger服务再使用OpenGL图形库API来将这个图形缓冲区渲染到硬件帧缓冲区中。
