@@ -53,7 +53,7 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - 02Android显示框架：SurfaceFlinger服务创建与连接流程
 - 03Android显示框架：SurfaceFlinger绘制与渲染UI流程
 - [04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
-- [05Android显示框架：Activity应用视图的渲染流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的渲染流程.md)
+- [05Android显示框架：Activity应用视图的渲染流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Activity应用视图的渲染流程.md)
 
 **Android组件框架**
 
