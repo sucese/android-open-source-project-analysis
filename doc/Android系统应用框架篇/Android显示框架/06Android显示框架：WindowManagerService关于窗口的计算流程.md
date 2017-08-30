@@ -2161,11 +2161,11 @@ PhoneWindowManager.windowTypeToLayerLw()与PhoneWindowManager.subWindowTypeToLay
 
 主序
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/base_layer_type.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/layer_type_base.jpg"/>
 
 次序
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/sub_layer_type.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/layer_type_sub.jpg"/>
 
 ```java
 public class WindowManagerService extends IWindowManager.Stub    
