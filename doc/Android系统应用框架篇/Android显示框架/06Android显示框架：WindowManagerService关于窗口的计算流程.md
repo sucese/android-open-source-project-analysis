@@ -47,7 +47,7 @@ Window其实是一个抽象概念，每一个Window都对应着一个View和View
 
 窗口大小的计算序列图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_layer.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_layer.png" width="250" height="500"/>
 
 ### 关键点1：ViewRoot.performTraversals()
 
