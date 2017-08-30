@@ -118,11 +118,7 @@ WindowToken中定义了一些很关键的变量，我们来看看它们的作用
 
 我们来看看WindowState的构造函数的实现，借此理解一下窗口排布次序的原理。
 
-关于z-order
 
->手机屏幕是以左上角为原点，向右为X轴方向，向下为Y轴方向的一个二维空间。为了方便管理窗口的显示次序，手机的屏幕被扩展为了
-一个三维的空间，即多定义了 一个Z轴，其方向为垂直于屏幕表面指向屏幕外。多个窗口依照其前后顺序排布在这个虚拟的Z轴上，因此
-窗口的显示次序又被称为Z序（Z order）。
 
 ```java
 private final class WindowState implements WindowManagerPolicy.WindowState {
@@ -222,43 +218,7 @@ private final class WindowState implements WindowManagerPolicy.WindowState {
     
 }
 ```
-一个Window的次序有两个参数决定：
 
-```
-int mBaseLayer：用于描述窗口及其子窗口在所有窗口中的显示位置，主序越大，则窗口及其子窗口的显示位置相对于其他窗口的位置越靠前。
-int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，子序越大，则子窗口相对于其兄弟窗口的位置越靠前。
-```
-
-窗口的主序表
-
-|窗口类型|主序|
-|:------|:---|
-|TYPE_UNIVERSE_BACKGROUND|11000
-|TYPE_WALLPAPER|21000
-|TYPE_PHONE|31000
-|TYPE_SEARCH_BAR|41000
-|TYPE_RECENTS_OVERLAY|51000
-|TYPE_SYSTEM_DIALOG|51000
-|TYPE_TOAST|61000
-|TYPE_PRIORITY_PHONE|71000
-|TYPE_DREAM|81000
-|TYPE_SYSTEM_ALERT|91000
-|TYPE_INPUT_METHOD|101000
-|TYPE_INPUT_METHOD_DIALOG|111000
-|TYPE_KEYGUARD|121000
-|TYPE_KEYGUARD_DIALOG|131000
-|TYPE_STATUS_BAR_SUB_PANEL|141000
-|应用窗口与未知类型的窗口|21000
- 
-窗口的子序表
-
-|子窗口类型|子序|
-|:------|:---|
-|TYPE_APPLICATION_PANEL|1
-|TYPE_APPLICATION_ATTACHED_DIALOG|1
-|TYPE_APPLICATION_MEDIA|-2
-|TYPE_APPLICATION_MEDIA_OVERLAY|-1
-|TYPE_APPLICATION_SUB_PANEL|2
 
 ### WindowManagerPolicy
 

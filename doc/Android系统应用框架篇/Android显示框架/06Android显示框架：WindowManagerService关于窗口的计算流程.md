@@ -49,6 +49,15 @@ Window其实是一个抽象概念，每一个Window都对应着一个View和View
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_size_compute_sequence.png"/>
 
+我们来分析窗口大小（X轴、Y轴）的计算流程，在介绍窗口的计算流程之前，我们先来了解一下窗口的组成。
+
+窗口有内容窗口（Content Region），内容边距（Content Inset）与可见边距（Visible Inset）组成，如下图：
+
+content-left、content-right、content-top、content-bottom分别用来描述内容区域与窗口区域的左右上下边界距离。
+visible-left、visible-right、visible-top、visible-bottom分别用来描述可见区域与窗口区域的左右上下边界距离。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/view/09/window_inset.png"/>
+
 ### 关键点1：ViewRoot.performTraversals()
 
 从前面的文章可知，Window大小的计算是从函数ViewRoot.performTraversals()开始，向WindowManagerService发送一个进程间通信请求，请求计算
@@ -840,7 +849,445 @@ public final class ViewRoot extends Handler implements ViewParent,
 
 这段代码调用View.layout()方法完成布局工作，并将Activity窗口指定的额外的内容边距与可见边距通过sWindowSession发送给WindowManagerService。
 
-### 关键点2：WindowManagerService.performLayoutAndPlaceSurfacesLockedInner( boolean recoveringMemory)
+### 关键点2：WindowManagerService.relayoutWindow(Session session, IWindow client, WindowManager.LayoutParams attrs, int requestedWidth, int requestedHeight, int viewVisibility, boolean insetsPending, Rect outFrame, Rect outContentInsets, Rect outVisibleInsets, Configuration outConfig, Surface outSurface)
+
+```java
+public class WindowManagerService extends IWindowManager.Stub  
+        implements Watchdog.Monitor { 
+    
+        public int relayoutWindow(Session session, IWindow client,
+                             WindowManager.LayoutParams attrs, int requestedWidth,
+                             int requestedHeight, int viewVisibility, boolean insetsPending,
+                             Rect outFrame, Rect outContentInsets, Rect outVisibleInsets,
+                             Configuration outConfig, Surface outSurface) {
+                         boolean displayed = false;
+                         boolean inTouchMode;
+                         boolean configChanged;
+                         long origId = Binder.clearCallingIdentity();
+                 
+                         synchronized(mWindowMap) {
+                             //client对应的是应用进程的Activity窗口，每个IWindow对象都在WindowManagerService
+                             //端对应着一个WindowState对象，该对象描述了窗口的信息。
+                             WindowState win = windowForClientLocked(session, client, false);
+                             if (win == null) {
+                                 return 0;
+                             }
+                             
+                             //requestedWidth与requestedHeight描述的是应用进程请求设置Activity窗口的宽高
+                             win.mRequestedWidth = requestedWidth;
+                             win.mRequestedHeight = requestedHeight;
+                 
+                             if (attrs != null) {
+                                 mPolicy.adjustWindowParamsLw(attrs);
+                             }
+                 
+                             int attrChanges = 0;
+                             int flagChanges = 0;
+                             if (attrs != null) {
+                                 //win.mAttrs指向的是WindowManager.LayoutParams，它描述了Activity窗口的布局参数
+                                 flagChanges = win.mAttrs.flags ^= attrs.flags;
+                                 attrChanges = win.mAttrs.copyFrom(attrs);
+                             }
+                 
+                             if (DEBUG_LAYOUT) Slog.v(TAG, "Relayout " + win + ": " + win.mAttrs);
+                 
+                             //透明度
+                             if ((attrChanges & WindowManager.LayoutParams.ALPHA_CHANGED) != 0) {
+                                 win.mAlpha = attrs.alpha;
+                             }
+                 
+                             final boolean scaledWindow =
+                                 ((win.mAttrs.flags & WindowManager.LayoutParams.FLAG_SCALED) != 0);
+                 
+                             //宽高缩放因子
+                             if (scaledWindow) {
+                                 // requested{Width|Height} Surface's physical size
+                                 // attrs.{width|height} Size on screen
+                                 win.mHScale = (attrs.width  != requestedWidth)  ?
+                                         (attrs.width  / (float)requestedWidth) : 1.0f;
+                                 win.mVScale = (attrs.height != requestedHeight) ?
+                                         (attrs.height / (float)requestedHeight) : 1.0f;
+                             } else {
+                                 win.mHScale = win.mVScale = 1;
+                             }
+                 
+                             //窗口焦点变化
+                             boolean imMayMove = (flagChanges&(
+                                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM |
+                                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)) != 0;
+                 
+                             boolean focusMayChange = win.mViewVisibility != viewVisibility
+                                     || ((flagChanges&WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) != 0)
+                                     || (!win.mRelayoutCalled);
+                 
+                             boolean wallpaperMayMove = win.mViewVisibility != viewVisibility
+                                     && (win.mAttrs.flags & FLAG_SHOW_WALLPAPER) != 0;
+                 
+                             win.mRelayoutCalled = true;
+                             //窗口可见性
+                             final int oldVisibility = win.mViewVisibility;
+                             win.mViewVisibility = viewVisibility;
+                             if (viewVisibility == View.VISIBLE &&
+                                     (win.mAppToken == null || !win.mAppToken.clientHidden)) {
+                                 displayed = !win.isVisibleLw();
+                                 if (win.mExiting) {
+                                     win.mExiting = false;
+                                     win.mAnimation = null;
+                                 }
+                                 if (win.mDestroying) {
+                                     win.mDestroying = false;
+                                     mDestroySurface.remove(win);
+                                 }
+                                 if (oldVisibility == View.GONE) {
+                                     win.mEnterAnimationPending = true;
+                                 }
+                                 if (displayed) {
+                                     if (win.mSurface != null && !win.mDrawPending
+                                             && !win.mCommitDrawPending && !mDisplayFrozen
+                                             && mPolicy.isScreenOn()) {
+                                         //窗口进入动画
+                                         applyEnterAnimationLocked(win);
+                                     }
+                                     if ((win.mAttrs.flags
+                                             & WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON) != 0) {
+                                         if (DEBUG_VISIBILITY) Slog.v(TAG,
+                                                 "Relayout window turning screen on: " + win);
+                                         win.mTurnOnScreen = true;
+                                     }
+                                     int diff = 0;
+                                     if (win.mConfiguration != mCurConfiguration
+                                             && (win.mConfiguration == null
+                                                     || (diff=mCurConfiguration.diff(win.mConfiguration)) != 0)) {
+                                         win.mConfiguration = mCurConfiguration;
+                                         if (DEBUG_CONFIGURATION) {
+                                             Slog.i(TAG, "Window " + win + " visible with new config: "
+                                                     + win.mConfiguration + " / 0x"
+                                                     + Integer.toHexString(diff));
+                                         }
+                                         outConfig.setTo(mCurConfiguration);
+                                     }
+                                 }
+                                 if ((attrChanges&WindowManager.LayoutParams.FORMAT_CHANGED) != 0) {
+                                     // To change the format, we need to re-build the surface.
+                                     win.destroySurfaceLocked();
+                                     displayed = true;
+                                 }
+                                 try {
+                                     //创建Surface画布
+                                     Surface surface = win.createSurfaceLocked();
+                                     if (surface != null) {
+                                         outSurface.copyFrom(surface);
+                                         win.mReportDestroySurface = false;
+                                         win.mSurfacePendingDestroy = false;
+                                         if (SHOW_TRANSACTIONS) Slog.i(TAG,
+                                                 "  OUT SURFACE " + outSurface + ": copied");
+                                     } else {
+                                         // For some reason there isn't a surface.  Clear the
+                                         // caller's object so they see the same state.
+                                         outSurface.release();
+                                     }
+                                 } catch (Exception e) {
+                                     mInputMonitor.updateInputWindowsLw();
+                                     
+                                     Slog.w(TAG, "Exception thrown when creating surface for client "
+                                              + client + " (" + win.mAttrs.getTitle() + ")",
+                                              e);
+                                     Binder.restoreCallingIdentity(origId);
+                                     return 0;
+                                 }
+                                 if (displayed) {
+                                     focusMayChange = true;
+                                 }
+                                 if (win.mAttrs.type == TYPE_INPUT_METHOD
+                                         && mInputMethodWindow == null) {
+                                     mInputMethodWindow = win;
+                                     imMayMove = true;
+                                 }
+                                 if (win.mAttrs.type == TYPE_BASE_APPLICATION
+                                         && win.mAppToken != null
+                                         && win.mAppToken.startingWindow != null) {
+                                     // Special handling of starting window over the base
+                                     // window of the app: propagate lock screen flags to it,
+                                     // to provide the correct semantics while starting.
+                                     final int mask =
+                                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                                         | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON;
+                                     WindowManager.LayoutParams sa = win.mAppToken.startingWindow.mAttrs;
+                                     sa.flags = (sa.flags&~mask) | (win.mAttrs.flags&mask);
+                                 }
+                             } else {
+                                 win.mEnterAnimationPending = false;
+                                 if (win.mSurface != null) {
+                                     if (DEBUG_VISIBILITY) Slog.i(TAG, "Relayout invis " + win
+                                             + ": mExiting=" + win.mExiting
+                                             + " mSurfacePendingDestroy=" + win.mSurfacePendingDestroy);
+                                     // If we are not currently running the exit animation, we
+                                     // need to see about starting one.
+                                     if (!win.mExiting || win.mSurfacePendingDestroy) {
+                                         // Try starting an animation; if there isn't one, we
+                                         // can destroy the surface right away.
+                                         int transit = WindowManagerPolicy.TRANSIT_EXIT;
+                                         if (win.getAttrs().type == TYPE_APPLICATION_STARTING) {
+                                             transit = WindowManagerPolicy.TRANSIT_PREVIEW_DONE;
+                                         }
+                                         if (!win.mSurfacePendingDestroy && win.isWinVisibleLw() &&
+                                               applyAnimationLocked(win, transit, false)) {
+                                             focusMayChange = true;
+                                             win.mExiting = true;
+                                         } else if (win.isAnimating()) {
+                                             // Currently in a hide animation... turn this into
+                                             // an exit.
+                                             win.mExiting = true;
+                                         } else if (win == mWallpaperTarget) {
+                                             // If the wallpaper is currently behind this
+                                             // window, we need to change both of them inside
+                                             // of a transaction to avoid artifacts.
+                                             win.mExiting = true;
+                                             win.mAnimating = true;
+                                         } else {
+                                             if (mInputMethodWindow == win) {
+                                                 mInputMethodWindow = null;
+                                             }
+                                             win.destroySurfaceLocked();
+                                         }
+                                     }
+                                 }
+                 
+                                 if (win.mSurface == null || (win.getAttrs().flags
+                                         & WindowManager.LayoutParams.FLAG_KEEP_SURFACE_WHILE_ANIMATING) == 0
+                                         || win.mSurfacePendingDestroy) {
+                                     // We are being called from a local process, which
+                                     // means outSurface holds its current surface.  Ensure the
+                                     // surface object is cleared, but we don't want it actually
+                                     // destroyed at this point.
+                                     win.mSurfacePendingDestroy = false;
+                                     outSurface.release();
+                                     if (DEBUG_VISIBILITY) Slog.i(TAG, "Releasing surface in: " + win);
+                                 } else if (win.mSurface != null) {
+                                     if (DEBUG_VISIBILITY) Slog.i(TAG,
+                                             "Keeping surface, will report destroy: " + win);
+                                     win.mReportDestroySurface = true;
+                                     outSurface.copyFrom(win.mSurface);
+                                 }
+                             }
+                 
+                             if (focusMayChange) {
+                                 //System.out.println("Focus may change: " + win.mAttrs.getTitle());
+                                 if (updateFocusedWindowLocked(UPDATE_FOCUS_WILL_PLACE_SURFACES)) {
+                                     imMayMove = false;
+                                 }
+                                 //System.out.println("Relayout " + win + ": focus=" + mCurrentFocus);
+                             }
+                 
+                             // updateFocusedWindowLocked() already assigned layers so we only need to
+                             // reassign them at this point if the IM window state gets shuffled
+                             boolean assignLayers = false;
+                 
+                             if (imMayMove) {
+                                 if (moveInputMethodWindowsIfNeededLocked(false) || displayed) {
+                                     // Little hack here -- we -should- be able to rely on the
+                                     // function to return true if the IME has moved and needs
+                                     // its layer recomputed.  However, if the IME was hidden
+                                     // and isn't actually moved in the list, its layer may be
+                                     // out of data so we make sure to recompute it.
+                                     assignLayers = true;
+                                 }
+                             }
+                             if (wallpaperMayMove) {
+                                 if ((adjustWallpaperWindowsLocked()&ADJUST_WALLPAPER_LAYERS_CHANGED) != 0) {
+                                     assignLayers = true;
+                                 }
+                             }
+                 
+                             mLayoutNeeded = true;
+                             win.mGivenInsetsPending = insetsPending;
+                             if (assignLayers) {
+                                 assignLayersLocked();
+                             }
+                             configChanged = updateOrientationFromAppTokensLocked();
+                             //计算参数client描述的窗口的大小
+                             performLayoutAndPlaceSurfacesLocked();
+                             if (displayed && win.mIsWallpaper) {
+                                 updateWallpaperOffsetLocked(win, mDisplay.getWidth(),
+                                         mDisplay.getHeight(), false);
+                             }
+                             if (win.mAppToken != null) {
+                                 win.mAppToken.updateReportedVisibilityLocked();
+                             }
+                             outFrame.set(win.mFrame);
+                             outContentInsets.set(win.mContentInsets);
+                             outVisibleInsets.set(win.mVisibleInsets);
+                             if (localLOGV) Slog.v(
+                                 TAG, "Relayout given client " + client.asBinder()
+                                 + ", requestedWidth=" + requestedWidth
+                                 + ", requestedHeight=" + requestedHeight
+                                 + ", viewVisibility=" + viewVisibility
+                                 + "\nRelayout returning frame=" + outFrame
+                                 + ", surface=" + outSurface);
+                 
+                             if (localLOGV || DEBUG_FOCUS) Slog.v(
+                                 TAG, "Relayout of " + win + ": focusMayChange=" + focusMayChange);
+                 
+                             inTouchMode = mInTouchMode;
+                             
+                             mInputMonitor.updateInputWindowsLw();
+                         }
+                 
+                         if (configChanged) {
+                             sendNewConfiguration();
+                         }
+                 
+                         Binder.restoreCallingIdentity(origId);
+                 
+                         return (inTouchMode ? WindowManagerImpl.RELAYOUT_IN_TOUCH_MODE : 0)
+                                | (displayed ? WindowManagerImpl.RELAYOUT_FIRST_TIME : 0);  
+            
+        }                                     
+}
+```
+
+这个函数参数有点多，我们来分析下各个参数的含义：
+
+```
+IWindow window：Activity窗口的唯一标识，用于与其他窗口区别开来。
+WindowManager.LayoutParams attrs：布局规范LayoutParams
+int requestedWidth, int requestedHeight：Activity窗口经过测量后得到的宽度与高度，另外，传递给
+ActivityManagerService的宽高以及考虑了Activity窗口所设置的缩放因子了。
+int viewFlags：Activity窗口的可见状态
+boolean insetsPending：Activity窗口是否指定额外的内容边距与可见边距。
+Rect outFrame：输出参数，用来保存WindowManagerService计算得出的窗口大小。
+Rect outContentInsets：输出参数，用来保存WindowManagerService计算得出的内容边距的大小。
+Rect outVisibleInsets：输出参数，用来保存WindowManagerService计算得出的可见边距的大小。
+Configuration outConfig：输出参数，用来保存WindowManagerService返回来的配置信息。
+Surface outSurface：输出参数，用来保存WindowManagerService返回给Activity的绘图画布。
+```
+
+这个方法的实现也比较长，它主要做了以下几件事情：
+
+1. 如果系统当前获得焦点的窗口可能发生了变化，那么就会调用成员函数updateFocusedWindowLocked来重新计算系统当前应该获得焦点的窗口。如果系统当前获得焦点的窗口真的发生了变化，即窗口堆栈的窗口
+排列发生了变化，那么在调用成员函数updateFocusedWindowLocked的时候，就会调用成员函数assignLayersLocked来重新计算系统中所有窗口的Z轴位置。
+2. 如果系统中的输入法窗口可能需要移动，那么就会调用成员函数moveInputMethodWindowsIfNeededLocked来检查是否真的需要移动输入法窗口。如果需要移动，那么成员函
+数moveInputMethodWindowsIfNeededLocked的返回值就会等于true，这时候就说明输入法窗口在窗口堆栈中的位置发生了变化，因此，就会将变量assignLayers的值设置为true，表示接下来需要重新计算
+系统中所有窗口的Z轴位置。
+3. 如果当前正在请求调整其布局的窗口是由不可见变化可见的，即变量displayed的值等于true，那么接下来也是需要重新计算系统中所有窗口的Z轴位置的，因此，就会将assignLayers的值设置为true。
+4. 如果系统中的壁纸窗口可能需要移动，那么就会调用成员函数adjustWallpaperWindowsLocked来检查是否真的需要移动壁纸窗口。如果需要移动，那么成员函数adjustWallpaperWindowsLocked的返回值
+的ADJUST_WALLPAPER_LAYERS_CHANGED位就会等于1，这时候就说明壁纸窗口在窗口堆栈中的位置发生了变化，因此，就会将变量assignLayers的值设置为true，表示接下来需要重新计算系统中所有窗口的Z轴位置。
+
+经过上述的一系列操作后，如果得到的变量assignLayers的值设置等于true，那么WindowManagerService类的成员函数relayoutWindow就会调用成员函数assignLayersLocked来重新计算系统中所有窗口的Z轴位置。
+
+该函数继续调用performLayoutAndPlaceSurfacesLocked()方法来计算client所描述的窗口的大小，计算完成后窗口的宽高、内容边距
+与可见边距分别保存在WindowState对象的mFrame、mContentInsets与mVisibleInsets中。我们接着来看performLayoutAndPlaceSurfacesLocked()
+方法的实现。
+
+### 关键点3：WindowManagerService.performLayoutAndPlaceSurfacesLocked() 
+
+```java
+public class WindowManagerService extends IWindowManager.Stub  
+        implements Watchdog.Monitor { 
+    
+    private boolean mInLayout = false;
+    private final void performLayoutAndPlaceSurfacesLocked() {
+        if (mInLayout) {
+            if (DEBUG) {
+                throw new RuntimeException("Recursive call!");
+            }
+            Slog.w(TAG, "performLayoutAndPlaceSurfacesLocked called while in layout");
+            return;
+        }
+
+        if (mWaitingForConfig) {
+            // Our configuration has changed (most likely rotation), but we
+            // don't yet have the complete configuration to report to
+            // applications.  Don't do any window layout until we have it.
+            return;
+        }
+        
+        if (mDisplay == null) {
+            // Not yet initialized, nothing to do.
+            return;
+        }
+
+        boolean recoveringMemory = false;
+        if (mForceRemoves != null) {
+            recoveringMemory = true;
+            //检查是否存在需要强制删除的窗口，在系统内存不足的情况下，一些窗口会被回收，
+            //这些窗口会保存在列表mForceRemoves中。
+            // Wait a little it for things to settle down, and off we go.
+            for (int i=0; i<mForceRemoves.size(); i++) {
+                WindowState ws = mForceRemoves.get(i);
+                Slog.i(TAG, "Force removing: " + ws);
+                //调用removeWindowInnerLocked()方法移除窗口
+                removeWindowInnerLocked(ws.mSession, ws);
+            }
+            mForceRemoves = null;
+            Slog.w(TAG, "Due to memory failure, waiting a bit for next layout");
+            Object tmp = new Object();
+            synchronized (tmp) {
+                try {
+                    tmp.wait(250);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+
+        mInLayout = true;
+        try {
+            performLayoutAndPlaceSurfacesLockedInner(recoveringMemory);
+
+            //检查是否有窗口需要被移除，如果需要则调用removeWindowInnerLocked()方法移除窗口
+            //移除窗口后并没有回收内存，只有在内存不足时才会回收这些内存。
+            int i = mPendingRemove.size()-1;
+            if (i >= 0) {
+                while (i >= 0) {
+                    WindowState w = mPendingRemove.get(i);
+                    removeWindowInnerLocked(w.mSession, w);
+                    i--;
+                }
+                mPendingRemove.clear();
+
+                //设置标志位防止performLayoutAndPlaceSurfacesLockedInner方法重复被调用
+                mInLayout = false;
+                assignLayersLocked();
+                mLayoutNeeded = true;
+                performLayoutAndPlaceSurfacesLocked();
+
+            } else {
+                mInLayout = false;
+                if (mLayoutNeeded) {
+                    requestAnimationLocked(0);
+                }
+            }
+            if (mWindowsChanged && !mWindowChangeListeners.isEmpty()) {
+                mH.removeMessages(H.REPORT_WINDOWS_CHANGE);
+                mH.sendMessage(mH.obtainMessage(H.REPORT_WINDOWS_CHANGE));
+            }
+        } catch (RuntimeException e) {
+            mInLayout = false;
+            Slog.e(TAG, "Unhandled exception while layout out windows", e);
+        }
+    }    
+    
+}
+```
+
+该方法会进一步调用方法performLayoutAndPlaceSurfacesLockedInner(recoveringMemory)来完成它的工作。
+
+在调用之前：
+
+检查是否存在需要强制删除的窗口，在系统内存不足的情况下，一些窗口会被回收，这些窗口会保存在列表mForceRemoves中。调用方法removeWindowInnerLocked
+移除这些窗口。
+
+在调用之后：
+
+检查系统中是否有窗口需要移除，如果有则调用方法removeWindowInnerLocked移除这些窗口，移除窗口后并没有回收内存，只有在内存不足时才会回收这些内存。
+
+另外，移除窗口的流程也是比较复杂的，先要将窗口从WindowManagerService的相关成员变量中移除，然后将壁纸窗口与输入法窗口调整到合适的Z
+轴位置上，以便可以被下个窗口利用，最后调整剩下窗口在Z轴上的位置，以便可以正确的反应系统UI的状态。
+
+接下来我们来分析performLayoutAndPlaceSurfacesLockedInner()函数的实现，这个函数不仅名字长，实现也非常长，足足有1200多行。
+
+### 关键点4：WindowManagerService.performLayoutAndPlaceSurfacesLockedInner( boolean recoveringMemory)
 
 从这个performLayoutAndPlaceSurfacesLocked长长的方法名字可以看出，它不仅仅用来计算窗口大小，它还负责刷新系统UI，事实上，每当
 Activity窗口属性发生了变化，例如：可见性，大小等，又或者它要新增、删除子视图时，都会要求WindowManagerService刷新系统UI，所以
@@ -969,7 +1416,7 @@ WindowToken与Activity窗口令牌AppWindowToken。
 
 我们这里先分析窗口大小的计算流程，即performLayoutLockedInner()函数的实现，关于窗口动画后续会有文章分析。
 
-### 关键点3：WindowManagerService.performLayoutLockedInner()
+### 关键点5：WindowManagerService.performLayoutLockedInner()
 
 ```java
 public class WindowManagerService extends IWindowManager.Stub  
@@ -1112,7 +1559,7 @@ ArrayList<WindowState> mWindows：WindowState的列表，该列表保存了系�
 
 我们继续来看这三个函数的执行过程。
 
-**3.1 PhoneWindowManager.beginLayoutLw(int displayWidth, int displayHeight)**
+**5.1 PhoneWindowManager.beginLayoutLw(int displayWidth, int displayHeight)**
 
 ```java
 public class PhoneWindowManager implements WindowManagerPolicy {
@@ -1209,7 +1656,7 @@ mCurBottom 为屏幕高度，设置mDockLayer为0x10000000，这使得输入法�
 2 计算状态栏的大小，如果状态栏可见，则将mDockTop = mContentTop = mCurTop限制为剔除状态栏区域之后得到的屏幕区域。
 ```
 
-**3.2 PhoneWindowManager.layoutWindowLw(WindowState win, WindowManager.LayoutParams attrs, WindowState attached)**
+**5.2 PhoneWindowManager.layoutWindowLw(WindowState win, WindowManager.LayoutParams attrs, WindowState attached)**
 
 ```java
 public class PhoneWindowManager implements WindowManagerPolicy {
@@ -1400,7 +1847,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 ⑤ 它所在窗口树的根窗口处于不可见状态，即WindowState.mRootToken.hidden = true
 ⑥ 它所属的Activity处于不可见状态，即WindowState.mAppToken.hiddenRequested = true
 
-
 (2) 窗口还没有计算过大小。即WindowState.mHaveFrame = false
 
 2 然后计算子窗口的大小，在计算父窗口大小的过程中，会记录位于系统最上面的一个字窗口在mWindows（ArrayList）中的位置topAttached，接下来
@@ -1438,7 +1884,7 @@ final Rect vf = mTmpVisibleFrame;
 ```
 我们在接着来看WindowState.computeFrameLw()的实现。
 
-**3.3 WindowState.computeFrameLw(Rect pf, Rect df, Rect cf, Rect vf)**
+**5.3 WindowState.computeFrameLw(Rect pf, Rect df, Rect cf, Rect vf)**
 
 ```java
 public class WindowManagerService extends IWindowManager.Stub  
@@ -1562,7 +2008,7 @@ frame变量中。
 3 计算可见边距
 ```
 
-**3.4 PhoneWindowManager.finishLayoutLw()** 
+**5.4 PhoneWindowManager.finishLayoutLw()** 
 
 ```java
 public class PhoneWindowManager implements WindowManagerPolicy {
@@ -1576,3 +2022,122 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 最后一步调用finishLayoutLw()函数，该函数是个空实现，它什么也不做。
 
 ## 二 窗口位置的计算
+
+前面我们分析了窗口大小的计算流程，也就是X/Y轴的计算，我们知道在Android系统中，无论是普通的Activity窗口，输入法窗口还是壁纸窗口都是被WindowManagerService组织在一个堆栈里
+，它们在堆栈里的位置就代表了它们在Z轴的位置，Z轴位置大的排列在Z轴位置小的上面。
+
+一个Window的次序有两个参数决定：
+
+```
+int mBaseLayer：用于描述窗口及其子窗口在所有窗口中的显示位置，主序越大，则窗口及其子窗口的显示位置相对于其他窗口的位置越靠前。
+int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，子序越大，则子窗口相对于其兄弟窗口的位置越靠前。
+```
+
+关于z-order
+
+>手机屏幕是以左上角为原点，向右为X轴方向，向下为Y轴方向的一个二维空间。为了方便管理窗口的显示次序，手机的屏幕被扩展为了
+一个三维的空间，即多定义了 一个Z轴，其方向为垂直于屏幕表面指向屏幕外。多个窗口依照其前后顺序排布在这个虚拟的Z轴上，因此
+窗口的显示次序又被称为Z序（Z order）。
+
+窗口的主序表
+
+|窗口类型|主序|
+|:------|:---|
+|TYPE_UNIVERSE_BACKGROUND|11000
+|TYPE_WALLPAPER|21000
+|TYPE_PHONE|31000
+|TYPE_SEARCH_BAR|41000
+|TYPE_RECENTS_OVERLAY|51000
+|TYPE_SYSTEM_DIALOG|51000
+|TYPE_TOAST|61000
+|TYPE_PRIORITY_PHONE|71000
+|TYPE_DREAM|81000
+|TYPE_SYSTEM_ALERT|91000
+|TYPE_INPUT_METHOD|101000
+|TYPE_INPUT_METHOD_DIALOG|111000
+|TYPE_KEYGUARD|121000
+|TYPE_KEYGUARD_DIALOG|131000
+|TYPE_STATUS_BAR_SUB_PANEL|141000
+|应用窗口与未知类型的窗口|21000
+ 
+窗口的子序表
+
+|子窗口类型|子序|
+|:------|:---|
+|TYPE_APPLICATION_PANEL|1
+|TYPE_APPLICATION_ATTACHED_DIALOG|1
+|TYPE_APPLICATION_MEDIA|-2
+|TYPE_APPLICATION_MEDIA_OVERLAY|-1
+|TYPE_APPLICATION_SUB_PANEL|2
+
+
+窗口在Z轴上的位置受窗口类型，创建顺序和运行状态有关，Z轴位置的计算主要发生在以下两个场景：
+
+- 应用请求WindowManagerService增加一个窗口
+- 应用请求WindowManagerService重新布局一个窗口
+
+在文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
+中，我们就提到，应用请求增加一个窗口，最终会调用WindowManagerService.addWindow()方法。
+
+### 关键点1：WindowManagerService.addWindow()
+
+```java
+public class WindowManagerService extends IWindowManager.Stub    
+        implements Watchdog.Monitor {    
+    ......    
+    
+    public int addWindow(Session session, IWindow client,    
+            WindowManager.LayoutParams attrs, int viewVisibility,    
+            Rect outContentInsets, InputChannel outInputChannel) {    
+        ......    
+    
+        synchronized(mWindowMap) {    
+            ......    
+    
+            WindowToken token = mTokenMap.get(attrs.token);     
+            ......    
+    
+            win = new WindowState(session, client, token,    
+                    attachedWindow, attrs, viewVisibility);    
+            ......    
+    
+            if (attrs.type == TYPE_INPUT_METHOD) {    
+                mInputMethodWindow = win;  
+                addInputMethodWindowToListLocked(win);  
+                ......    
+            } else if (attrs.type == TYPE_INPUT_METHOD_DIALOG) {    
+                mInputMethodDialogs.add(win);  
+                addWindowToListInOrderLocked(win, true);  
+                adjustInputMethodDialogsLocked();  
+                ......    
+            } else {    
+                addWindowToListInOrderLocked(win, true);    
+                if (attrs.type == TYPE_WALLPAPER) {    
+                    ......    
+                    adjustWallpaperWindowsLocked();    
+                } else if ((attrs.flags&FLAG_SHOW_WALLPAPER) != 0) {    
+                    adjustWallpaperWindowsLocked();    
+                }    
+            }    
+            ......    
+    
+            assignLayersLocked();    
+    
+            ......    
+        }    
+    
+        ......    
+    }    
+    ......    
+}      
+```
+
+这个方法我们只关注窗口Z轴位置计算的部分，从方法中我们可以看出，不同的窗口类型，计算方式是不一样的，具体说来：
+
+1. 如果添加的是一个输入法窗口，那么就调用成员函数addInputMethodWindowToListLocked将它放置在需要显示输入法的窗口的上面去；
+2. 如果添加的是一个输入法对话框，那么就先调用成员函数addWindowToListInOrderLocked来将它插入到窗口堆栈中，接着再调用成员函数adjustInputMethodDialogsLocked来将它放置在输入法窗口的上面；
+3. 如果添加的是一个普通窗口，那么就直接调用成员函数addWindowToListInOrderLocked来将它插入到窗口堆栈中；
+4. 如果添加的是一个普通窗口，并且这个窗口需要显示壁纸，那么就先调用成员函数addWindowToListInOrderLocked来将它插入到窗口堆栈中，接着再调用成员函数adjustWallpaperWindowsLocked来将壁纸窗口放置在它的下面。
+5. 如果添加的是一个壁纸窗口，那么就先调用成员函数addWindowToListInOrderLocked来将它插入到窗口堆栈中，接着再调用成员函数adjustWallpaperWindowsLocked来将它放置在需要显示壁纸的窗口的下面。
+
+不管是哪种类型，最终都会调用WindowManagerService.assignLayersLocked()来重新计算系统中所有窗口的Z轴位置，这是因为前面往窗口堆栈增加了一个新的窗口。

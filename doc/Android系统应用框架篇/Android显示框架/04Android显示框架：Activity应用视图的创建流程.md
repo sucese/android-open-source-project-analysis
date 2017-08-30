@@ -967,12 +967,12 @@ public final class ViewRoot extends Handler implements ViewParent,
 
 ## 四 创建WindowState对象
 
-前面我们就说过，WindowState对象是由WIndowManagerService创建的，用来描述窗口相关信息，创建WindowState对象的过程也是与WindowManagerService连接的过程。
+前面我们就说过，WindowState对象是由WindowManagerService创建的，用来描述窗口相关信息，创建WindowState对象的过程也是与WindowManagerService连接的过程。
 
-1. 当我们启动应用的第一个Activity组件时，它会打开一个到WindowManagerService的连接，这个连接用应用进程从WIndowManagerService服务处获取的一个实现了IWindowSession接口
+1. 当我们启动应用的第一个Activity组件时，它会打开一个到WindowManagerService的连接，这个连接用应用进程从WindowManagerService服务处获取的一个实现了IWindowSession接口
 的Session代理对象来表示，
-2. 在应用这一侧，每个Activity对象都关联了一个实现了IWindow接口的对象W，这个W对象在Activity视图创建完毕后，就会通过Session对象传递给WIndowManagerService，
-3. WIndowManagerService接收到这个对象后，就会在内部创建一个WindowState对象来描述与该W对象关联的Activity窗口的状态，并且以后通过这个W对象控制对应的Activity的窗口状态。
+2. 在应用这一侧，每个Activity对象都关联了一个实现了IWindow接口的对象W，这个W对象在Activity视图创建完毕后，就会通过Session对象传递给WndowManagerService，
+3. WindowManagerService接收到这个对象后，就会在内部创建一个WindowState对象来描述与该W对象关联的Activity窗口的状态，并且以后通过这个W对象控制对应的Activity的窗口状态。
 
 它们的关系如下所示：
 
@@ -981,11 +981,11 @@ public final class ViewRoot extends Handler implements ViewParent,
 **主要角色**
 
 - Session：实现了IWindowSession接口，它保存在ViewRoot的静态变量sWindowSession中，用来与WindowManagerService通信。调用Session.add()方法将一个关联的W对象传递
-给WIndowManagerService，调用Session.remove()方法移除WIndowManagerService之前为Activity窗口创建的WindowState对象。调用Session.relayout()方法来请求WindowManagerService
+给WindowManagerService，调用Session.remove()方法移除WindowManagerService之前为Activity窗口创建的WindowState对象。调用Session.relayout()方法来请求WindowManagerService
 来对Activity组件的UI进行布局。
-- W：继承于IWindow.Stub，是ViewRoot的一个静态内部类，它同样也是ViewRoot的一个包装类，内部的功能通过调用ViewRoot的方法来完成，WIndowManagerService可以通过它在内部创建的
+- W：继承于IWindow.Stub，是ViewRoot的一个静态内部类，它同样也是ViewRoot的一个包装类，内部的功能通过调用ViewRoot的方法来完成，WindowManagerService可以通过它在内部创建的
 WindowState对象的成员变量IWindow mClient来要求运行在应用进程这一侧的Activity组件配合管理窗口的状态。
-- WindowState：WIndowManagerService的一个内部类，由WIndowManagerService创建，用来描述应用窗口的状态。
+- WindowState：WindowManagerService的一个内部类，由WindowManagerService创建，用来描述应用窗口的状态。
 
 它们的类图如下所示：
 
@@ -1031,7 +1031,7 @@ AppWindowToken(IApplicationToken _token) {
 **关键点2：Session(IInputMethodClient client, IInputContext inputContext) )**
 
 
-从上面的序列图我们可以看出，ViewRoot在创建的时候会调用WIndowManagerService.openSession()来创建Session。
+从上面的序列图我们可以看出，ViewRoot在创建的时候会调用WindowManagerService.openSession()来创建Session。
 
 ```java
 private final class Session extends IWindowSession.Stub
@@ -1063,7 +1063,7 @@ private final class Session extends IWindowSession.Stub
                     // Note: it is safe to call in to the input method manager
                     // here because we are not holding our lock.
                     if (mInputMethodManager != null) {
-                        //2 为正在请求与 WIndowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
+                        //2 为正在请求与 WindowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
                         mInputMethodManager.addClient(client, inputContext,
                                 mUid, mPid);
                     } else {
@@ -1093,12 +1093,12 @@ private final class Session extends IWindowSession.Stub
 它主要做了两件事情：
 
 1. 检查检查是否需要获得系统中输入法管理服务。
-2. 为正在请求与 WIndowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
+2. 为正在请求与 WindowManagerService建立连接的应用进程增加它所使用的输入法客户端对象与输入法上下文对象
 
 **关键点3：WindowManagerService.addWindow()**
 
-前面我们已经了解了Session对象的创建过程中，该对象保存在ViewRoot中，用来与WIndowManagerService通信，接下来它会调用自己的add()方法来请求
-WIndowManagerService创建爱女WindowState对象。从上面的序列图我们可以知道，该方法最终会调用WindowManagerService.addWindow()方法。
+前面我们已经了解了Session对象的创建过程中，该对象保存在ViewRoot中，用来与WindowManagerService通信，接下来它会调用自己的add()方法来请求
+WindowManagerService创建爱女WindowState对象。从上面的序列图我们可以知道，该方法最终会调用WindowManagerService.addWindow()方法。
 
 ```java
 public class WindowManagerService extends IWindowManager.Stub
@@ -1463,7 +1463,7 @@ private final class WindowState implements WindowManagerPolicy.WindowState {
 
 Java层实现的应用窗口的绘图表面通过两个Surface对象来描述，一个在应用进程这一侧创建的，一个在WindowManagerService侧创建的，它们对应了SurfaceFlinger这一侧同一个Layer对象，如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Surface_class.png" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/Surface_structure.png" height="500"/>
 
 - 在应用进程这一侧，每一个Activity组件都要一个关联的Surface对象，这个Surface对象保存在一个关联的ViewRoot对象的成员变量mSurface中。它负责绘制应用窗口的UI，即
 往应用窗口的图形缓冲区填充UI数据，
