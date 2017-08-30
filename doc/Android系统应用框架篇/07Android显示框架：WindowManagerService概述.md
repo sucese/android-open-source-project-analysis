@@ -219,7 +219,6 @@ private final class WindowState implements WindowManagerPolicy.WindowState {
 }
 ```
 
-
 ### WindowManagerPolicy
 
 >WindowManagerPolicy是一个接口，在Phone平台它的实现类是PhoneWindowManager，它由PolicyManager所创建，用来计算Window的大小与

@@ -2026,18 +2026,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 前面我们分析了窗口大小的计算流程，也就是X/Y轴的计算，我们知道在Android系统中，无论是普通的Activity窗口，输入法窗口还是壁纸窗口都是被WindowManagerService组织在一个堆栈里
 ，它们在堆栈里的位置就代表了它们在Z轴的位置，Z轴位置大的排列在Z轴位置小的上面。
 
+关于z-order
+
+>手机屏幕是以左上角为原点，向右为X轴方向，向下为Y轴方向的一个二维空间。为了方便管理窗口的显示次序，手机的屏幕被扩展为了
+一个三维的空间，即多定义了 一个Z轴，其方向为垂直于屏幕表面指向屏幕外。多个窗口依照其前后顺序排布在这个虚拟的Z轴上，因此
+窗口的显示次序又被称为Z序（Z order）。
+
 一个Window的次序有两个参数决定：
 
 ```
 int mBaseLayer：用于描述窗口及其子窗口在所有窗口中的显示位置，主序越大，则窗口及其子窗口的显示位置相对于其他窗口的位置越靠前。
 int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，子序越大，则子窗口相对于其兄弟窗口的位置越靠前。
 ```
-
-关于z-order
-
->手机屏幕是以左上角为原点，向右为X轴方向，向下为Y轴方向的一个二维空间。为了方便管理窗口的显示次序，手机的屏幕被扩展为了
-一个三维的空间，即多定义了 一个Z轴，其方向为垂直于屏幕表面指向屏幕外。多个窗口依照其前后顺序排布在这个虚拟的Z轴上，因此
-窗口的显示次序又被称为Z序（Z order）。
 
 窗口的主序表
 
@@ -2141,3 +2141,72 @@ public class WindowManagerService extends IWindowManager.Stub
 5. 如果添加的是一个壁纸窗口，那么就先调用成员函数addWindowToListInOrderLocked来将它插入到窗口堆栈中，接着再调用成员函数adjustWallpaperWindowsLocked来将它放置在需要显示壁纸的窗口的下面。
 
 不管是哪种类型，最终都会调用WindowManagerService.assignLayersLocked()来重新计算系统中所有窗口的Z轴位置，这是因为前面往窗口堆栈增加了一个新的窗口。
+
+### 关键点2：WindowManagerService.assignLayersLocked()
+
+我们前面说过，一个Window的次序有两个参数决定：
+
+```
+int mBaseLayer：用于描述窗口及其子窗口在所有窗口中的显示位置，主序越大，则窗口及其子窗口的显示位置相对于其他窗口的位置越靠前。
+int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，子序越大，则子窗口相对于其兄弟窗口的位置越靠前。
+```
+这两个变量都保存在WindowStat对象中，在创建WindowState对象时，即调用它的构造方法时，会计算这两个值
+
+```java
+mBaseLayer = mPolicy.windowTypeToLayerLw(attachedWindow.mAttrs.type) * TYPE_LAYER_MULTIPLIER+ TYPE_LAYER_OFFSET;
+mSubLayer = mPolicy.subWindowTypeToLayerLw(a.type);
+```
+
+PhoneWindowManager.windowTypeToLayerLw()与PhoneWindowManager.subWindowTypeToLayerLw()该方法正如它的名字那样，将窗口type转换成对应的layer。
+
+主序
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/base_layer_type.png"/>
+
+次序
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/sub_layer_type.png"/>
+
+```java
+public class WindowManagerService extends IWindowManager.Stub    
+        implements Watchdog.Monitor {    
+
+    private final void assignLayersLocked() {
+        int N = mWindows.size();
+        int curBaseLayer = 0;
+        int curLayer = 0;
+        int i;
+
+        for (i=0; i<N; i++) {
+            WindowState w = mWindows.get(i);
+            if (w.mBaseLayer == curBaseLayer || w.mIsImWindow
+                    || (i > 0 && w.mIsWallpaper)) {
+                curLayer += WINDOW_LAYER_MULTIPLIER;
+                w.mLayer = curLayer;
+            } else {
+                curBaseLayer = curLayer = w.mBaseLayer;
+                w.mLayer = curLayer;
+            }
+            if (w.mTargetAppToken != null) {
+                w.mAnimLayer = w.mLayer + w.mTargetAppToken.animLayerAdjustment;
+            } else if (w.mAppToken != null) {
+                w.mAnimLayer = w.mLayer + w.mAppToken.animLayerAdjustment;
+            } else {
+                w.mAnimLayer = w.mLayer;
+            }
+            if (w.mIsImWindow) {
+                w.mAnimLayer += mInputMethodAnimLayerAdjustment;
+            } else if (w.mIsWallpaper) {
+                w.mAnimLayer += mWallpaperAnimLayerAdjustment;
+            }
+            if (DEBUG_LAYERS) Slog.v(TAG, "Assign layer " + w + ": "
+                    + w.mAnimLayer);
+            //System.out.println(
+            //    "Assigned layer " + curLayer + " to " + w.mClient.asBinder());
+        }
+    }
+}
+```
+
+
+
