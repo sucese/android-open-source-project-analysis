@@ -1410,6 +1410,14 @@ public class WindowManagerService extends IWindowManager.Stub
 2 将窗口的属性发送给SurfaceFlinger，SurfaceFlinger会去更新Layer属性，对Layer进行可见性计算与合成等操作，最后
 渲染到硬件缓冲区中去。每个窗口的属性更新操作都被封装到一个SurfaceFlinger服务的一个事务中（Transaction）。
 
+发送给SurfaceFlinger的属性有：
+
+① 设置窗口的大小  
+② 设置窗口在X轴和Y轴上的位置  
+③ 设置窗口在Z轴上的位置  
+④ 设置窗口的Alpha通道值  
+⑤ 设置窗口的变换矩阵  
+
 3 经过上面的操作，系统UI刷新完成，系统将执行不再显示窗口的清理工作，销毁掉不再显示窗口的绘图画布，移除窗口令牌
 WindowToken与Activity窗口令牌AppWindowToken。
 ```
@@ -2156,6 +2164,8 @@ int mSubLayer：描述了一个子窗口在其兄弟窗口中的显示位置，�
 mBaseLayer = mPolicy.windowTypeToLayerLw(attachedWindow.mAttrs.type) * TYPE_LAYER_MULTIPLIER+ TYPE_LAYER_OFFSET;
 mSubLayer = mPolicy.subWindowTypeToLayerLw(a.type);
 ```
+注：可以看到windowTypeToLayerLw()方法的返回值并没有直接被使用，而是* TYPE_LAYER_MULTIPLIER+ TYPE_LAYER_OFFSET，这是因为在Android系统中相同类型的Z轴位于
+相同的值域，不同类型的窗口则处于两个不相交的值域，又由于每一种类型地窗口的数量是不确定的，所以需要预留一个范围足够大的值域来满足需求。
 
 PhoneWindowManager.windowTypeToLayerLw()与PhoneWindowManager.subWindowTypeToLayerLw()该方法正如它的名字那样，将窗口type转换成对应的layer。
 
@@ -2208,5 +2218,15 @@ public class WindowManagerService extends IWindowManager.Stub
 }
 ```
 
+在调用该方法之前，系统中所有窗口在窗口堆栈中的位置都已经排列好了，该函数从下往上遍历窗口堆栈，以连续排列在一起类型相同的窗口为单位来计算每个周口的Z轴位置。
 
+1. 每次遇到一个窗口，它的BaseLayer值与上一次计算的窗口的BaseLayer值不相等，就开始一个新的计算单元。
+2. 在每一个计算单元中，第一个窗口的Z轴位置就等于它的BaseLayer值，而之后的每一个窗口的Z轴位置都比前一个窗口的Z轴位置大WINDOW_LAYER_MULTIPLIER。
+
+至此，WindowManagerService服务计算窗口Z轴位置的过程就分析完成了，我们再来总结一下。
+    
+1. WindowManagerService服务将窗口排列在一个窗口堆栈中。
+2. WindowManagerService服务根据窗口类型以及窗口在窗口堆栈的位置来计算得窗口的Z轴位置。
+3. WindowManagerService服务通过Java层的Surface类的成员函数setLayer来将窗口的Z轴位置设置到SurfaceFlinger服务中去。
+4. Java层的Surface类的成员函数setLayer又是通过调用C++层的SurfaceControl类的成员函数setLayer来将窗口的Z轴位置设置到SurfaceFlinger服务中去的。
 
