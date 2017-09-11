@@ -50,7 +50,7 @@ public class DrawView extends View {
 ```
 它在屏幕上绘制了一个圆形，如图：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_1.pmg" width="250" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_1.png" width="250" height="500"/>
 
 在处理绘制的时候有以下几个关键点：
 
