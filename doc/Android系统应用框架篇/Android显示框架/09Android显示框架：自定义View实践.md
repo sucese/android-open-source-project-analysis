@@ -253,7 +253,7 @@ canvas.drawPath(path, paint);
 
 一阶贝塞尔曲线
 
-![](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_1_formula.svg)
+![](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/ui/bezier_cure_1_formula.svg)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_1_demo.gif"/>
 
