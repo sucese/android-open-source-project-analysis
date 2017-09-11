@@ -10,11 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".application.ApplicationActivity" />
         <activity android:name=".program.ProgramActivity" />
@@ -43,7 +38,15 @@
 
         <activity android:name=".system.aidl.AidlActivity" />
         <activity android:name=".application.ui.UIActivity" />
-        <activity android:name=".application.ui.DrawActivity"></activity>
+        <activity android:name=".application.ui.DrawActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

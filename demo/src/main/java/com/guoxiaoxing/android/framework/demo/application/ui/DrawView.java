@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -24,8 +25,9 @@ import com.guoxiaoxing.android.framework.demo.R;
 public class DrawView extends View {
 
     private Bitmap bitmap;
-    private Matrix matrix = new Matrix();
     private Paint paint = new Paint();
+    private Matrix matrix = new Matrix();
+    private Path path = new Path();
 
     public DrawView(Context context) {
         super(context);
@@ -46,12 +48,34 @@ public class DrawView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        paint.setStyle(Paint.Style.FILL);//填充模式
-        canvas.drawArc(200, 100, 800, 500, -110, 100, true, paint);
-        canvas.drawArc(200, 100, 800, 500, 20, 140, false, paint);
-        paint.setStyle(Paint.Style.STROKE);//画线模式
+        //绘制弧形
+//        paint.setStyle(Paint.Style.FILL);//填充模式
+//        canvas.drawArc(200, 100, 800, 500, -110, 100, true, paint);
+//        canvas.drawArc(200, 100, 800, 500, 20, 140, false, paint);
+//        paint.setStyle(Paint.Style.STROKE);//画线模式
+//        paint.setStrokeWidth(5);
+//        canvas.drawArc(200, 100, 800, 500, 180, 60, false, paint);
+
+        //绘制心形
+//        path.addArc(200, 200, 400, 400, -225, 225);
+//        path.arcTo(400, 200, 600, 400, -180, 225, false);
+//        path.lineTo(400, 542);
+//        canvas.drawPath(path, paint);
+
+        //绘制直线
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setStrokeWidth(5);
+//        path.lineTo(300, 400);// 由当前位置 (0, 0) 向 (300, 400) 画一条直线
+//        path.rLineTo(400, 0);// 由当前位置 (300, 400) 向正右方400像素的位置画一条直线
+//        canvas.drawPath(path, paint);
+
+        //绘制弧线
+        paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
-        canvas.drawArc(200, 100, 800, 500, 180, 60, false, paint);
+        path.lineTo(300, 300);
+        path.arcTo(300, 300, 500, 500, -90, 90 ,true);//
+        canvas.drawPath(path, paint);
+
     }
 
     @Override
