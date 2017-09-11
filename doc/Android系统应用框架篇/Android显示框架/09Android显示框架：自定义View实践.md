@@ -257,19 +257,21 @@ canvas.drawPath(path, paint);
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_1_demo.gif"/>
 
+B(t)为时间为t时的坐标，P0为起点，P1为终点。
 
 二阶贝塞尔曲线
 
-![](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_2_formula.svg)
+![](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/ui/bezier_cure_2_formula.svg)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_2_demo.gif"/>
 
-
 三阶贝塞尔曲线
 
-![](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_3_formula.svg)
+![](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/art/app/ui/bezier_cure_3_formula.svg)
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_cure_3_demo.gif"/>
+
+贝塞尔曲线的模拟可以使用[bezier-curve](http://myst729.github.io/bezier-curve/)
 
 ```java
 
