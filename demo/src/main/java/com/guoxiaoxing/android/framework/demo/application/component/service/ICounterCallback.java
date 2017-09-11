@@ -1,4 +1,4 @@
-package com.guoxiaoxing.android.framework.demo.application.service;
+package com.guoxiaoxing.android.framework.demo.application.component.service;
 
 /**
  * For more information, you can visit https://github.com/guoxiaoxing or contact me by

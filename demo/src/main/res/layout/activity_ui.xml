@@ -8,8 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.guoxiaoxing.android.framework.demo.application.ApplicationActivity">
-
+    tools:context="com.guoxiaoxing.android.framework.demo.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,33 +16,26 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/btn_application_activity"
+            android:id="@+id/btn_ui_draw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Activity"
+            android:text="Draw"
             android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/btn_application_service"
+            android:id="@+id/btn_ui_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Service"
+            android:text="Layout"
             android:textAllCaps="false" />
 
-        <Button
-            android:id="@+id/btn_application_broadcast_receiver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="BroadcastReceiver"
-            android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/btn_application_ui"
+            android:id="@+id/btn_ui_touch_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Android显示框架"
+            android:text="Touch Callback"
             android:textAllCaps="false" />
 
     </LinearLayout>
-    >
 </ScrollView>

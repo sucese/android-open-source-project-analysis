@@ -2,7 +2,6 @@ package com.guoxiaoxing.android.framework.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -15,11 +14,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 //
-//        findViewById(R.id.btn_application).setOnClickListener(this);
-//        findViewById(R.id.btn_system).setOnClickListener(this);
-//        findViewById(R.id.btn_program).setOnClickListener(this);
+        findViewById(R.id.btn_application).setOnClickListener(this);
+        findViewById(R.id.btn_system).setOnClickListener(this);
+        findViewById(R.id.btn_program).setOnClickListener(this);
     }
 
     @Override

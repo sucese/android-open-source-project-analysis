@@ -1,4 +1,4 @@
-# Android显示框架：WindowManagerService关于窗口的创建与切换流程
+# Android显示框架：自定义View实践
 
 **关于作者**
 
@@ -6,6 +6,4 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-http://blog.csdn.net/luoshengyang/article/details/8062945
-
-http://blog.csdn.net/Luoshengyang/article/details/8596449
+http://blog.csdn.net/Luoshengyang/article/details/8611754

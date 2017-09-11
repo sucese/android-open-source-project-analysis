@@ -19,29 +19,31 @@
         <activity android:name=".application.ApplicationActivity" />
         <activity android:name=".program.ProgramActivity" />
         <activity android:name=".system.SystemActivity" />
-        <activity android:name=".application.activity.StartActivity" />
+        <activity android:name=".application.component.activity.StartActivity" />
         <activity
-            android:name=".application.activity.SubInProcessActivity"
+            android:name=".application.component.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
         <activity
-            android:name=".application.activity.SubInNewProcessActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:process="com.guoxiaoxing.new.process" />
+            android:name=".application.component.activity.SubInNewProcessActivity"
+            android:process="com.guoxiaoxing.new.process"
+            android:windowSoftInputMode="adjustNothing" />
 
         <service
-            android:name=".application.service.ServerService"
+            android:name=".application.component.service.ServerService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".application.service.ClientActivity" />
+        <activity android:name=".application.component.service.ClientActivity" />
 
         <service
             android:name=".system.aidl.AidlService"
-            android:process="com.guoxiaoxing.AidlService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:process="com.guoxiaoxing.AidlService" />
 
-        <activity android:name=".system.aidl.AidlActivity"></activity>
+        <activity android:name=".system.aidl.AidlActivity" />
+        <activity android:name=".application.ui.UIActivity" />
+        <activity android:name=".application.ui.DrawActivity"></activity>
     </application>
 
 </manifest>

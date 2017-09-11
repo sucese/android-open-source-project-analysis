@@ -6,8 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.guoxiaoxing.android.framework.demo.R;
-import com.guoxiaoxing.android.framework.demo.application.activity.StartActivity;
-import com.guoxiaoxing.android.framework.demo.application.service.ClientActivity;
+import com.guoxiaoxing.android.framework.demo.application.component.activity.StartActivity;
+import com.guoxiaoxing.android.framework.demo.application.component.service.ClientActivity;
+import com.guoxiaoxing.android.framework.demo.application.ui.UIActivity;
 
 public class ApplicationActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,6 +20,7 @@ public class ApplicationActivity extends AppCompatActivity implements View.OnCli
         findViewById(R.id.btn_application_activity).setOnClickListener(this);
         findViewById(R.id.btn_application_service).setOnClickListener(this);
         findViewById(R.id.btn_application_broadcast_receiver).setOnClickListener(this);
+        findViewById(R.id.btn_application_ui).setOnClickListener(this);
     }
 
     @Override
@@ -35,6 +37,10 @@ public class ApplicationActivity extends AppCompatActivity implements View.OnCli
             break;
             case R.id.btn_application_broadcast_receiver: {
 
+            }
+            break;
+            case R.id.btn_application_ui: {
+                startActivity(new Intent(ApplicationActivity.this, UIActivity.class));
             }
             break;
         }

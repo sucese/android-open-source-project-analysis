@@ -1,4 +1,4 @@
-package com.guoxiaoxing.android.framework.demo.application.activity;
+package com.guoxiaoxing.android.framework.demo.application.component.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

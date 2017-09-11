@@ -1,4 +1,4 @@
-package com.guoxiaoxing.android.framework.demo.application.service;
+package com.guoxiaoxing.android.framework.demo.application.component.service;
 
 import android.app.Service;
 import android.content.Intent;
