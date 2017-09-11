@@ -55,7 +55,9 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 - [04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 - [05Android显示框架：Activity应用视图的渲染流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Activity应用视图的渲染流程.md)
 - [06Android显示框架：WindowManagerService关于窗口的计算流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/06Android显示框架：WindowManagerService关于窗口的计算流程.md)
-- [07Android显示框架：WindowManagerService关于窗口的创建与切换流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/06Android显示框架：WindowManagerService关于窗口的创建与切换流程.md)
+- [07Android显示框架：WindowManagerService关于窗口的创建与切换流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/07Android显示框架：WindowManagerService关于窗口的创建与切换流程.md)
+- [08Android显示框架：WindowManagerService关于窗口动画的工作原理](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/08Android显示框架：WindowManagerService关于窗口动画的工作原理.md)
+- [09Android显示框架：WindowManagerService自定义View实践](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/09Android显示框架：自定义View实践.md)
 
 **Android组件框架**
 
