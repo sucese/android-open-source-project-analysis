@@ -273,28 +273,30 @@ B(t)为时间为t时的坐标，P0为起点，P1为终点。
 
 贝塞尔曲线的模拟可以使用[bezier-curve](http://myst729.github.io/bezier-curve/)
 
+我们再来看看Path类提供的关于贝塞尔曲线的方法。
+
 ```java
 
-//二次贝塞尔曲线，绝对坐标
+//二阶贝塞尔曲线，绝对坐标，(x1, y1)表示控制点，(x2, y2)表示终点
 public void quadTo(float x1, float y1, float x2, float y2) {
     isSimplePath = false;
     native_quadTo(mNativePath, x1, y1, x2, y2);
 }
 
-//二次贝塞尔曲线，相对坐标
+//二阶贝塞尔曲线，相对坐标
 public void rQuadTo(float dx1, float dy1, float dx2, float dy2) {
     isSimplePath = false;
     native_rQuadTo(mNativePath, dx1, dy1, dx2, dy2);
 }
 
-//三次贝塞尔曲线，绝对坐标
+//三阶贝塞尔曲线，绝对坐标，(x1, y1)、(x2, y2)表示控制点，(x3, y3)表示终点
 public void cubicTo(float x1, float y1, float x2, float y2,
                     float x3, float y3) {
     isSimplePath = false;
     native_cubicTo(mNativePath, x1, y1, x2, y2, x3, y3);
 }
 
-//三次贝塞尔曲线，相对坐标
+//三阶贝塞尔曲线，相对坐标
 public void rCubicTo(float x1, float y1, float x2, float y2,
                      float x3, float y3) {
     isSimplePath = false;
@@ -302,7 +304,126 @@ public void rCubicTo(float x1, float y1, float x2, float y2,
 }
 ```
 
+我们来用贝塞尔曲线实现一个波浪效果。
 
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif"/>
+
+
+```java
+/**
+ * 控制点的X坐标不断左右移动，形成波浪效果。
+ * <p>
+ * For more information, you can visit https://github.com/guoxiaoxing or contact me by
+ * guoxiaoxingse@163.com
+ *
+ * @author guoxiaoxing
+ * @since 2017/9/11 下午6:11
+ */
+public class WaveView extends View {
+
+    private static final String TAG = "WaveView";
+
+    /**
+     * 波浪从屏幕外开始，在屏幕外结束，这样效果更真实
+     */
+    private static final float EXTRA_DISTANCE = 200;
+
+    private Path mPath;
+    private Paint mPaint;
+
+    /**
+     * 控件宽高
+     */
+    private int mWidth;
+    private int mHeight;
+
+    /**
+     * 控制点坐标
+     */
+    private float mControlX;
+    private float mControlY;
+
+    /**
+     * 波浪峰值
+     */
+    private float mWaveY;
+
+    /**
+     * 是否移动控制点
+     */
+    private boolean mMoveControl = true;
+
+    public WaveView(Context context) {
+        super(context);
+        init();
+    }
+
+    public WaveView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public WaveView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mWidth = w;
+        mHeight = h;
+
+        mControlY = mHeight - mHeight / 8;
+        mWaveY = mHeight - mHeight / 32;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        //波浪从屏幕外开始，效果更真实
+        mPath.moveTo(-EXTRA_DISTANCE, mWaveY);
+        //二阶贝塞尔曲线
+        mPath.quadTo(mControlX, mControlY, mWidth + EXTRA_DISTANCE, mWaveY);
+        //闭合曲线
+        mPath.lineTo(mWidth, mHeight);
+        mPath.lineTo(0, mHeight);
+        mPath.close();
+        canvas.drawPath(mPath, mPaint);
+
+        //mControlX坐标在 -EXTRA_DISTANCE ~ mWidth + EXTRA_DISTANCE 范围内，先自增再自减，左右移动
+        //形成波浪效果
+        if (mControlX <= -EXTRA_DISTANCE) {
+            mMoveControl = true;
+        } else if (mControlX >= mWidth + EXTRA_DISTANCE) {
+            mMoveControl = false;
+        }
+        mControlX = mMoveControl ? mControlX + 20 : mControlX - 20;
+
+        //水面不断上升
+        if (mControlY >= 0) {
+            mControlY -= 2;
+            mWaveY -= 2;
+        }
+
+        Log.d(TAG, "mControlX: " + mControlX + " mControlY: " + mControlY + " mWaveY: " + mWaveY);
+
+        mPath.reset();
+        invalidate();
+    }
+
+
+    private void init() {
+        mPath = new Path();
+        mPaint = new Paint();
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mPaint.setColor(Color.parseColor("#4CAF50"));
+    }
+}
+```
 
 
 **弧线**

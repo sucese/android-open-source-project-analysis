@@ -69,31 +69,23 @@ public class DrawView extends View {
 //        path.rLineTo(400, 0);// 由当前位置 (300, 400) 向正右方400像素的位置画一条直线
 //        canvas.drawPath(path, paint);
 
-        //绘制弧线
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        path.lineTo(300, 300);
-        path.arcTo(300, 300, 500, 500, -90, 90 ,true);//
+        //二阶贝塞尔曲线
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setStrokeWidth(5);
+//        path.quadTo(200, 200, 400, 0);
+//        canvas.drawPath(path, paint);
+
+        //三阶贝塞尔曲线
+        paint.setStyle(Paint.Style.FILL);
+        path.cubicTo(200, 200, 400, 0, 600, 200);
         canvas.drawPath(path, paint);
 
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(widthSpecSize, heightSpecSize);
-        } else if (widthSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(widthSpecSize, heightSpecSize);
-        } else if (heightSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(widthSpecSize, heightSpecSize);
-        }
+        //绘制弧线
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setStrokeWidth(5);
+//        path.lineTo(300, 300);
+//        path.arcTo(300, 300, 500, 500, -90, 90 ,true);//
+//        canvas.drawPath(path, paint);
     }
 
     private void init() {
