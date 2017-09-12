@@ -308,7 +308,7 @@ public void rCubicTo(float x1, float y1, float x2, float y2,
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="250" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260" height="500"/>
 
 
 ```java
