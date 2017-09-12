@@ -6,10 +6,23 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context="com.guoxiaoxing.android.framework.demo.MainActivity">
 
-    <com.guoxiaoxing.android.framework.demo.application.ui.bazier.WaveView
+    <!--<com.guoxiaoxing.android.framework.demo.application.ui.bazier.WaveView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_horizontal" />-->
+
+    <com.guoxiaoxing.android.framework.demo.application.ui.RippleLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ripple"/>
+
+    </com.guoxiaoxing.android.framework.demo.application.ui.RippleLayout>
 </LinearLayout>
