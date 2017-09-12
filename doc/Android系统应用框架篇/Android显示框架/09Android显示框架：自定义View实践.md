@@ -117,6 +117,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
 ### 2.1 界面绘制
 
+#### 2.1.1 Canvas
+
 Canvas提供了丰富的对象绘制方法，一般都以drawXXX()打头，绘制的对象包括：
 
 - 弧线（Arcs）
@@ -187,9 +189,11 @@ Path对象可以描述很多图形，具体说来：
 - 矩形
 - 圆角矩形
 
+#### 2.1.2 Path
+
 我们再来看看Path里的方法。
 
-**第一组：addXXX() - 添加完整的封闭图形**
+##### 第一组：addXXX() - 添加完整的封闭图形
 
 例如：addCircle(float x, float y, float radius, Direction dir)
 
@@ -209,7 +213,7 @@ public void addCircle(float x, float y, float radius, Direction dir) {
 
 其他的方法都是这个方法类似。
 
-**第二组：xxxTo() - 画线（直线或者曲线）**
+##### 第二组：xxxTo() - 画线（直线或者曲线）
 
 **直线**
 
@@ -243,8 +247,7 @@ canvas.drawPath(path, paint);
 ```
 **贝塞尔曲线**
 
->贝塞尔曲线：贝塞尔曲线是几何上的一种曲线。它通过起点、控制点和终点来描述一条曲线，主要用于计算机图形学。简单来说，贝塞尔曲线就是讲
-任意一条曲线转换为精确的数学公式。
+>贝塞尔曲线：贝塞尔曲线是几何上的一种曲线。它通过起点、控制点和终点来描述一条曲线，主要用于计算机图形学。简单来说，贝塞尔曲线就是将任意一条曲线转换为精确的数学公式。
 
 在贝塞尔曲线中，有两类点：
 
@@ -425,7 +428,6 @@ public class WaveView extends View {
 }
 ```
 
-
 **弧线**
 
 ```java
@@ -446,12 +448,7 @@ public void arcTo(float left, float top, float right, float bottom, float startA
 
 >注：可以发现，这个方法与同样用来画弧线的方法Canvas.drawArc()少了个boolean useCenter参数，这是因为arcTo()方法只用来画弧线。
 
-举例
-
-```java
-
-```
-
+##### 第三组
 
 ## 2.2 位置转换
 
