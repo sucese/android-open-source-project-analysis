@@ -88,31 +88,405 @@ public class Paint {
 }
 ```
 
-### 第一组：颜色
+### 第一组：颜色处理类
 
-给Paint设置颜色有两种方案
+在Paint类中，处理颜色主要有三个方法。
 
-**public void setColor(@ColorInt int color)**
-**public void setARGB(int a, int r, int g, int b) **
+- setShader(Shader shader)：用来处理颜色渐变
+- setColorFilter(ColorFilter filter)：用来基于颜色进行过滤处理； 
+- setXfermode(Xfermode xfermode) 用来处理源图像和 View 已有内容的关系
 
-设置颜色
+#### setShader(Shader shader)
 
-**public Shader setShader(Shader shader) **
+>着色器是图像领域的一个通用概念，它提供的是一套着色规则。
 
-设置着色器，着色器是图像领域的一个通用概念，它提供的是一套着色规则，具体由Shader的子类实现：
+```java
+public Shader setShader(Shader shader) 
+```
+着色器具体由Shader的子类实现：
 
-LinearGradient - 线性渐变
+**LinearGradient - 线性渐变**
+
+```java
+public LinearGradient(float x0, float y0, float x1, float y1, int color0, int color1, TileMode tile)
+```
+
+- x0 y0 x1 y1：渐变的两个端点的位置 
+- color0 color1 是端点的颜色 
+- tile：端点范围之外的着色规则，类型是 TileMode。TileMode 一共有 3 个值可选： CLAMP, MIRROR 和 REPEAT。CLAMP 
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_linear.png" width="250" height="500"/>
+
+```java
+//线性渐变
+Shader shader1 = new LinearGradient(0, 100, 200, 100, Color.RED, Color.BLUE, Shader.TileMode.CLAMP);
+paint1.setShader(shader1);
+
+Shader shader2 = new LinearGradient(0, 600, 200, 600, Color.RED, Color.BLUE, Shader.TileMode.MIRROR);
+paint2.setShader(shader2);
+
+Shader shader3 = new LinearGradient(0, 1100, 200, 1100, Color.RED, Color.BLUE, Shader.TileMode.REPEAT);
+paint3.setShader(shader3);
+
+canvas.drawRect(0, 100, 1000, 500, paint1);
+canvas.drawRect(0, 600, 1000, 1000, paint2);
+canvas.drawRect(0, 1100, 1000, 1500, paint3);
+```
+
+**SweepGradient - 辐射渐变**
+
+```java
+public RadialGradient(float centerX, float centerY, float radius, int centerColor, int edgeColor, @NonNull TileMode tileMode) 
+```
+
+- centerX centerY：辐射中心的坐标 
+- radius：辐射半径 
+- centerColor：辐射中心的颜色 
+- edgeColor：辐射边缘的颜色 
+- tileMode：辐射范围之外的着色模式
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_radial.png" width="250" height="500"/>
 
 
-RadialGradient 
-SweepGradient 
-BitmapShader 
-ComposeShader
+```java
+//辐射渐变
+Shader shader1 = new RadialGradient(0, 100, 200, Color.RED, Color.BLUE, Shader.TileMode.CLAMP);
+paint1.setShader(shader1);
 
+Shader shader2 = new RadialGradient(0, 600, 200, Color.RED, Color.BLUE, Shader.TileMode.MIRROR);
+paint2.setShader(shader2);
 
-### 第二组：效果
-### 第三组：文字
-### 第四组：初始化
+Shader shader3 = new RadialGradient(0, 1100, 200, Color.RED, Color.BLUE, Shader.TileMode.REPEAT);
+paint3.setShader(shader3);
+
+canvas.drawRect(0, 100, 1000, 500, paint1);
+canvas.drawRect(0, 600, 1000, 1000, paint2);
+```
+**BitmapShader - 位图着色** 
+
+使用位图的像素来填充图形或者文字。
+
+```java
+ public BitmapShader(@NonNull Bitmap bitmap, TileMode tileX, TileMode tileY)
+```
+- bitmap：用来做模板的 Bitmap 对象 
+- tileX：横向的 TileMode 
+- tileY：纵向的 TileMode。
+
+举例
+
+BitmapShader是一个很有用的类，可以利用该类做各种各样的图片裁剪。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_bitmap.png" width="250" height="500"/>
+
+```java
+//位图着色
+Shader shader1 = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+paint1.setShader(shader1);
+
+//绘制圆形
+canvas.drawCircle(500, 500, 300, paint1);
+```
+
+**ComposeShader - 组合Shader**
+
+ComposeShader可以将连个Shader组合在一起。
+
+```java
+public ComposeShader(Shader shaderA, Shader shaderB, PorterDuff.Mode mode) 
+```
+
+- shaderA, shaderB：两个相继使用的 Shader 
+- mode: 两个 Shader 的叠加模式，即 shaderA 和 shaderB 应该怎样共同绘制。它的类型是PorterDuff.Mode。
+
+PorterDuff.Mode用来指定两个Shader叠加时颜色的绘制策略，它有很多种策略，也就是以一种怎样的模式来与原图像进行合成，具体如下：
+
+蓝色矩形为原图像，红色圆形为目标图像。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/porter_buff_mode_alpha.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/porter_duff_mode_blending.png"/>
+
+更多细节可以参见[PorterDuff.Mode官方文档](https://developer.android.com/reference/android/graphics/PorterDuff.Mode.html)。
+
+#### setColorFilter(ColorFilter filter)
+
+>颜色过滤器可以将颜色按照一定的规则输出，常见于各种滤镜效果。
+
+```java
+public ColorFilter setColorFilter(ColorFilter filter) 
+```
+我们通常使用的是ColorFilter的三个子类：
+
+**LightingColorFilter - 模拟光照效果**
+
+```java
+public LightingColorFilter(int mul, int add)
+```
+mul 和 add 都是和颜色值格式相同的 int 值，其中 mul 用来和目标像素相乘，add 用来和目标像素相加。
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/color_filter_lighting.png" width="250" height="500"/>
+
+```java
+//颜色过滤器
+ColorFilter colorFilter1 = new LightingColorFilter(Color.RED, Color.BLUE);
+paint2.setColorFilter(colorFilter1);
+
+canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+canvas.drawBitmap(bitmapTimo, null, rect2, paint2);
+```
+
+**PorterDuffColorFilter - 模拟颜色混合效果** 
+
+```java
+public PorterDuffColorFilter(@ColorInt int color, @NonNull PorterDuff.Mode mode) 
+```
+PorterDuffColorFilter指定一种颜色和PorterDuff.Mode来与源图像就行合成，也就是以一种怎样的模式来与原图像进行合成，我们在上面已经讲过这个内容。
+
+举例
+
+```java
+//我们在使用Xfermode的时候也是使用它的子类PorterDuffXfermode
+Xfermode xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+canvas.drawBitmap(rectBitmap, 0, 0, paint); // 画方  
+paint.setXfermode(xfermode); // 设置 Xfermode  
+canvas.drawBitmap(circleBitmap, 0, 0, paint); // 画圆  
+paint.setXfermode(null); // 用完及时清除 Xfermode  
+```
+
+**ColorMatrixColorFilter - 颜色矩阵过滤**
+
+ColorMatrixColorFilter使用一个颜色矩阵ColorMatrix来对象图像进行处理。
+
+```java
+public ColorMatrixColorFilter(ColorMatrix matrix)
+```
+ColorMatrix是一个4x5的矩阵
+
+```java
+[ a, b, c, d, e,
+  f, g, h, i, j,
+  k, l, m, n, o,
+  p, q, r, s, t ]
+```
+通过计算，ColorMatrix可以对要绘制的像素进行转换，如下：
+
+```java
+R’ = a*R + b*G + c*B + d*A + e;  
+G’ = f*R + g*G + h*B + i*A + j;  
+B’ = k*R + l*G + m*B + n*A + o;  
+A’ = p*R + q*G + r*B + s*A + t;  
+```
+
+利用ColorMatrixColorFilter(可以实现很多炫酷的滤镜效果。
+
+#### setXfermode(Xfermode xfermode)
+
+Paint.setXfermode(Xfermode xfermode)方法，它也是一种混合图像的方法。
+
+>Xfermode 指的是你要绘制的内容和 Canvas 的目标位置的内容应该怎样结合计算出最终的颜色。但通俗地说，其实就是要你以绘制的内容作为源图像，以View中已有的内
+容作为目标图像，选取一个PorterDuff.Mode作为绘制内容的颜色处理方案。
+
+**小结**
+
+关于PorterDuff.Mode，我们已经提到
+
+- ComposeShader：混合两个Shader
+- PorterDuffColorFilter：增加一个单色的ColorFilter
+- Xfermode：指定原图像与目标图像的混合模式
+
+这三种以不同的方式来使用PorterDuff.Mode，但是原理都是一样的。
+
+### 第二组：特殊效果类
+
+#### setAntiAlias (boolean aa) 
+
+设置抗锯齿，默认关闭，用来是图像的绘制更加圆润。我们还可以在初始化的时候设置Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);。
+
+#### setStyle(Paint.Style style)
+
+设置填充风格，
+
+- FILL 模式，填充  
+- STROKE 模式，画线  
+- FILL_AND_STROKE 模式，填充 + 画线
+
+如果是划线模式，我们针对线条还可以有多种设置。
+
+setStrokeWidth(float width) - 设置线条粗细
+
+setStrokeCap(Paint.Cap cap) - 设置线头的形状，默认为 BUTT
+
+- UTT 平头
+- ROUND 圆头
+- SQUARE 方头
+
+setStrokeJoin(Paint.Join join) - 设置拐角的形状。默认为 MITER
+
+- MITER 尖角
+- BEVEL 平角
+- ROUND 圆角
+
+setStrokeMiter(float miter)- 设置 MITER 型拐角的延长线的最大值
+
+#### setDither(boolean dither)
+
+设置图像的抖动。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/dither.png" width="250" height="500"/>
+
+>抖动是指把图像从较高色彩深度（即可用的颜色数）向较低色彩深度的区域绘制时，在图像中有意地插入噪点，通过有规律地扰乱图像来让图像对于肉眼更加真实的做法。
+
+当然这个效果旨在低位色的时候比较有用，例如，ARGB_4444 或者 RGB_565，不过现在Android默认的色彩深度都是32位的ARGB_8888，这个方法的效果没有那么明显。
+
+#### setFilterBitmap(boolean filter)
+
+设置是否使用双线性过滤来绘制 Bitmap 。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bitmap_filter.png" width="250" height="500"/>
+
+图像在放大绘制的时候，默认使用的是最近邻插值过滤，这种算法简单，但会出现马赛克现象；而如果开启了双线性过滤，就可以让结果图像显得更加平滑。
+
+#### etPathEffect(PathEffect effect)
+
+设置图形的轮廓效果。Android有六种PathEffect：
+
+- CornerPathEffect：将拐角绘制成圆角
+- DiscretePathEffect：将线条进行随机偏离
+- DashPathEffect：绘制虚线
+- PathDashPathEffect：使用指定的Path来绘制虚线
+- SumPathEffect：组合两个PathEffect，叠加应用。
+- ComposePathEffect：组合两个PathEffect，叠加应用。
+
+CornerPathEffect(float radius)
+
+- float radius圆角半径
+
+DiscretePathEffect(float segmentLength, float deviation)
+
+- float segmentLength：用来拼接每个线段的长度，
+- float deviation：偏离量
+
+DashPathEffect(float[] intervals, float phase)
+
+- float[] intervals：指定了虚线的格式，数组中元素必须为偶数（最少是 2 个），按照「画线长度、空白长度、画线长度、空白长度」……的顺序排列
+- float phase：虚线的偏移量
+
+PathDashPathEffect(Path shape, float advance, float phase, PathDashPathEffect.Style style)
+
+- Path shape：用来绘制的Path
+- float advance：两个相邻Path段起点间的间隔
+- float phase：虚线的偏移量
+- PathDashPathEffect.Style style：指定拐弯改变的时候 shape 的转换方式：TRANSLATE：位移、ROTATE：旋转、MORPH：变体
+                                                       
+SumPathEffect(PathEffect first, PathEffect second)
+
+PathEffect first：同时应用的PathEffect
+PathEffect second：同时应用的PathEffect
+
+ComposePathEffect(PathEffect outerpe, PathEffect innerpe)
+
+PathEffect outerpe：后应用的PathEffect
+PathEffect innerpe：先应用用的PathEffect
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/path_effect.png" width="250" height="500"/>
+
+```java
+//图形轮廓效果
+//绘制圆角
+PathEffect cornerPathEffect = new CornerPathEffect(20);
+paint1.setStyle(Paint.Style.STROKE);
+paint1.setStrokeWidth(5);
+paint1.setPathEffect(cornerPathEffect);
+
+//绘制尖角
+PathEffect discretePathEffect = new DiscretePathEffect(20, 5);
+paint2.setStyle(Paint.Style.STROKE);
+paint2.setStrokeWidth(5);
+paint2.setPathEffect(discretePathEffect);
+
+//绘制虚线
+PathEffect dashPathEffect = new DashPathEffect(new float[]{20,10, 5, 10}, 0);
+paint3.setStyle(Paint.Style.STROKE);
+paint3.setStrokeWidth(5);
+paint3.setPathEffect(dashPathEffect);
+
+//使用path来绘制虚线
+Path path = new Path();//画一个三角来填充虚线
+path.lineTo(40, 40);
+path.lineTo(0, 40);
+path.close();
+PathEffect pathDashPathEffect = new PathDashPathEffect(path, 40, 0, PathDashPathEffect.Style.TRANSLATE);
+paint4.setStyle(Paint.Style.STROKE);
+paint4.setStrokeWidth(5);
+paint4.setPathEffect(pathDashPathEffect);
+```
+#### setShadowLayer(float radius, float dx, float dy, int shadowColor)
+
+设置阴影图层，处于目标下层图层。
+
+- float radius：阴影半径
+- float dx：阴影偏移量
+- float dy：阴影偏移量
+- int shadowColor：阴影颜色
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shadow_layer.png" width="250" height="500"/>
+
+```java
+paint1.setTextSize(200);
+paint1.setShadowLayer(10, 0, 0, Color.RED);
+canvas.drawText("Android", 80, 300 ,paint1);
+```
+
+>注：在硬件加速开启的情况下， setShadowLayer() 只支持文字的绘制，文字之外的绘制必须关闭硬件加速才能正常绘制阴影。如果 shadowColor 是半透明的，阴影的透明度就使用 shadowColor 自己
+的透明度；而如果  shadowColor 是不透明的，阴影的透明度就使用 paint 的透明度。
+
+#### setMaskFilter(MaskFilter maskfilter)
+
+设置图层遮罩层，处于目标上层图层。
+
+MaskFilter有两个子类：
+
+- BlurMaskFilter：模糊效果
+- BlurMaskFilter：浮雕效果
+
+举例
+
+模糊效果
+
+BlurMaskFilter.Blur.NORMAL
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="250" height="500"/>
+
+BlurMaskFilter.Blur.SOLD
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="250" height="500"/>
+
+BlurMaskFilter.Blur.INNER
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="250" height="500"/>
+
+BlurMaskFilter.Blur.OUTTER
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="250" height="500"/>
+
+```java
+//设置遮罩图层,处于目标上层图层
+//关闭硬件加速
+setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+MaskFilter blurMaskFilter = new BlurMaskFilter(200, BlurMaskFilter.Blur.NORMAL);
+paint2.setMaskFilter(blurMaskFilter);
+
+canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+canvas.drawBitmap(bitmapTimo, null, rect2, paint2);
+```
+>注：在硬件加速开启的情况下， setMaskFilter(MaskFilter maskfilter)只支持文字的绘制，文字之外的绘制必须关闭硬件加速才能正常绘制阴影。关闭硬件加速可以调用
+View.setLayerType(View.LAYER_TYPE_SOFTWARE, null)或者在Activity标签里设置android:hardwareAccelerated="false"。
 
 ## 二 Canvas
 
@@ -164,7 +538,6 @@ paint.setStyle(Paint.Style.STROKE);//画线模式
 paint.setStrokeWidth(5);
 canvas.drawArc(200, 100, 800, 500, 180, 60, false, paint);
 ```
-
 **位图**
 
 - **public void drawBitmap(@NonNull Bitmap bitmap, float left, float top, @Nullable Paint paint) - 绘制位图**
