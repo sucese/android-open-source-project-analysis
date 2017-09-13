@@ -520,7 +520,6 @@ public void drawArc(float left, float top, float right, float bottom, float star
             useCenter, paint.getNativeInstance());
 }
 ```
-
 - float left, float top, float right, float bottom：左、上、右、下的坐标。
 - float startAngle：弧形起始角度，Android坐标系x轴正右的方向是0度的位置，顺时针为正角度，逆时针为负角度。
 - float sweepAngle：弧形划过的角度。
