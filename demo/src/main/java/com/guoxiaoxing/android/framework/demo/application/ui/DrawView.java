@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.BlurMaskFilter;
+import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -48,9 +49,14 @@ public class DrawView extends View {
     private Paint paint3 = new Paint();
     private Paint paint4 = new Paint();
     private Matrix matrix = new Matrix();
+    private Camera camera = new Camera();
     private Path path = new Path();
+    private Rect rect = new Rect(250, 500, 750, 1000);
     private Rect rect1 = new Rect(0, 0, 500, 500);
     private Rect rect2 = new Rect(500, 500, 1000, 1000);
+
+    float[] src = new float[]{100, 100, 500, 500};
+    float[] dst = new float[]{100 + 20, 100 + 20, 500 - 100, 500 + 100};
 
     public DrawView(Context context) {
         super(context);
@@ -138,15 +144,48 @@ public class DrawView extends View {
 //        canvas.drawBitmap(bitmapTimo, 100, 100, paint1);
 //        canvas.restore();//恢复画布
 
-        //几何变换
-        canvas.save();//保存画布
-        canvas.skew(0, 0.5f);
-        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
-        canvas.restore();//恢复画布
+        //Canvas几何变换
+//        canvas.save();//保存画布
+//        canvas.skew(0, 0.5f);
+//        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+//        canvas.restore();//恢复画布
+//
+//        canvas.save();//保存画布
+//        canvas.rotate(45, 750, 750);
+//        canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+//        canvas.restore();//恢复画布
 
+        //Matrix几何变换
+//        canvas.save();//保存画布
+//        matrix.preSkew(0, 0.5f);
+//        canvas.concat(matrix);
+//        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+//        canvas.restore();//恢复画布
+//
+//        canvas.save();//保存画布
+//        matrix.reset();
+//        matrix.preRotate(45, 750, 750);
+//        canvas.concat(matrix);
+//        canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+//        canvas.restore();//恢复画布
+
+//        canvas.save();//保存画布
+//        matrix.setPolyToPoly(src, 0, dst, 0, 2);
+//        canvas.concat(matrix);
+//        canvas.drawBitmap(bitmapTimo, 0, 0, paint1);
+//        canvas.restore();//恢复画布
+
+        //Camera三维变换
         canvas.save();//保存画布
-        canvas.rotate(45, 750, 750);
-        canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+
+        camera.save();//保存camera
+        camera.translate(500, 500, 500);
+        canvas.translate(500, 750);//camera也是默认在原点(0, 0)位置，所以我们要把画布平移到图片中心(500, 750)
+        camera.applyToCanvas(canvas);
+        canvas.translate(-500, -750);//翻转完图片，再将画布从图片中心(500, 750)平移到原点(0, 0)
+        camera.restore();//恢复camera
+
+        canvas.drawBitmap(bitmapTimo, null, rect, paint1);
         canvas.restore();//恢复画布
     }
 
@@ -244,9 +283,9 @@ public class DrawView extends View {
 
         //设置遮罩图层,处于目标上层图层
         //关闭硬件加速
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        MaskFilter blurMaskFilter = new BlurMaskFilter(200, BlurMaskFilter.Blur.NORMAL);
-        paint2.setMaskFilter(blurMaskFilter);
+//        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+//        MaskFilter blurMaskFilter = new BlurMaskFilter(200, BlurMaskFilter.Blur.NORMAL);
+//        paint2.setMaskFilter(blurMaskFilter);
 
 //        MaskFilter embossMaskFilter = new EmbossMaskFilter(new float[]{0 ,1, 1}, 0.2f, 8, 10);
 //        paint1.setMaskFilter(embossMaskFilter);

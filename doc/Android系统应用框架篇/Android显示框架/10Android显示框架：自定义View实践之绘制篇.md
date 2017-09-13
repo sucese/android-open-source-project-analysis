@@ -897,6 +897,14 @@ canvas.restore();//恢复画布
 
 ### 2.3 几何变换
 
+关于几何变换有三种实现方式：
+
+- Canvas：常规几何变换
+- Matrix：自定义几何变换
+- Camera：三维变换
+
+### Canvas常规几何变换
+
 Canvas还提供了对象的位置变换的方法，其中包括：
 
 - translate(float dx, float dy)：平移
@@ -919,9 +927,146 @@ canvas.rotate(45, 750, 750);
 canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
 canvas.restore();//恢复画布
 ```
-
 >注：1 为了不影响其他绘制操作，在进行变换之前需要调用canvas.save()保存画布，变换完成以后再调用canvas.restore()来恢复画布。
-2 调用的顺序是相反的，例如我们在代码写了：canvas.skew(0, 0.5f); canvas.rotate(45, 750, 750); 它的实际调用顺序是canvas.rotate(45, 750, 750); -> canvas.skew(0, 0.5f)
+2 Canvas几何变换的顺序是相反的，例如我们在代码写了：canvas.skew(0, 0.5f); canvas.rotate(45, 750, 750); 它的实际调用顺序是canvas.rotate(45, 750, 750); -> canvas.skew(0, 0.5f)
+
+#### Matrix自定义几何变换
+
+Matrix也实现了Canvas里的四种常规变换，它的实现流程如下：
+
+1. 创建 Matrix 对象；
+2. 调用 Matrix 的 pre/postTranslate/Rotate/Scale/Skew() 方法来设置几何变换；
+3. 使用 Canvas.setMatrix(matrix) 或 Canvas.concat(matrix) 来把几何变换应用到 Canvas。
+
+>Canvas.concat(matrix)：用 Canvas 当前的变换矩阵和 Matrix 相乘，即基于 Canvas 当前的变换，叠加上 Matrix 中的变换。
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" width="250" height="500"/>
+
+```java
+//Matrix几何变换
+canvas.save();//保存画布
+matrix.preSkew(0, 0.5f);
+canvas.concat(matrix);
+canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+canvas.restore();//恢复画布
+
+canvas.save();//保存画布
+matrix.reset();
+matrix.preRotate(45, 750, 750);
+canvas.concat(matrix);
+canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+canvas.restore();//恢复画布
+```
+Matrix除了四种基本的几何变换，还可以自定义几何变换。
+
+- setPolyToPoly(float[] src, int srcIndex, float[] dst, int dstIndex, int pointCount)
+- setRectToRect(RectF src, RectF dst, ScaleToFit stf)
+
+这两个方法都是通过多点的映射的方式来直接设置变换，把指定的点移动到给出的位置，从而发生形变。
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/matrix_poly_to_poly.png" width="250" height="500"/>
+
+```java
+//Matrix几何变换
+canvas.save();//保存画布
+matrix.setPolyToPoly(src, 0, dst, 0, 2);
+canvas.concat(matrix);
+canvas.drawBitmap(bitmapTimo, 0, 0, paint1);
+canvas.restore();//恢复画布
+```
+#### Camera三维变换
+
+在讲解Camera的三维变换之前，我们需要先理解Camera的坐标系系统。
+
+我们前面说过，Canvas使用的是二维坐标系。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="250" height="500"/>
+
+而Camera使用的是三维坐标系。
+
+Camera的三维变换包括：旋转、平移与移动相机。
+
+旋转
+
+- rotateX(deg)
+- rotateY(deg)
+- rotateZ(deg)
+- rotate(x, y, z)
+
+平移
+
+- translate(float x, float y, float z)
+
+移动相机
+
+- setLocation(float x, float y, float z)
+
+举例
+
+旋转
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
+
+
+```java
+//Camera三维变换
+canvas.save();//保存画布
+
+camera.save();//保存camera
+camera.rotateX(45);
+canvas.translate(500, 750);//camera也是默认在原点(0, 0)位置，所以我们要把画布平移到图片中心(500, 750)
+camera.applyToCanvas(canvas);
+canvas.translate(-500, -750);//翻转完图片，再将画布从图片中心(500, 750)平移到原点(0, 0)
+camera.restore();//恢复camera
+
+canvas.drawBitmap(bitmapTimo, null, rect, paint1);
+canvas.restore();//恢复画布
+```
+
+平移
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
+
+```java
+//Camera三维变换
+canvas.save();//保存画布
+
+camera.save();//保存camera
+camera.translate(500, 500, 500);
+canvas.translate(500, 750);//camera也是默认在原点(0, 0)位置，所以我们要把画布平移到图片中心(500, 750)
+camera.applyToCanvas(canvas);
+canvas.translate(-500, -750);//翻转完图片，再将画布从图片中心(500, 750)平移到原点(0, 0)
+camera.restore();//恢复camera
+
+canvas.drawBitmap(bitmapTimo, null, rect, paint1);
+canvas.restore();//恢复画布
+```
+
+移动相机
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
+
+```java
+//Camera三维变换
+canvas.save();//保存画布
+
+camera.save();//保存camera
+camera.setLocation(0, 0, - 1000);//相机往前移动，图像变小
+canvas.translate(500, 750);//camera也是默认在原点(0, 0)位置，所以我们要把画布平移到图片中心(500, 750)
+camera.applyToCanvas(canvas);
+canvas.translate(-500, -750);//翻转完图片，再将画布从图片中心(500, 750)平移到原点(0, 0)
+camera.restore();//恢复camera
+
+canvas.drawBitmap(bitmapTimo, null, rect, paint1);
+canvas.restore();//恢复画布
+```
+
+
+好了，到此为止实现几何变换的三种方式都讲完了。我们来实现一个炫酷的翻页效果。
 
 ## 三 Path
 
