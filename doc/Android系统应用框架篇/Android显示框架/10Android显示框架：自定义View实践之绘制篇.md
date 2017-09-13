@@ -986,7 +986,21 @@ canvas.restore();//恢复画布
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="250" height="500"/>
 
-而Camera使用的是三维坐标系。
+而Camera使用的是三维坐标系，这里偷个懒😊，借用凯哥的图来描述一下。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_coordinate_system_1.gif"/>
+
+关于Camera坐标系：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_tranlate_direction.png"/>
+
+- 首先你要注意x、y、z轴的方向，z轴朝外是负轴。
+- 在z的负轴上有个虚拟相机，它就是用来做投影的，setLocation(float x, float y, float z)方法移动的也就是它的位置。
+- x、y、z轴旋转的方向也在上图中标出来了。
+
+比如我们在Camera坐标系里做个X轴方向的旋转
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_coordinate_system_2.gif"/>
 
 Camera的三维变换包括：旋转、平移与移动相机。
 
