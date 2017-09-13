@@ -13,9 +13,14 @@
 - 二 Canvas
 - 三 Path
 
+**文章源码**
+
+- [DrawView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/DrawView.java)
+
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 本篇文章我们来分析View绘制方面的实践。
+
 
 一个简单的自定义View
 
@@ -984,7 +989,7 @@ canvas.restore();//恢复画布
 
 我们前面说过，Canvas使用的是二维坐标系。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="300"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="350"/>
 
 而Camera使用的是三维坐标系，这里偷个懒😊，借用凯哥的图来描述一下。
 
