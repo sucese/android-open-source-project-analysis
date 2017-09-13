@@ -984,7 +984,7 @@ canvas.restore();//恢复画布
 
 我们前面说过，Canvas使用的是二维坐标系。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="250"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_coordinate_system.png" width="300"/>
 
 而Camera使用的是三维坐标系，这里偷个懒😊，借用凯哥的图来描述一下。
 
