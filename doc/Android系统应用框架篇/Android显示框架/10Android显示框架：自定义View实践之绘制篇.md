@@ -1,4 +1,4 @@
-# Android显示框架：自定义View实践-绘制
+# Android显示框架：自定义View实践之绘制篇
 
 **关于作者**
 
@@ -386,13 +386,13 @@ PathDashPathEffect(Path shape, float advance, float phase, PathDashPathEffect.St
                                                        
 SumPathEffect(PathEffect first, PathEffect second)
 
-PathEffect first：同时应用的PathEffect
-PathEffect second：同时应用的PathEffect
+- PathEffect first：同时应用的PathEffect
+- PathEffect second：同时应用的PathEffect
 
 ComposePathEffect(PathEffect outerpe, PathEffect innerpe)
 
-PathEffect outerpe：后应用的PathEffect
-PathEffect innerpe：先应用用的PathEffect
+- PathEffect outerpe：后应用的PathEffect
+- PathEffect innerpe：先应用用的PathEffect
 
 举例
 
@@ -464,15 +464,19 @@ MaskFilter有两个子类：
 模糊效果
 
 BlurMaskFilter.Blur.NORMAL
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="250" height="500"/>
 
 BlurMaskFilter.Blur.SOLD
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="250" height="500"/>
 
 BlurMaskFilter.Blur.INNER
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="250" height="500"/>
 
 BlurMaskFilter.Blur.OUTTER
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="250" height="500"/>
 
 ```java
