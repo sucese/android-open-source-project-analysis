@@ -7,6 +7,9 @@
 **文章目录**
 
 - 一 Paint
+    - 第一组：颜色处理类
+    - 第二组：文字处理类
+    - 第三组：特殊处理类
 - 二 Canvas
 - 三 Path
 
@@ -302,7 +305,25 @@ Paint.setXfermode(Xfermode xfermode)方法，它也是一种混合图像的方�
 
 这三种以不同的方式来使用PorterDuff.Mode，但是原理都是一样的。
 
-### 第二组：特殊效果类
+### 第二组：文字处理类
+
+Paint里有大量方法来设置文字的绘制属性，事实上文字在Android底层是被当做图片来处理的。
+
+- setTextSize(float textSize)：设置文字大小
+- setTypeface(Typeface typeface)：设置文字字体
+- setFakeBoldText(boolean fakeBoldText)：是否使用伪粗体（并不是提到size，而是在运行时描粗的）
+- setStrikeThruText(boolean strikeThruText)：是否添加删除线
+- setUnderlineText(boolean underlineText)：是否添加下划线
+- setTextSkewX(float skewX)：设置文字倾斜度
+- setTextScaleX(float scaleX)：设置文字横向缩放
+- setLetterSpacing(float letterSpacing)：设置文字间距
+- setFontFeatureSettings(String settings)：使用CSS的font-feature-settings的方式来设置文字。
+- setTextAlign(Paint.Align align)：设置文字对齐方式
+- setTextLocale(Locale locale)：设置文字Local
+- setHinting(int mode)：设置字体Hinting（微调），过向字体中加入 hinting 信息，让矢量字体在尺寸过小的时候得到针对性的修正，从而提高显示效果。
+- setSubpixelText(boolean subpixelText)：设置次像素级抗锯齿，根据程序所运行的设备的屏幕类型，来进行针对性的次像素级的抗锯齿计算，从而达到更好的抗锯齿效果。
+
+### 第三组：特殊效果类
 
 #### setAntiAlias (boolean aa) 
 
@@ -552,14 +573,14 @@ canvas.drawArc(200, 100, 800, 500, 180, 60, false, paint);
 
 drawBitmapMesh()方法将位图分为若干网格，然后对每个网格进行扭曲处理。我们先来看看这个方法的参数：
 
-@NonNull Bitmap bitmap：源位图
-int meshWidth：横向上将源位图划分成多少格
-int meshHeight：纵向上将源位图划分成多少格
-@NonNull float[] verts：网格顶点坐标数组，记录扭曲后图片各顶点的坐标，数组大小为 (meshWidth+1) * (meshHeight+1) * 2 + vertOffset
-int vertOffset：记录verts数组从第几个数组元素开始扭曲
-@Nullable int[] colors：设置网格顶点的颜色，该颜色会和位图对应像素的颜色叠加，数组大小为 (meshWidth+1) * (meshHeight+1) + colorOffset
-int colorOffset：记录colors从几个数组元素开始取色
-@Nullable Paint paint：画笔
+- @NonNull Bitmap bitmap：源位图
+- int meshWidth：横向上将源位图划分成多少格
+- int meshHeight：纵向上将源位图划分成多少格
+- @NonNull float[] verts：网格顶点坐标数组，记录扭曲后图片各顶点的坐标，数组大小为 (meshWidth+1) * (meshHeight+1) * 2 + vertOffset
+- int vertOffset：记录verts数组从第几个数组元素开始扭曲
+- @Nullable int[] colors：设置网格顶点的颜色，该颜色会和位图对应像素的颜色叠加，数组大小为 (meshWidth+1) * (meshHeight+1) + colorOffset
+- int colorOffset：记录colors从几个数组元素开始取色
+- @Nullable Paint paint：画笔
 
 我们来用drawBitmapMesh()方法实现一个水播放的效果。
 
@@ -843,16 +864,64 @@ Path对象可以描述很多图形，具体说来：
 - 矩形
 - 圆角矩形
 
-## 2.2 位置转换
+### 2.2 范围裁切
+
+Canvas里的范围裁切主要有两类方法：
+
+- clipReact()：按路径裁切
+- clipPath()：按坐标裁切
+
+举例
+
+clipReact
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_rect.png" width="250" height="500"/>
+
+clipPath
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_path.png" width="250" height="500"/>
+
+```java
+//范围裁切
+canvas.save();//保存画布
+canvas.clipRect(200, 200, 900, 900);
+canvas.drawBitmap(bitmapTimo, 100, 100, paint1);
+canvas.restore();//恢复画布
+
+canvas.save();//保存画布
+path.addCircle(500, 500, 300, Path.Direction.CW);
+canvas.clipPath(path);
+canvas.drawBitmap(bitmapTimo, 100, 100, paint1);
+canvas.restore();//恢复画布
+```
+
+### 2.3 几何变换
 
 Canvas还提供了对象的位置变换的方法，其中包括：
 
-- 旋转（Rotate）
-- 缩放（Scale）
-- 平移（Translate）
-- 扭曲（Skew）
+- translate(float dx, float dy)：平移
+- rotate(float degrees)：旋转，可以设置旋转圆点，默认在原点位置。
+- scale(float sx, float sy)：缩放
+- skew(float sx, float sy)：扭曲
 
-下面我们来分析一下Path类。
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" width="250" height="500"/>
+
+```java
+canvas.save();//保存画布
+canvas.skew(0, 0.5f);
+canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+canvas.restore();//恢复画布
+
+canvas.save();//保存画布
+canvas.rotate(45, 750, 750);
+canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+canvas.restore();//恢复画布
+```
+
+>注：1 为了不影响其他绘制操作，在进行变换之前需要调用canvas.save()保存画布，变换完成以后再调用canvas.restore()来恢复画布。
+2 调用的顺序是相反的，例如我们在代码写了：canvas.skew(0, 0.5f); canvas.rotate(45, 750, 750); 它的实际调用顺序是canvas.rotate(45, 750, 750); -> canvas.skew(0, 0.5f)
 
 ## 三 Path
 

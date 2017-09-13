@@ -105,8 +105,8 @@ public class DrawView extends View {
 //        canvas.drawPath(path, paint1);
 
         //绘制位图
-        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
-        canvas.drawBitmap(bitmapTimo, null, rect2, paint2);
+//        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+//        canvas.drawBitmap(bitmapTimo, null, rect2, paint2);
 
         //二阶贝塞尔曲线
 //        paint1.setStyle(Paint.Style.STROKE);
@@ -125,6 +125,29 @@ public class DrawView extends View {
 //        path.lineTo(300, 300);
 //        path.arcTo(300, 300, 500, 500, -90, 90 ,true);//
 //        canvas.drawPath(path, paint1);
+
+        //范围裁切
+//        canvas.save();//保存画布
+//        canvas.clipRect(200, 200, 900, 900);
+//        canvas.drawBitmap(bitmapTimo, 100, 100, paint1);
+//        canvas.restore();//恢复画布
+//
+//        canvas.save();//保存画布
+//        path.addCircle(500, 500, 300, Path.Direction.CW);
+//        canvas.clipPath(path);
+//        canvas.drawBitmap(bitmapTimo, 100, 100, paint1);
+//        canvas.restore();//恢复画布
+
+        //几何变换
+        canvas.save();//保存画布
+        canvas.skew(0, 0.5f);
+        canvas.drawBitmap(bitmapTimo, null, rect1, paint1);
+        canvas.restore();//恢复画布
+
+        canvas.save();//保存画布
+        canvas.rotate(45, 750, 750);
+        canvas.drawBitmap(bitmapTimo, null, rect2, paint1);
+        canvas.restore();//恢复画布
     }
 
     private void init() {
