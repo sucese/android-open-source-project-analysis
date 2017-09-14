@@ -34,9 +34,9 @@
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
 <p>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" style="width: 250px;"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" style="width: 250px;"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="250" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260" height="500"/>
 </p>
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
@@ -72,7 +72,7 @@ public class DrawView extends View {
 ```
 它在屏幕上绘制了一个圆形，如图：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_1.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_1.png" width="250" height="500"/>
 
 在处理绘制的时候有以下几个关键点：
 
@@ -130,7 +130,7 @@ public class DrawView extends TextView {
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="250" height="500"/>
 
 ```java
 public class LabelImageView extends AppCompatImageView {
@@ -300,7 +300,7 @@ public LinearGradient(float x0, float y0, float x1, float y1, int color0, int co
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_linear.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_linear.png" width="250" height="500"/>
 
 ```java
 //线性渐变
@@ -332,7 +332,7 @@ public RadialGradient(float centerX, float centerY, float radius, int centerColo
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_radial.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_radial.png" width="250" height="500"/>
 
 
 ```java
@@ -364,7 +364,7 @@ canvas.drawRect(0, 600, 1000, 1000, paint2);
 
 BitmapShader是一个很有用的类，可以利用该类做各种各样的图片裁剪。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_bitmap.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shader_bitmap.png" width="250" height="500"/>
 
 ```java
 //位图着色
@@ -413,7 +413,7 @@ mul 和 add 都是和颜色值格式相同的 int 值，其中 mul 用来和目�
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/color_filter_lighting.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/color_filter_lighting.png" width="250" height="500"/>
 
 ```java
 //颜色过滤器
@@ -539,7 +539,7 @@ setStrokeMiter(float miter)- 设置 MITER 型拐角的延长线的最大值
 
 设置图像的抖动。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/dither.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/dither.png" width="250" height="500"/>
 
 >抖动是指把图像从较高色彩深度（即可用的颜色数）向较低色彩深度的区域绘制时，在图像中有意地插入噪点，通过有规律地扰乱图像来让图像对于肉眼更加真实的做法。
 
@@ -549,7 +549,7 @@ setStrokeMiter(float miter)- 设置 MITER 型拐角的延长线的最大值
 
 设置是否使用双线性过滤来绘制 Bitmap 。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bitmap_filter.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bitmap_filter.png" width="250" height="500"/>
 
 图像在放大绘制的时候，默认使用的是最近邻插值过滤，这种算法简单，但会出现马赛克现象；而如果开启了双线性过滤，就可以让结果图像显得更加平滑。
 
@@ -597,7 +597,7 @@ ComposePathEffect(PathEffect outerpe, PathEffect innerpe)
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/path_effect.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/path_effect.png" width="250" height="500"/>
 
 ```java
 //图形轮廓效果
@@ -640,7 +640,7 @@ paint4.setPathEffect(pathDashPathEffect);
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shadow_layer.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/shadow_layer.png" width="250" height="500"/>
 
 ```java
 paint1.setTextSize(200);
@@ -672,10 +672,10 @@ MaskFilter有两个子类：
 分别为：
 
 <p>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" style="width: 250px;"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" style="width: 250px;"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" style="width: 250px;"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="200"/>
 </p>
 
 ```java
@@ -730,7 +730,7 @@ public void drawArc(float left, float top, float right, float bottom, float star
 
 例如
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_2.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_2.png" width="250" height="500"/>
 
 ```java
 paint.setStyle(Paint.Style.FILL);//填充模式
@@ -762,7 +762,7 @@ drawBitmapMesh()方法将位图分为若干网格，然后对每个网格进行�
 
 我们来用drawBitmapMesh()方法实现一个杯中倒水效果。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
 
 举例
 
@@ -1053,11 +1053,11 @@ Canvas里的范围裁切主要有两类方法：
 
 clipReact
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_rect.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_rect.png" width="250" height="500"/>
 
 clipPath
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_path.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/clip_path.png" width="250" height="500"/>
 
 ```java
 //范围裁切
@@ -1092,7 +1092,7 @@ Canvas还提供了对象的位置变换的方法，其中包括：
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" width="250" height="500"/>
 
 ```java
 canvas.save();//保存画布
@@ -1120,7 +1120,7 @@ Matrix也实现了Canvas里的四种常规变换，它的实现流程如下：
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/canvas_rotate.png" width="250" height="500"/>
 
 ```java
 //Matrix几何变换
@@ -1146,7 +1146,7 @@ Matrix除了四种基本的几何变换，还可以自定义几何变换。
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/matrix_poly_to_poly.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/matrix_poly_to_poly.png" width="250" height="500"/>
 
 ```java
 //Matrix几何变换
@@ -1201,7 +1201,7 @@ Camera的三维变换包括：旋转、平移与移动相机。
 
 旋转
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
 
 
 ```java
@@ -1221,7 +1221,7 @@ canvas.restore();//恢复画布
 
 平移
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
 
 ```java
 //Camera三维变换
@@ -1240,7 +1240,7 @@ canvas.restore();//恢复画布
 
 移动相机
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_translate.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_translate.png" width="250" height="500"/>
 
 ```java
 //Camera三维变换
@@ -1306,7 +1306,7 @@ public void rLineTo(float dx, float dy) {
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_3.png" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/draw_view_3.png" width="250" height="500"/>
 
 ```java
 paint.setStyle(Paint.Style.STROKE);
@@ -1381,7 +1381,7 @@ public void rCubicTo(float x1, float y1, float x2, float y2,
 
 举例
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" style="width: 250px;"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260" height="500"/>
 
 ```java
 /**
