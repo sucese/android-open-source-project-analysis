@@ -6,21 +6,27 @@
 
 **文章目录**
 
-- 一 Paint
+- 一 View
+- 二 Paint
     - 第一组：颜色处理类
     - 第二组：文字处理类
     - 第三组：特殊处理类
-- 二 Canvas
-- 三 Path
+- 三 Canvas
+- 四 Path
 
 **文章源码**
 
 - [DrawView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/DrawView.java)
 
+本文还提供了三个综合性的完整实例来辅助理解。
+
+- Camera三维变换 - 翻页效果实现
+- Canvas绘图 - 水面涟漪效果实现
+- 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
+
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 本篇文章我们来分析View绘制方面的实践。
-
 
 一个简单的自定义View
 
@@ -55,13 +61,60 @@ public class DrawView extends View {
 
 在处理绘制的时候有以下几个关键点：
 
-- 处理绘制需要重写绘制方法，常用的是onDraw()，当然我们也可以使用其他的绘制方法来处理遮盖关系。
-- 完成绘制的是Canvas类，该类提供了绘制系列方法drawXXX()。裁剪系列方法clipXXX()以及几何变换方法translate()方法。
+- 处理绘制需要重写绘制方法，常用的是View的onDraw()，当然我们也可以使用其他的绘制方法来处理遮盖关系。
+- 完成绘制的是Canvas类，该类提供了绘制系列方法drawXXX()。裁剪系列方法clipXXX()以及几何变换方法translate()方法，还有辅助绘制的Path与Matrix。
 - 定制绘制的是Paint类，该类是绘制所用的画笔，可以实现特殊的绘制效果。
 
->注：我们通常通过重写onDraw()方法来绘制界面上的内容，如果需要绘制前景内容则重写onDrawForeground(Canvas canvas) 方法。
+我们分别来看看这个关键的角色。
 
-## 一 Paint
+## 一 View
+
+### 绘制顺序
+
+我们讨论的第一个问题就是View/ViewGroup的绘制顺序问题，具体说来：
+
+1. 背景
+2. 主体（onDraw()）
+3. 子 View（dispatchDraw()）
+4. 滑动边缘渐变和滑动条
+4. 前景
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/view_draw_flow.png"/>
+
+我们先从个小例子开始。
+
+我们如果继承View来实现自定义View。View类的onDraw()是空实现，所以我们的绘制代码写在super.onDraw(canvas)的前面或者后面都没有关系，如下所示：
+
+```java
+public class DrawView extends View {
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        //绘制代码，写在super.onDraw(canvas)前后均可
+    }
+}
+```
+
+但是如果我们继承特定的控件，例如TextView。我们就需要去考虑TextView的绘制逻辑。
+
+```java
+public class DrawView extends TextView {
+    @Override
+    protected void onDraw(Canvas canvas) {
+
+        //写在前面，DrawView的绘制会先于TextView的绘制，TextView绘制的内容可以会覆盖DrawView
+        super.onDraw(canvas);
+        //写在后面，DrawView的绘制会晚于TextView的绘制，DrawView绘制的内容可以会覆盖TextView
+    }
+}
+```
+- 写在前面，DrawView的绘制会先于TextView的绘制，TextView绘制的内容可以会覆盖DrawView
+- 写在后面，DrawView的绘制会晚于TextView的绘制，DrawView绘制的内容可以会覆盖TextView
+
+具体怎么做取决于你实际的需求，例如你如果想给TextView加个背景，就写在super.onDraw(canvas)前面，想给TextView前面加些点缀，就
+写在super.onDraw(canvas)后面。
+
+## 二 Paint
 
 >Paint：顾名思义，画笔，通过Paint可以对绘制行为进行控制。
 
@@ -518,7 +571,7 @@ canvas.drawBitmap(bitmapTimo, null, rect2, paint2);
 >注：在硬件加速开启的情况下， setMaskFilter(MaskFilter maskfilter)只支持文字的绘制，文字之外的绘制必须关闭硬件加速才能正常绘制阴影。关闭硬件加速可以调用
 View.setLayerType(View.LAYER_TYPE_SOFTWARE, null)或者在Activity标签里设置android:hardwareAccelerated="false"。
 
-## 二 Canvas
+## 三 Canvas
 
 >Canvas实现了Android 2D图形的绘制，底层基于Skia实现。
 
@@ -587,7 +640,7 @@ drawBitmapMesh()方法将位图分为若干网格，然后对每个网格进行�
 - int colorOffset：记录colors从几个数组元素开始取色
 - @Nullable Paint paint：画笔
 
-我们来用drawBitmapMesh()方法实现一个水播放的效果。
+我们来用drawBitmapMesh()方法实现一个杯中倒水效果。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
 
@@ -1084,10 +1137,9 @@ canvas.drawBitmap(bitmapTimo, null, rect, paint1);
 canvas.restore();//恢复画布
 ```
 
-
 好了，到此为止实现几何变换的三种方式都讲完了。我们来实现一个炫酷的翻页效果。
 
-## 三 Path
+## 四 Path
 
 >Path描述了绘制路径，用它可以完成很多复杂的图形绘制。
 
