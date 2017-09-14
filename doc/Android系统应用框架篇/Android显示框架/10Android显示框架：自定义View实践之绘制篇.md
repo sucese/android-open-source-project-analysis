@@ -34,7 +34,7 @@
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
 <p>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="260"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="250" height="500"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260"/>
 </p>
