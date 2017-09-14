@@ -672,10 +672,10 @@ MaskFilter有两个子类：
 分别为：
 
 <p>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="250" height="500"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="250" height="500"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="250" height="500"/>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="250" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="200"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="200"/>
 </p>
 
 ```java
