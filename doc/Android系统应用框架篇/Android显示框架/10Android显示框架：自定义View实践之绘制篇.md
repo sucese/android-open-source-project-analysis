@@ -33,12 +33,8 @@
 - Canvas绘图 - 水面涟漪效果实现
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
-![](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png?width=250/height=500)
-
-
 <p>
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png =250x500"/>
-
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="250" height="500"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260" height="500"/>
 </p>
@@ -494,7 +490,7 @@ Paint.setXfermode(Xfermode xfermode)方法，它也是一种混合图像的方�
 Paint里有大量方法来设置文字的绘制属性，事实上文字在Android底层是被当做图片来处理的。
 
 - setTextSize(float textSize)：设置文字大小
-- setTypeface(Typeface typeface)：设置文字字体
+-   setTypeface(Typeface typeface)：设置文字字体
 - setFakeBoldText(boolean fakeBoldText)：是否使用伪粗体（并不是提到size，而是在运行时描粗的）
 - setStrikeThruText(boolean strikeThruText)：是否添加删除线
 - setUnderlineText(boolean underlineText)：是否添加下划线
