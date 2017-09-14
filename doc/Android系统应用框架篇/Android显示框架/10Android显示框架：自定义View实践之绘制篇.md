@@ -664,21 +664,19 @@ MaskFilter有两个子类：
 
 模糊效果
 
-BlurMaskFilter.Blur.NORMAL
+- BlurMaskFilter.Blur.NORMAL
+- BlurMaskFilter.Blur.SOLD
+- BlurMaskFilter.Blur.INNER
+- BlurMaskFilter.Blur.OUTTER
 
+分别为：
+
+<p>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_normal.png" width="250" height="500"/>
-
-BlurMaskFilter.Blur.SOLD
-
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_sold.png" width="250" height="500"/>
-
-BlurMaskFilter.Blur.INNER
-
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_inner.png" width="250" height="500"/>
-
-BlurMaskFilter.Blur.OUTTER
-
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/blur_mask_filter_style_outter.png" width="250" height="500"/>
+</p>
 
 ```java
 //设置遮罩图层,处于目标上层图层
