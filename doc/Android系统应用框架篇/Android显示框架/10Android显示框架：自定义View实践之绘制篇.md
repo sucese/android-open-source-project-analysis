@@ -17,10 +17,13 @@
 **文章源码**
 
 - [DrawView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/DrawView.java)
+- [WaveView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/bazier/WaveView.java)
+- [RippleLayout](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/RippleLayout.java)
+- [LabelImageView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/demo/src/main/java/com/guoxiaoxing/android/framework/demo/application/ui/LabelImageView.java)
 
 本文还提供了三个综合性的完整实例来辅助理解。
 
-- Camera三维变换 - 翻页效果实现
+- View绘制 - 图片标签效果实现
 - Canvas绘图 - 水面涟漪效果实现
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
@@ -69,15 +72,12 @@ public class DrawView extends View {
 
 ## 一 View
 
-### 绘制顺序
+我们讨论的第一个问题就是View/ViewGroup的绘制顺序问题，绘制在View.draw()方法里调用的，具体的执行顺序是：
 
-我们讨论的第一个问题就是View/ViewGroup的绘制顺序问题，具体说来：
-
-1. 背景
-2. 主体（onDraw()）
-3. 子 View（dispatchDraw()）
-4. 滑动边缘渐变和滑动条
-4. 前景
+1. drawBackground()：绘制背景，不能重写。
+2. onDraw()：绘制主体。
+3. dispatchDraw()：绘制子View
+4. onDrawForeground()：绘制滑动边缘渐变、滚动条和前景。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/view_draw_flow.png"/>
 
@@ -113,6 +113,116 @@ public class DrawView extends TextView {
 
 具体怎么做取决于你实际的需求，例如你如果想给TextView加个背景，就写在super.onDraw(canvas)前面，想给TextView前面加些点缀，就
 写在super.onDraw(canvas)后面。
+
+我们来写个例子理解下。
+
+举例
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="250" height="500"/>
+
+```java
+public class LabelImageView extends AppCompatImageView {
+
+    /**
+     * 梯形距离左上角的长度
+     */
+    private static final int LABEL_LENGTH = 100;
+    /**
+     * 梯形斜边的长度
+     */
+    private static final int LABEL_HYPOTENUSE_LENGTH = 100;
+
+    private Paint textPaint;
+    private Paint backgroundPaint;
+    private Path pathText;
+    private Path pathBackground;
+
+
+    public LabelImageView(Context context) {
+        super(context);
+        init();
+    }
+
+    public LabelImageView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public LabelImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        //计算路径
+        calculatePath(getMeasuredWidth(), getMeasuredHeight());
+        canvas.drawPath(pathBackground, backgroundPaint);
+        canvas.drawTextOnPath("Hot", pathText, 100, -20, textPaint);
+    }
+
+    @Override
+    public void onDrawForeground(Canvas canvas) {
+        super.onDrawForeground(canvas);
+    }
+
+    /**
+     * 计算路径              x1   x2
+     * ................................    distance（标签离右上角的垂直距离）
+     * .                      .    .  .
+     * .                        .    .. y1
+     * .                          .   .
+     * .                            . .
+     * .                              . y2    height(标签垂直高度)
+     * .                              .
+     * ................................
+     */
+    private void calculatePath(int measuredWidth, int measuredHeight) {
+
+        int top = 185;
+        int right = measuredWidth;
+
+        float x1 = right - LABEL_LENGTH - LABEL_HYPOTENUSE_LENGTH;
+        float x2 = right - LABEL_HYPOTENUSE_LENGTH;
+        float y1 = top + LABEL_LENGTH;
+        float y2 = top + LABEL_LENGTH + LABEL_HYPOTENUSE_LENGTH;
+
+        pathText.reset();
+        pathText.moveTo(x1, top);
+        pathText.lineTo(right, y2);
+        pathText.close();
+
+        pathBackground.reset();
+        pathBackground.moveTo(x1, top);
+        pathBackground.lineTo(x2, top);
+        pathBackground.lineTo(right, y1);
+        pathBackground.lineTo(right, y2);
+        pathBackground.close();
+    }
+
+    private void init() {
+        pathText = new Path();
+        pathBackground = new Path();
+
+        textPaint = new Paint();
+        textPaint.setTextSize(50);
+        textPaint.setFakeBoldText(true);
+        textPaint.setColor(Color.WHITE);
+
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.RED);
+        backgroundPaint.setStyle(Paint.Style.FILL);
+    }
+}
+```
+
+所以你可以看到，当我们继承了一个View，根据需求的不同可以选择性重写我们需要的方法，在super前插入代码和在super后插入代码，效果是不一样的。
+
+- draw()：super.draw()之前，被背景盖住；super.draw()后，盖住前景；
+- onDraw()：super.onDraw()之前，背景与主体内容之前；super.onDraw()之后，主体内容和子View之间；
+- dispatchDraw()：super.dispatchDraw()之前，主体内容和子View之间；super.dispatchDraw()之后，子View和前景之间；
+- onDrawForeground()：super.onDrawForeground()之前，子View和前景之间；super.onDrawForeground()之后，盖住前景；
 
 ## 二 Paint
 

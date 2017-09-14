@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context="com.guoxiaoxing.android.framework.demo.MainActivity">
@@ -15,17 +15,27 @@
     <!--android:layout_gravity="center_horizontal" />-->
 
     <!--<com.guoxiaoxing.android.framework.demo.application.ui.RippleLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
-        <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:src="@drawable/ripple" />-->
+    <!--<ImageView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/ripple" />-->
     <!--</com.guoxiaoxing.android.framework.demo.application.ui.RippleLayout>-->
 
-    <com.guoxiaoxing.android.framework.demo.application.ui.DrawView
+    <!--<com.guoxiaoxing.android.framework.demo.application.ui.DrawView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+
+
+    <!--<com.guoxiaoxing.android.framework.demo.application.ui.LabelImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/clothing" />-->
+
+    <com.guoxiaoxing.android.framework.demo.application.ui.PageView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
