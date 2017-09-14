@@ -33,6 +33,12 @@
 - Canvas绘图 - 水面涟漪效果实现
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
+<p>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png" width="260" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/bezier_wave.gif" width="260" height="500"/>
+</p>
+
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 本篇文章我们来分析View绘制方面的实践。
@@ -1236,7 +1242,7 @@ canvas.restore();//恢复画布
 
 移动相机
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_rotate.png" width="250" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/camera_translate.png" width="250" height="500"/>
 
 ```java
 //Camera三维变换
@@ -1252,8 +1258,6 @@ camera.restore();//恢复camera
 canvas.drawBitmap(bitmapTimo, null, rect, paint1);
 canvas.restore();//恢复画布
 ```
-
-好了，到此为止实现几何变换的三种方式都讲完了。我们来实现一个炫酷的翻页效果。
 
 ## 四 Path
 
