@@ -33,8 +33,8 @@
 - Canvas绘图 - 水面涟漪效果实现
 - 二阶贝塞尔曲线的应用 - 杯中倒水效果实现
 
+![](https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png =250x500)
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png =250x500"/>
 
 <p>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/label_view.png =250x500"/>
