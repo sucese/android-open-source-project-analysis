@@ -760,7 +760,7 @@ drawBitmapMesh()方法将位图分为若干网格，然后对每个网格进行�
 - int colorOffset：记录colors从几个数组元素开始取色
 - @Nullable Paint paint：画笔
 
-我们来用drawBitmapMesh()方法实现一个杯中倒水效果。
+我们来用drawBitmapMesh()方法实现一个水面涟漪效果。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/ripple.gif" width="260" height="500"/>
 
@@ -1377,7 +1377,7 @@ public void rCubicTo(float x1, float y1, float x2, float y2,
 }
 ```
 
-我们来用贝塞尔曲线实现一个波浪效果。
+我们来用贝塞尔曲线实现一个杯中倒水效果。
 
 举例
 
