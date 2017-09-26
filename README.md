@@ -38,7 +38,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 版图不断扩张中...
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_system_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_system_structure.png" width="600"/>
 
 Android源码虽然庞大，但是设计的很精妙，纵向分层，横向模块化，可以看到图中各种各种各样的Manager，它们多半都对应着各种各样的系统服务。Android Framework向下通过JNI调用C++底层实现，向上提供Java接口供开发者调用。系统服务
 在SystemServer.java里创建。
