@@ -8,11 +8,8 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-**写在前面**
-
->作者曾经看过很多关于Android源码分析的文章与书籍，这些前辈都写的很好，给Android技术的普及带来了很大的推动作用，随着Android技术的更
-新，目前已经来到了Android 7.0 Nougat版本。所以笔者打算根据最新的源码从内核层到框架层再到应用层，从内核空间到用户空间，全面地去分析
-Android系统内部的实现原理和设计思路，本系列的文章也会以一种独特的视角来做原理解析，来减轻大家在阅读源码时的枯燥感，好了，让我们开始吧。
+- [Git repositories on android](https://android.googlesource.com/)
+- [Android Open Source Project](https://source.android.com/)
 
 **代码版本**
 
@@ -20,24 +17,48 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 **分析思路**
 
->以某一个支线为起点，从上层往底层，不断地追溯，在各个模块、文件、方法之间来回跳转，反复地阅读，理清整个流程的逻辑。
-同时带着思考去看源码，去揣测作者的用意，去理解代码的精妙之处，去思考代码可能存在的缺陷，去总结优秀的代码设计思想。
+Android是一个庞大的系统，Android Framework只是对系统的一个封装，里面还牵扯到JNI、C++、Java虚拟机、Linux系统内核、指令集等。面对如此庞大的系统，我们得有一定的
+章法去阅读源码，否则就会只见树木不见森林，陷入卷帙浩繁的细节与琐碎之中。
 
-本系列文章由下至上，从内核层到框架层再到应用层，从内核空间到用户空间，全面的分析内部的实现原理和设计思路。在源码的分析过程中，还会穿插分析源码的
-设计模式与编程思想（编程中的抽象、接口、六大原则以及23种设计模式），以下为后续文章的具体安排。
+- 不要就记录那些API调用链，Android Framework中有很多负责的API调用链，你去关注这些东西，一点用都没有。你需要学会的是跟踪调用链和梳理流程的技巧，思考一
+下作者是怎么找到关键入口的，核心的实现在什么地方。
+- 要有宏观思维，要善于思考，面对一个模块，你要去思考这个模块解决了什么问题，为什么这么解决，如果让我来写，我会怎么设计，不要陷入无穷无尽的细节之中。
+- 要善于去粗存精，Android Framework也是人写的，有精华也有糟粕，并不是每行代码你都需要问个为什么，很多时候没有那么多为什么，只是当时那种情况下就那样设计了。但是
+对于关键函数我们要去深究它的实现细节。
 
-另外，在文章内容的安排上，一般会先去分析流程，再去分析流程中牵扯到的类的作用以及它们的实现细节。这种由线到点的方式会更加生动一些，也更有助于大家
-理解。如果我们一上来就去讲这个类的作用与实现，难免有些枯燥，毕竟只有先去用它，才会想知道它是怎么实现的。
+好了，让我们开始我们的寻宝之旅吧~😆
 
 **Android系统架构图**
 
-对Android系统的探索就像探索一个宝藏一样，每天分析一点，就完成了藏宝图的一角，直到有一天我们将整个宝藏的蓝图绘制完成。
+官方架构图
 
-官方藏宝图
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/aosp_structure.png"/>
+
+我们的One Piece
+
+版图不断扩张中...
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/android_system_structure.png"/>
 
-探索中的个人版藏宝图
+Android源码虽然庞大，但是设计的很精妙，纵向分层，横向模块化，可以看到图中各种各种各样的Manager，它们多半都对应着各种各样的系统服务。Android Framework向下通过JNI调用C++底层实现，向上提供Java接口供开发者调用。系统服务
+在SystemServer.java里创建。
+
+例如：
+
+- StatusBarManagerService
+- BatteryService
+- ConnectivityService
+- DockObserver
+- UsbObserver
+- ThrottleService
+- UiModeManagerService
+- AppWidgetService
+- WallpaperManagerService
+- InputMethodManagerService
+- RecognitionManagerService
+- LocationManagerService
+
+这些东西大家看着很眼熟吧，这些服务在SystemServer里被创建后就可以使用了。
 
 文章更新中...
 
@@ -45,42 +66,35 @@ Android系统内部的实现原理和设计思路，本系列的文章也会以�
 
 - [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
 
+## Android应用开发实践篇
+
+**Android界面开发**
+
+**Android兼容适配**
+
+**Android性能优化**
+
 ## Android系统应用框架篇
 
 **Android显示框架**
 
-- 01Android显示框架：Android显示框架概述
-- 02Android显示框架：SurfaceFlinger服务创建与连接流程
-- 03Android显示框架：SurfaceFlinger绘制与渲染UI流程
-- [04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
-- [05Android显示框架：Activity应用视图的渲染流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Activity应用视图的渲染流程.md)
-- [06Android显示框架：WindowManagerService关于窗口的计算流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/06Android显示框架：WindowManagerService关于窗口的计算流程.md)
-- [07Android显示框架：WindowManagerService关于窗口的创建与切换流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/07Android显示框架：WindowManagerService关于窗口的创建与切换流程.md)
-- [08Android显示框架：WindowManagerService关于窗口动画的工作原理](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/08Android显示框架：WindowManagerService关于窗口动画的工作原理.md)
-- [09Android显示框架：自定义View实践之布局篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/09Android显示框架：自定义View实践之布局篇.md)
-- [10Android显示框架：自定义View实践之绘制篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/10Android显示框架：自定义View实践之绘制篇.md)
-- [11Android显示框架：自定义View实践之触摸反馈篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/11Android显示框架：自定义View实践之触摸反馈篇.md)
+- [01Android显示框架：Android显示框架概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/01Android显示框架：Android显示框架概述.md)
+- [02Android显示框架：Android应用视图的载体View](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/02Android显示框架：Android应用视图的载体View.md)
+- 03Android显示框架：Android应用视图的载体View
+- 04Android显示框架：Android应用视图的管理者Window
+- 05Android显示框架：Android应用窗口的管理者WindowManager
 
 **Android组件框架**
 
 - [01Android组件框架：Android组件框架概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/01Android组件框架：组件框架概述.md)
-- [02Android组件框架：Context家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/02Android组件框架：Context家族.md)
-- [03Android组件框架：ActivityThread家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/03Android组件框架：ActivityThread家族.md)
-- [04Android组件框架：ActivityManagerService家族](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/04Android组件框架：ActivityManagerService家族.md)
-- [05Android组件框架：Activity源码概览](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/005Android组件框架：Activity源码概览.md)
-- [06Android组件框架：Activity启动流程(一)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/06Android组件框架：Activity启动流程(一).md)
-- [07Android组件框架：Activity启动流程(二)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/07Android组件框架：Activity启动流程(二).md)
-- [08Android组件框架：Activity启动流程(三)](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/08Android组件框架：Activity启动流程(三).md)
-- [09Android组件框架：Service源码概览]()
-- [10Android组件框架：Service启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/10Android组件框架：Service启动流程.md)
-- [11Android组件框架：Service绑定流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/11Android组件框架：Service绑定流程.md)
-- 12Android组件框架：Broadcast Receiver源码概览
-- 13Android组件框架：Broadcast Receiver注册流程
-- 14Android组件框架：Broadcast Receiver发送流程
-- 15Android组件框架：Content Provider源码概览
-- 16Android组件框架：Content Provider启动流程
-- 17Android组件框架：Content Provider共享原理
-- 18Android组件框架：Content Provider更新机制
+- 02Android组件框架：Android组件管理者ActivityManager
+- 03Android组件框架：Android视图容器Activity
+- 04Android组件框架：Android视图碎片Fragment
+- 05Android组件框架：Android后台服务Service
+- 06Android组件框架：Android广播Broadcast Receiver
+- 07Android组件框架：Android数据共享Content Provider
+
+**Android动画框架**
 
 ## Android系统底层框架篇
 

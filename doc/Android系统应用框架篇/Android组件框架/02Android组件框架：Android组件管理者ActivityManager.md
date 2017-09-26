@@ -1,4 +1,4 @@
-# Android系统应用框架篇：ActivityManagerService家族
+# Android组件框架：Android组件管理者ActivityManager
 
 作者: 郭孝星  
 邮箱: guoxiaoxingse@163.com  
@@ -38,7 +38,6 @@ ActivityManager：用来与系统中所有运行的Activity进行交互，运行
 ActivityManagerNative.ActivityManagerProxy对应的是Stub.proxy，它提供给客户端ActivityManager使用，而ActivityManagerService是
 接口的真正实现者。
  
-
 ### 1.1 AThread
 
 >AThread是定义在ActivityManagerService内部一个线程，它具有消息循环以及处理的功能，它主要用来完成ActivityManagerService
