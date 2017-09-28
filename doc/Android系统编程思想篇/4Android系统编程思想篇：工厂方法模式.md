@@ -1,17 +1,8 @@
 # Android系统编程思想篇：工厂方法模式
 
-作者: 郭孝星  
-邮箱: guoxiaoxingse@163.com  
-博客: http://blog.csdn.net/allenwells   
-简书: http://www.jianshu.com/users/66a47e04215b/latest_articles  
-
 **关于作者**
 
->郭孝星，非著名程序员，代码洁癖患者，爱编程，好吉他，喜烹饪，爱一切有趣的事物和人。
-
-**关于文章**
-
->作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流的问题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
+>郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
@@ -19,19 +10,103 @@
 
 ## 模式定义
 
->定义一个用于创建对象的接口，让子类决定实例化哪个类。
+>工厂方法模式属于创建型模式，在该模式中，工厂父类负责定义创建产品对象的公共接口，而工厂子类负责生成具体的产品对象。
 
 模式角色
 
 ```
 1 抽象工厂：工厂方法的核心。
 2 具体工厂：实现了具体的业务逻辑。
-3 抽象产品：
-4 具体产品：
+3 抽象产品：产品的父类。
+4 具体产品：产品的实现类
 ```
 
 ## 模式实现
 
+我们来举个例子😁
 
+有家奥迪汽车厂，它们主要生产奥迪A6、A7、A8系列的汽车。这类车型内部结构差异不大，一条生产线就可以进行生产。
+
+抽象工厂
+
+```java
+/**
+ * 抽象工厂
+ * <p>
+ * For more information, you can visit https://github.com/guoxiaoxing or contact me by
+ * guoxiaoxingse@163.com
+ *
+ * @author guoxiaoxing
+ * @since 2017/9/27 下午6:30
+ */
+public abstract class AbstractFactory {
+
+    public abstract AbstractProduct createProduct();
+}
+
+```
+
+具体工厂
+
+```java
+/**
+ * 具体工厂
+ * <p>
+ * For more information, you can visit https://github.com/guoxiaoxing or contact me by
+ * guoxiaoxingse@163.com
+ *
+ * @author guoxiaoxing
+ * @since 2017/9/27 下午6:33
+ */
+public class RealFactory extends AbstractFactory {
+
+    @Override
+    public AbstractProduct createProduct() {
+        return new RealProductA();
+    }
+}
+
+```
+
+抽象产品
+
+```java
+/**
+ * 抽象产品
+ * <p>
+ * For more information, you can visit https://github.com/guoxiaoxing or contact me by
+ * guoxiaoxingse@163.com
+ *
+ * @author guoxiaoxing
+ * @since 2017/9/27 下午6:31
+ */
+public abstract class AbstractProduct {
+
+    public abstract void method();
+}
+
+```
+
+具体产品
+
+```java
+/**
+ * 具体产品A
+ * <p>
+ * For more information, you can visit https://github.com/guoxiaoxing or contact me by
+ * guoxiaoxingse@163.com
+ *
+ * @author guoxiaoxing
+ * @since 2017/9/27 下午6:32
+ */
+public class RealProductA extends AbstractProduct {
+
+    @Override
+    public void method() {
+
+    }
+}
+
+```
 
 ## 模式实践
