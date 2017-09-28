@@ -2,7 +2,9 @@
 
 **关于作者**
 
->郭孝星，非著名程序员，主要从事Android平台基础架构与中间件方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提交Issue或者发邮件至guoxiaoxingse@163.com与我联系。
+>郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
+
+第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 ## 模式定义
 
@@ -10,19 +12,20 @@
 
 外观模式体现的也是面向接口编程的思想。
 
-使用场景
-
-```
-1 为一个系统的复杂子模块提供一个简单统一的接口，屏蔽具体实现细节，隔离变化。
-2 在构建层次结构的系统时，用接口定义每层的入口，层与层之间通过接口通信，简化依赖关系。
-```
-
 模式角色
 
 ```
 Facade：系统对外的统一接口
 SystemA, SystemB, SystemC: 系统子模块接口
 ```
+
+应用场景
+
+```
+1 为一个系统的复杂子模块提供一个简单统一的接口，屏蔽具体实现细节，隔离变化。
+2 在构建层次结构的系统时，用接口定义每层的入口，层与层之间通过接口通信，简化依赖关系。
+```
+
 优点
 
 ```

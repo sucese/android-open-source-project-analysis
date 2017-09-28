@@ -25,7 +25,7 @@ Director：统一组装过程
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/design_pattern_builder.png" width="700" height=""/>
 
 
-使用场景
+应用场景
 
 ```
 1 相同的方法，不同的执行顺序，产生不同的事件结果。
