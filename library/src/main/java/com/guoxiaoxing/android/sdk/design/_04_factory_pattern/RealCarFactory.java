@@ -12,7 +12,17 @@ package com.guoxiaoxing.android.sdk.design._04_factory_pattern;
 public class RealCarFactory extends AbstractCarFactory {
 
     @Override
-    public AbstractAudiCar createProduct() {
-        return new RealAudiCarA();
+    public AbstractAudiCar createAudiCar(Class className) {
+        AbstractAudiCar car = null;
+        try {
+            car = (AbstractAudiCar) Class.forName(className.getName()).newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return car;
     }
 }

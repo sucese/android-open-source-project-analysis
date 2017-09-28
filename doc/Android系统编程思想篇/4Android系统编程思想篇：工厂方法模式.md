@@ -12,6 +12,8 @@
 
 >工厂方法模式属于创建型模式，在该模式中，工厂父类负责定义创建产品对象的公共接口，而工厂子类负责生成具体的产品对象。
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/factory_pattern_class.png"/>
+
 模式角色
 
 ```

@@ -22,7 +22,7 @@ ConcreteBuilder：具体的Builder类
 Director：统一组装过程
 ```
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/design_pattern_builder.png" width="700" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/design_pattern_builder.png" width="700" height=""/>
 
 
 使用场景
@@ -310,11 +310,11 @@ AlertController：AlertDialog的代理类，完成具体的构建过程，内置
 
 AlertDialog内部调用逻辑
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertDialog.png" width="700" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/ClusterCallInternal-app-AlertDialog.png" width="700" height=""/>
 
 AlertController内部调用逻辑
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/2/ClusterCallInternal-app-AlertController.png" width="700" height=""/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/ClusterCallInternal-app-AlertController.png" width="700" height=""/>
 
 好，我们来看看AlertDialog的具体构建流程。
 

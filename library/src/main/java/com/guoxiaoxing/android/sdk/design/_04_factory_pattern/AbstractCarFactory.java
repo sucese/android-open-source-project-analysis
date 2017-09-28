@@ -11,5 +11,11 @@ package com.guoxiaoxing.android.sdk.design._04_factory_pattern;
  */
 public abstract class AbstractCarFactory {
 
-    public abstract AbstractAudiCar createCar();
+    /**
+     * 生产车
+     *
+     * @param clasz 具体的型号
+     * @return 具体型号的车
+     */
+    public abstract AbstractAudiCar createAudiCar(Class clasz);
 }

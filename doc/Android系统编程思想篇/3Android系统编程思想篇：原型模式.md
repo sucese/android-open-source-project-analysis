@@ -11,7 +11,7 @@
 >原型模式属于创建型模式的一种，原型模式的特点在于通过复制一个已经存在的实例来返回新的实例，而不是去创建新额实例，被复制的实例被称为原型，这个原型是可以定制的。
 
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/3/prototype_design_pattern.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/program/prototype_design_pattern.png"/>
 
 
 模式角色
