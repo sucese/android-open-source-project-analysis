@@ -13,7 +13,10 @@
 
 **代码版本**
 
->[android-8.0.0_r1](https://source.android.com/source/build-numbers.html#source-code-tags-and-builds)
+- 细分版本：N6F26U	
+- 分支：android-7.1.1_r28	
+- 版本：Nougat	
+- 支持设备：Nexus 6
 
 **分析思路**
 
