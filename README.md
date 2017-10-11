@@ -82,9 +82,12 @@ Android源码虽然庞大，但是设计的很精妙，纵向层级化，横向�
 - [02Android界面开发：自定义View实践之绘制篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android界面开发/02Android界面开发：自定义View实践之绘制篇.md)
 - 03Android界面开发：自定义View实践之触摸反馈篇
 
+
 **Android兼容适配**
 
+
 **Android性能优化**
+
 
 ## Android系统应用框架篇
 
@@ -106,7 +109,9 @@ Android源码虽然庞大，但是设计的很精妙，纵向层级化，横向�
 - 06Android组件框架：Android广播Broadcast Receiver
 - 07Android组件框架：Android数据共享Content Provider
 
+
 **Android动画框架**
+
 
 **Android多媒体框架**
 
