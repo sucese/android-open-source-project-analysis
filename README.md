@@ -1,5 +1,4 @@
-# <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/project_logo.png" alt="Android Open Source Project Analysis" width="40" height="40"/> Android Open Source Project Analysis
-
+# <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/project_logo.png" alt="Android open source project analysis" width="40" height="40" /> Android open source project analysis
 **关于作者**
 
 >郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
