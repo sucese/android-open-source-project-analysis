@@ -1,6 +1,4 @@
-# Android Open Source Project Analysis
-
-<img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/project_logo.png"/>
+# <img src="https://github.com/guoxiaoxing/android-framework-source-code-analysis/raw/master/art/project_logo.png" alt="Android Open Source Project Analysis" width="40" height="40"/> Android Open Source Project Analysis
 
 **关于作者**
 
