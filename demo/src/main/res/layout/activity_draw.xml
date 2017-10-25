@@ -35,7 +35,7 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:src="@drawable/clothing" />-->
 
-    <com.guoxiaoxing.android.framework.demo.application.ui.PageView
+    <com.guoxiaoxing.android.framework.demo.app_practice.ui_develop.PageView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

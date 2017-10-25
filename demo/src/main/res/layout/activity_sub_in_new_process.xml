@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.guoxiaoxing.android.framework.demo.application.component.activity.SubInNewProcessActivity">
+    tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.component_framwork.activity.SubInNewProcessActivity">
 
     <TextView
         android:layout_width="wrap_content"

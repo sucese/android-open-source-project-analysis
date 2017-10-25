@@ -8,9 +8,18 @@
 
 **文章目录**
 
+- 一 View
+
 - 一 测量流程
 - 二 布局流程
 - 三 绘制流程
+
+
+
+> This class represents the basic building block for user interface components. A Viewoccupies a rectangular area on the screen and is 
+responsible for drawing and event handling.
+
+
 
 在上篇文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 中我们分析了Activity应用视图的创建流程，这样我们便可以进行UI的绘制了。一个Android应用窗口里包含了很多UI元素，它们是以树形结构来组织的，即父子关系。在绘制UI的过程中，我们

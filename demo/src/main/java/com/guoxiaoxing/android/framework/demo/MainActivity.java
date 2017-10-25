@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.guoxiaoxing.android.framework.demo.application.ApplicationActivity;
-import com.guoxiaoxing.android.framework.demo.program.ProgramActivity;
-import com.guoxiaoxing.android.framework.demo.system.SystemActivity;
+import com.guoxiaoxing.android.framework.demo.app_framwork.ApplicationActivity;
+import com.guoxiaoxing.android.framework.demo.program_idea.ProgramActivity;
+import com.guoxiaoxing.android.framework.demo.native_framwork.SystemActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

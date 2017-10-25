@@ -10,41 +10,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name=".application.ApplicationActivity" />
-        <activity android:name=".program.ProgramActivity" />
-        <activity android:name=".system.SystemActivity" />
-        <activity android:name=".application.component.activity.StartActivity" />
+        <activity android:name=".app_framwork.ApplicationActivity" />
+        <activity android:name=".program_idea.ProgramActivity" />
+        <activity android:name=".native_framwork.SystemActivity" />
+        <activity android:name=".app_framwork.component_framwork.activity.StartActivity" />
         <activity
-            android:name=".application.component.activity.SubInProcessActivity"
+            android:name=".app_framwork.component_framwork.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
         <activity
-            android:name=".application.component.activity.SubInNewProcessActivity"
+            android:name=".app_framwork.component_framwork.activity.SubInNewProcessActivity"
             android:process="com.guoxiaoxing.new.process"
             android:windowSoftInputMode="adjustNothing" />
 
         <service
-            android:name=".application.component.service.ServerService"
+            android:name=".app_framwork.component_framwork.service.ServerService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".application.component.service.ClientActivity" />
+        <activity android:name=".app_framwork.component_framwork.service.ClientActivity" />
 
-        <service
-            android:name=".system.aidl.AidlService"
-            android:enabled="true"
-            android:exported="true"
-            android:process="com.guoxiaoxing.AidlService" />
-
-        <activity android:name=".system.aidl.AidlActivity" />
-        <activity android:name=".application.ui.UIActivity" />
-        <activity android:name=".application.ui.DrawActivity">
+        <activity android:name=".app_practice.ui_develop.UIActivity" />
+        <activity android:name=".app_practice.ui_develop.DrawActivity">
+        </activity>
+        <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
+        <activity android:name=".app_framwork.ui_framwork.ViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".application.component.activity.SimpleActivity"></activity>
     </application>
 
 </manifest>

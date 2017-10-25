@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.guoxiaoxing.android.framework.demo.application.ApplicationActivity">
+    tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.ApplicationActivity">
 
 
     <LinearLayout
