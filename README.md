@@ -43,26 +43,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/aosp_structure.png"/>
 
-Android源码虽然庞大，但是设计的很精妙，纵向层级化，横向模块化，可以看到图中各种各种各样的Manager，它们多半都对应着各种各样的系统服务。Android Framework向下通过JNI调用C++底层实现，向上提供Java接口供开发者调用。系统服务
-在SystemServer.java里创建。
-
-例如：
-
-- StatusBarManagerService
-- BatteryService
-- ConnectivityService
-- DockObserver
-- UsbObserver
-- ThrottleService
-- UiModeManagerService
-- AppWidgetService
-- WallpaperManagerService
-- InputMethodManagerService
-- RecognitionManagerService
-- LocationManagerService
-
-这些东西大家看着很眼熟吧，这些服务在SystemServer里被创建后就可以使用了。
-
 文章更新中...
 
 在正式阅读本系列文章之前，请先阅读导读相关内容，这会帮助你更加快捷的理解文章内容。
