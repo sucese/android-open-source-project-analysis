@@ -58,7 +58,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Android兼容适配**
 
-
 **Android混合编程**
 
 - [01Android混合编程：WebView实践](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android混合编程/01Android混合编程：WebView实践.md)
@@ -87,12 +86,9 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Android动画框架**
 
-
 **Android多媒体框架**
 
 ## Android系统底层框架篇
-
->本篇章从Android源码的底层框架原理，例如：Binder机制、智能指针与虚拟机等。
 
 **Android进程框架**
 
