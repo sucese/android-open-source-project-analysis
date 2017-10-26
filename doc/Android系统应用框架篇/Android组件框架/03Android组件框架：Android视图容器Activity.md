@@ -10,6 +10,7 @@
 
 **文章目录**
 
+- 一 Activity的生命周期
 - 一 Activity的启动流程
 
 😁一个简单的例子
@@ -28,7 +29,10 @@ public class SimpleActivity extends AppCompatActivity {
 基本上我们第一天接触Android的界面开发时就会看到这么一段代码，那么大家有没有思考过这段代码背后的调用逻辑是什么🤔，UI是如何呈现在Activity上的🤔
 接下来我们就来一一分析这些问题。
 
-## 一 Activity的启动流程
+## 一 Activity的生命周期
+
+
+## 二 Activity的启动流程
 
 在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的协同，参数的包装与处理，只要我们抓
 住核心原理，所有的问题就都迎刃而解。
@@ -198,3 +202,5 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 
 >注：分析的过程中，会牵扯任务、应用进程、消息循环、Binder进程通信等方面内容，这些内容我们暂时先不讨论，后面会有文章详尽地去分析这些内容，本次文章的重点在于讨论Activity的启动流程。
 
+讲到这里，你也许发现我只是在梳理流程，并没有提到源码，因为源码调用链实在是太长了，直接贴在这里影响阅读体验，如果你有足够的耐心，可以去[附录：Activity启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/附录：Activity启动流程.md)查看，一共有
+35个方法，略长😎。
