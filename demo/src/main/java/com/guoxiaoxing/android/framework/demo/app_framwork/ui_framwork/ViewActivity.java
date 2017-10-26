@@ -8,7 +8,7 @@ import com.guoxiaoxing.android.framework.demo.R;
 
 public class ViewActivity extends AppCompatActivity {
 
-    private static final String TAG = "ViewActivity";
+    private static final String TAG = "View";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

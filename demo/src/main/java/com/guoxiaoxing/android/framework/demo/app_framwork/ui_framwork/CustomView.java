@@ -20,7 +20,7 @@ import android.view.View;
  */
 public class CustomView extends View {
 
-    private static final String TAG = "CustomView";
+    private static final String TAG = "View";
 
     public CustomView(Context context) {
         super(context);
@@ -52,13 +52,13 @@ public class CustomView extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        Log.d(TAG, "View onLayout()");
+        Log.d(TAG, "View onLayout() left = " + left + " top = " + top + " right = " + right + " bottom = " + bottom);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.d(TAG, "View onSizeChanged()");
+        Log.d(TAG, "View onSizeChanged() w = " + w + " h = " + h + " oldw = " + oldw + " oldh = " + oldh);
     }
 
     @Override
@@ -69,32 +69,32 @@ public class CustomView extends View {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d(TAG, "View onKeyDown()");
+        Log.d(TAG, "View onKeyDown() event = " + event.getAction());
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Log.d(TAG, "View onKeyUp()");
+        Log.d(TAG, "View onKeyUp() event = " + event.getAction());
         return super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG, "View onTouchEvent()");
+        Log.d(TAG, "View onTouchEvent() event =  " + event.getAction());
         return super.onTouchEvent(event);
     }
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        Log.d(TAG, "View onFocusChanged()");
+        Log.d(TAG, "View onFocusChanged() gainFocus = " + gainFocus);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
-        Log.d(TAG, "View onWindowFocusChanged()");
+        Log.d(TAG, "View onWindowFocusChanged() hasWindowFocus = " + hasWindowFocus);
     }
 
     @Override
@@ -112,12 +112,12 @@ public class CustomView extends View {
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
-        Log.d(TAG, "View onVisibilityChanged()");
+        Log.d(TAG, "View onVisibilityChanged() visibility = " + visibility);
     }
 
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
-        Log.d(TAG, "View onWindowVisibilityChanged()");
+        Log.d(TAG, "View onWindowVisibilityChanged() visibility = " + visibility);
     }
 }
