@@ -766,7 +766,7 @@ if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB){
 }
 ```
 
-以上三篇, 大致就说这么多,  在实际的项目中我们通常会自己去封装一个H5Activity用来统一显示H5页面, 下面就提供了完整的H5Activity, 封装了WebView各种特性与jockeyjs代码交互。
+以上就是本篇文章的全部内容, 大致就说这么多,  在实际的项目中我们通常会自己去封装一个H5Activity用来统一显示H5页面, 下面就提供了完整的H5Activity, 封装了WebView各种特性与jockeyjs代码交互。
                
 该H5Activity提供WebView常用设置、H5页面解析、标题解析、进度条显示、错误页面展示、重新加载等功能。可以拿去稍作改造, 用于自己的项目中。
                

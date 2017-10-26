@@ -365,6 +365,19 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
            setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),
                    getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
        }
+
+       //设置View宽高的测量值
+       protected final void setMeasuredDimension(int measuredWidth, int measuredHeight) {
+        boolean optical = isLayoutModeOptical(this);
+        if (optical != isLayoutModeOptical(mParent)) {
+            Insets insets = getOpticalInsets();
+            int opticalWidth  = insets.left + insets.right;
+            int opticalHeight = insets.top  + insets.bottom;
+
+            measuredWidth  += optical ? opticalWidth  : -opticalWidth;
+            measuredHeight += optical ? opticalHeight : -opticalHeight;
+        }
+        setMeasuredDimensionRaw(measuredWidth, measuredHeight);
        
        //measureSpec指的是View测量后的大小
        public static int getDefaultSize(int size, int measureSpec) {
@@ -373,9 +386,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
            int specSize =  MeasureSpec.getSize(measureSpec);
    
            switch (specMode) {
+           //MeasureSpec.UNSPECIFIED一般用来系统的内部测量流程
            case MeasureSpec.UNSPECIFIED:
                result = size;
                break;
+           //我们主要关注着两种情况，它们返回的是View测量后的大小
            case MeasureSpec.AT_MOST:
            case MeasureSpec.EXACTLY:
                result = specSize;
@@ -384,7 +399,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
            return result;
        }
        
-       //mMinHeight对应于android:minHeight，它可能为0，如果View指定了背景，则suggestedMinHeight为max(mMinHeight, bgMinHeight)
+       //如果View没有设置背景，那么返回android:minWidth这个属性的值，这个值可以为0
+       //如果View设置了背景，那么返回android:minWidth和背景最小宽度两者中的最大值。
        protected int getSuggestedMinimumHeight() {
            int suggestedMinHeight = mMinHeight;
    
@@ -399,13 +415,48 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
        }
 }
 ```
-View的onMeasure()方法实现比较简单，从它的实现可以看出，View的宽高由specSize来决定，这里我们思考一个问题：如果继承了View却没有重写其onMeasure()方法
-会发生什么？
+View的onMeasure()方法实现比较简单，它调用setMeasuredDimension()方法来设置View的测量大小，测量的大小通过getDefaultSize()方法来获取。
 
-答案是：在布局里使用wrap_content就相当于是match_parent。
+如果我们直接继承View来自定义View时，需要重写onMeasure()方法，并设置wrap_content时的大小。为什么呢？🤔
 
-从上面的描述我们可以知道当使用wrap_content时，View的specMode是MeasureSpec.AT_MOST，这种情况下它的宽高是specSize，即parentSize，也就是总是会填充
-当前父容器的剩余空间，这就相当于match_parent。
+通过上面的描述我们知道，当LayoutParams为wrap_content时，SpecMode为AT_MOST，而在
+
+关于getDefaultSize(int size, int measureSpec) 方法需要说明一下，通过上面的描述我们知道etDefaultSize()方法中AT_MOST与EXACTLY模式下，返回的
+都是specSize，这个specSize是父View当前可以使用的大小，如果不处理，那wrap_content就相当于match_parent。
+
+如何处理？🤔
+
+```java
+@Override
+  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+      Log.d(TAG, "widthMeasureSpec = " + widthMeasureSpec + " heightMeasureSpec = " + heightMeasureSpec);
+
+      //指定一组默认宽高，至于具体的值是多少，这就要看你希望在wrap_cotent模式下
+      //控件的大小应该设置多大了
+      int mWidth = 200;
+      int mHeight = 200;
+
+      int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+      int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+
+      int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+      int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+
+      if (widthSpecMode == MeasureSpec.AT_MOST && heightMeasureSpec == MeasureSpec.AT_MOST) {
+          setMeasuredDimension(mWidth, mHeight);
+      } else if (widthSpecMode == MeasureSpec.AT_MOST) {
+          setMeasuredDimension(mWidth, heightSpecSize);
+      } else if (heightSpecMode == MeasureSpec.AT_MOST) {
+          setMeasuredDimension(widthSpecSize, mHeight);
+      }
+  }
+```
+
+注：你可以自己尝试一下自定义一个View，然后不重写onMeasure()方法，你会发现只有设置match_parent和wrap_content效果是一样的，事实上TextView、ImageView
+等系统组件都在wrap_content上有自己的处理，可以去翻一翻源码。
+
+看完了View的measure过程，我们再来看看View
 
 **关键点2：FrameLayout.onMeasure(int widthMeasureSpec, int heightMeasureSpec)** 
 
