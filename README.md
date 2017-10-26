@@ -43,8 +43,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/aosp_structure.png"/>
 
-文章更新中...
-
 在正式阅读本系列文章之前，请先阅读导读相关内容，这会帮助你更加快捷的理解文章内容。
 
 - [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
@@ -67,7 +65,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Android性能优化**
 
-
 ## Android系统应用框架篇
 
 **Android显示框架**
@@ -87,7 +84,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - 05Android组件框架：Android后台服务Service
 - 06Android组件框架：Android广播Broadcast Receiver
 - 07Android组件框架：Android数据共享Content Provider
-
 
 **Android动画框架**
 
