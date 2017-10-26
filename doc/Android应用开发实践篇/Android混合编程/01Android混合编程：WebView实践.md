@@ -798,14 +798,6 @@ import android.widget.ProgressBar;
 import com.jockeyjs.Jockey;
 import com.jockeyjs.JockeyImpl;
 
-/**
- * Author: guoxiaoxing
- * Date: 16/7/21 下午4:03
- * Function: H5Activity 提供各种功能载入Web页面
- * <p>
- * For more information, you can visit https://github.com/guoxiaoxing or contact me by
- * guoxiaoxingv@163.com
- */
 public class H5Activity extends AppCompatActivity {
 
     public static final String H5_URL = "H5_URL";
@@ -980,3 +972,4 @@ public class H5Activity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 }
+```

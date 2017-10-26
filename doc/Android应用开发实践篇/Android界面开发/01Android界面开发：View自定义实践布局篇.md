@@ -13,17 +13,18 @@
 - [04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 - [05Android显示框架：Activity应用视图的渲染流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Activity应用视图的渲染流程.md)
 
-今天我们来进行ui系列原理分析的的最后一篇文章，自定义View实践。前面的文章都是为了这篇文章做铺垫。
+在文章[02Android显示框架：Android应用视图的载体View](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/02Android显示框架：Android应用视图载体View.md)中我们理解了
+View的测量、布局、绘制、触摸事件处理等内容，今天我们开始我们View自定义实践的内容。
 
-自定义View是开发中最常见的需求，图表等各种复杂的ui以及产品经理各种奇怪的需求😤都要通过自定义View来完成。
+View自定义是开发中最常见的需求，图表等各种复杂的ui以及产品经理各种奇怪的需求😤都要通过View自定义来完成。
 
-自定义View有三个关键点：
+View自定义有三个关键点：
 
 - 布局：决定View的摆放位置
 - 绘制：决定View的具体内容
-- 触摸反馈：决定View与用户的交互体验
+- 交互：决定View与用户的交互体验
 
-这篇文章我们就来分析关于自定义View的布局问题。要想彻底掌握自定义View的布局，就要理解View的布局实现，这个我们在前面的文章分析过源码，这里再来整体总结一下。
+这篇文章我们就来分析关于View自定义的布局问题。要想彻底掌握View自定义的布局，就要理解View的布局实现，这个我们在前面的文章分析过源码，这里再来整体总结一下。
 
 
 

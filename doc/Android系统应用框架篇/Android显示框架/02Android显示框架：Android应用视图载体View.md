@@ -9,7 +9,9 @@
 **文章目录**
 
 - 一 View生命周期
-- 二 View的测量、布局与绘制流程
+- 二 View的位置、大小、边距与测量流程
+- 三 View的布局流程
+- 四 View的绘制流程
 
 > This class represents the basic building block for user interface components. A Viewoccupies a rectangular area on the screen and is 
 responsible for drawing and event handling.
@@ -42,130 +44,130 @@ public class CustomView extends View {
         Log.d(TAG, "CustomView()");
     }
 
+    /**
+     * View在xml文件里加载完成时调用
+     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         Log.d(TAG, "View onFinishInflate()");
     }
 
+    /**
+     * 测量View及其子View大小时调用
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Log.d(TAG, "View onMeasure()");
     }
 
+    /**
+     * 布局View及其子View大小时调用
+     */
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         Log.d(TAG, "View onLayout() left = " + left + " top = " + top + " right = " + right + " bottom = " + bottom);
     }
 
+    /**
+     * View大小发生改变时调用
+     */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         Log.d(TAG, "View onSizeChanged() w = " + w + " h = " + h + " oldw = " + oldw + " oldh = " + oldh);
     }
 
+    /**
+     * 绘制View及其子View大小时调用
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Log.d(TAG, "View onDraw()");
     }
 
+    /**
+     * 物理按键事件发生时调用
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.d(TAG, "View onKeyDown() event = " + event.getAction());
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * 物理按键事件发生时调用
+     */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         Log.d(TAG, "View onKeyUp() event = " + event.getAction());
         return super.onKeyUp(keyCode, event);
     }
 
+    /**
+     * 触摸事件发生时调用
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d(TAG, "View onTouchEvent() event =  " + event.getAction());
         return super.onTouchEvent(event);
     }
 
+    /**
+     * View获取焦点或者失去焦点时调用
+     */
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         Log.d(TAG, "View onFocusChanged() gainFocus = " + gainFocus);
     }
 
+    /**
+     * View所在窗口获取焦点或者失去焦点时调用
+     */
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         Log.d(TAG, "View onWindowFocusChanged() hasWindowFocus = " + hasWindowFocus);
     }
 
+    /**
+     * View被关联到窗口时调用
+     */
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         Log.d(TAG, "View onAttachedToWindow()");
     }
 
+    /**
+     * View从窗口分离时调用
+     */
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         Log.d(TAG, "View onDetachedFromWindow()");
     }
 
+    /**
+     * View的可见性发生变化时调用
+     */
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         Log.d(TAG, "View onVisibilityChanged() visibility = " + visibility);
     }
 
+    /**
+     * View所在窗口的可见性发生变化时调用
+     */
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
         Log.d(TAG, "View onWindowVisibilityChanged() visibility = " + visibility);
-    }
-```
-
-```java
-public class ViewActivity extends AppCompatActivity {
-
-    private static final String TAG = "View";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "Activity onStart()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "Activity onResume()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "Activity onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG, "Activity onStop()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "Activity onDestroy()");
     }
 }
 ```
@@ -188,10 +190,10 @@ Activity destory
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/view_lifecycle_destory.png"/>
 
+我们来总结一下View的声明周期随着Activity生命周期变化的情况。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/view_lifecycle.png"/>
 
-## 二 View的测量、布局与绘制流程
 
 在上篇文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 中我们分析了Activity应用视图的创建流程，这样我们便可以进行UI的绘制了。一个Android应用窗口里包含了很多UI元素，它们是以树形结构来组织的，即父子关系。在绘制UI的过程中，我们
@@ -205,13 +207,36 @@ View的绘制流程从ViewRoot.performTraversals()开始，整个流程分为三
 
 在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制操作。
 
-### 2.1 测量流程
+## 二 View的位置、大小、边距与测量流程
+
+通常来说View是一个矩形区域，它有自己的位置、大小与边距。
+
+View位置
+
+>View位置：有左上角坐标(getLeft(), getTop())决定，该坐标是以它的父View的左上角为坐标原点，单位是pixels。
+
+View大小
+
+>View大小：View的大小有两对值来表示。getMeasuredWidth()/getMeasuredHeight()这组值表示了该View在它的父View里期望的大小值，在measure()方法完成后可获得。
+getWidth()/getHeight()这组值表示了该View在屏幕上的实际大小，在draw()方法完成后可获得。
+
+View内边距
+
+>View内边距：View的内边距用padding来表示，它表示View的内容距离View边缘的距离。通过getPaddingXXX()方法获取。需要注意的是我们在自定义View的时候需要单独处理
+padding，否则它不会生效，这一块的内容我们会在View自定义实践系列的文章中展开。
+
+View外边距
+
+>View内边距：View的内边距用margin来表示，它表示View的边缘离它相邻的View的距离。
 
 >Measure过程决定了View的宽高，该过程完成后，通常都可以通过getMeasuredWith()/getMeasuredHeight()获得宽高。
 
+理解了上面这些概念，我们接下来来看看详细的测量流程。
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/measure_sequence.png" height="500"/>
 
-在介绍测量流程之前，我们先来介绍下MeasureSpec，它用来描述宽高。它是一个32位int值。
+在介绍测量流程之前，我们先来介绍下MeasureSpec，它用来把测量要求从父View传递给子View。我们知道View的大小最终由子View的LayoutParams与父View的测量要求公共决定，测量要求指的
+就是这个MeasureSpec，它是一个32位int值。
 
 - 高2位：SpecMode，测量模式
 - 低30位：SpecSize，在特定测量模式下的大小
@@ -224,44 +249,20 @@ public static class MeasureSpec {
     private static final int MODE_SHIFT = 30;
     private static final int MODE_MASK  = 0x3 << MODE_SHIFT;
     
-    //父容器不对View做任何限制，需要多打给多大，这种情况一般用于系统内部，表示一种测量的状态
+    //父View不对子View做任何限制，需要多大给多大，这种情况一般用于系统内部，表示一种测量的状态
     public static final int UNSPECIFIED = 0 << MODE_SHIFT;
     
-    //父容器已经检测出View所需要的精确大小，这个时候View的最终大小就是SpecSize所指定的值，它对应LayoutParams中的match_parent和具体数值这两种模式
+    //父View已经检测出View所需要的精确大小，这个时候View的最终大小就是SpecSize所指定的值，它对应LayoutParams中的match_parent和具体数值这两种模式
     public static final int EXACTLY     = 1 << MODE_SHIFT;
     
-    //父容器指定了一个可用大小SpecSize，View的大小不能大于这个值，它对应于LayoutParams中的wrap_content
+    //父View给子VIew提供一个最大可用的大小，子View去自适应这个大小。
     public static final int AT_MOST     = 2 << MODE_SHIFT;  
 }
 ```
-为什么会这么描述这三种模式的含义呢，这一点可以从ViewRoot.getRootMeasureSpec()方法中看出来，这一组MeasureSpec计算完成后传给了measure()方法。
 
-```java
-public final class ViewRoot extends Handler implements ViewParent,
-        View.AttachInfo.Callbacks {
-    
-        private int getRootMeasureSpec(int windowSize, int rootDimension) {
-            int measureSpec;
-            switch (rootDimension) {
-    
-            case ViewGroup.LayoutParams.MATCH_PARENT:
-                // Window can't resize. Force root view to be windowSize.
-                measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.EXACTLY);
-                break;
-            case ViewGroup.LayoutParams.WRAP_CONTENT:
-                // Window can resize. Set max size for root view.
-                measureSpec = MeasureSpec.makeMeasureSpec(windowSize, MeasureSpec.AT_MOST);
-                break;
-            default:
-                // Window wants to be an exact size. Force root view to be that size.
-                measureSpec = MeasureSpec.makeMeasureSpec(rootDimension, MeasureSpec.EXACTLY);
-                break;
-            }
-            return measureSpec;
-        }
-}
-```
-我们再来看看View的MeasureSpec是如果获取的。
+日常开发中我们接触最多的不是MeasureSpec而是LayoutParams，在View测量的时候，LayoutParams会和父View的MeasureSpec相结合被换算成View的MeasureSpec，进而决定View的大小。
+
+View的MeasureSpec计算源码如下所示：
 
 ```java
 public abstract class ViewGroup extends View implements ViewParent, ViewManager {
@@ -352,7 +353,8 @@ padding，以及子View自身大小childDimension共同来决定的。
 - 对于顶级View（DecorView）其MeasureSpec由窗口的尺寸和自身的LayoutParams共同确定的。
 - 对于普通View其MeasureSpec由父容器的Measure和自身的LayoutParams共同确定的。
 
-对于我们来说，测量流程中最熟悉的方法要属onMeasure()方法了，我们经常在自定义View时重写这个方法。我们来看几个不同组件的onMeasure()方法的实现。
+View的绘制会先调用View的measure()方法，measure()方法用来测量View的大小，实际的测量工作是由ziView的onMeasure()来完成的。我们来看看
+onMeasure(int widthMeasureSpec, int heightMeasureSpec)方法的实现。
 
 **关键点1：View.onMeasure(int widthMeasureSpec, int heightMeasureSpec)**
 
@@ -492,7 +494,7 @@ mForegroundPaddingLeft ，mForegroundPaddingRight，mForegroundPaddingTop ，mFo
 以上便是Measure的整个流程，该流程完成以后，我们可以通过getMeasuredWidth()与getMeasuredHeight()来获得View的宽高。但是在某些情况下，系统需要经过多次Measure才能确定
 最终的宽高，因此在onMeasure()方法中拿到的宽高很可能是不正确的，比较好的做法是在onLayout()方法中获取View的宽高。
 
-### 2.2 布局流程
+## 三 View的布局流程
 
 >Layout过程决定了View的父容器里四个坐标点的位置，该过程完成后可以通过getTop()、getBottom()、getLeft()和getRight()来拿到View四个顶点的位置，并可以通过
 getWidth()/getHeigth()获得View的最终宽高。
@@ -613,7 +615,7 @@ public class FrameLayout extends ViewGroup {
 接着，该方法就会遍历它的每一个子View，并获取它的左上角的坐标位置：childLeft，childTop。这两个位置信息会根据gravity来进行计算。
 最后会调用子View的layout()方法循环布局操作，直到所有的布局都完成为止。
 
-### 2.3 绘制流程
+## View的绘制流程
 
 >Draw过程最终将View绘制在屏幕上。
 
