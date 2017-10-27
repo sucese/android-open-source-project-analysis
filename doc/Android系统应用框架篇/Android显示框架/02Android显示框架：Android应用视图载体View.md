@@ -194,6 +194,65 @@ Activity destory
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/view_lifecycle.png"/>
 
+我们了解这些生命周期方法有什么作用呢？🤔
+
+其实这些方法在我们自定义View的时候发挥着很大的作用，我们来举几种应用场景。
+
+场景1：在Activity启动时获取View的宽高，但是在onCreate、onStart和onResume均无法获取正确的结果。这是因为在Activity的这些方法里，Viewed绘制可能还没有完成，我们可以在View的生命周期方法里获取。
+
+```java
+@Override
+public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    if(hasFocus){
+        int width = view.getMeasuredWidth();
+        int height = view.getMeasuredHeight();
+    }
+}
+```
+
+场景2：在Activity生命周期发生变化时，View也要做响应的处理，典型的有VideoView保存进度和恢复进度。
+
+```java
+@Override
+protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+    super.onVisibilityChanged(changedView, visibility);
+    //TODO do something if activity lifecycle changed if necessary
+    //Activity onResume()
+    if(visibility == VISIBLE){
+        
+    }
+    //Activity onPause()
+    else {
+        
+    }
+}
+
+@Override
+public void onWindowFocusChanged(boolean hasWindowFocus) {
+    super.onWindowFocusChanged(hasWindowFocus);
+
+    //TODO do something if activity lifecycle changed if necessary
+    //Activity onResume()
+    if (hasWindowFocus) {
+    }
+    //Activity onPause()
+    else {
+    }
+}
+```
+
+场景3：释放线程、资源
+
+```java
+@Override
+protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    //TODO release resources, thread, animation
+}
+```
+
+## 二 View的位置、大小、边距与测量流程
 
 在上篇文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 中我们分析了Activity应用视图的创建流程，这样我们便可以进行UI的绘制了。一个Android应用窗口里包含了很多UI元素，它们是以树形结构来组织的，即父子关系。在绘制UI的过程中，我们
@@ -207,7 +266,6 @@ View的绘制流程从ViewRoot.performTraversals()开始，整个流程分为三
 
 在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制操作。
 
-## 二 View的位置、大小、边距与测量流程
 
 通常来说View是一个矩形区域，它有自己的位置、大小与边距。
 
@@ -456,7 +514,10 @@ View的onMeasure()方法实现比较简单，它调用setMeasuredDimension()方�
 注：你可以自己尝试一下自定义一个View，然后不重写onMeasure()方法，你会发现只有设置match_parent和wrap_content效果是一样的，事实上TextView、ImageView
 等系统组件都在wrap_content上有自己的处理，可以去翻一翻源码。
 
-看完了View的measure过程，我们再来看看View
+看完了View的measure过程，我们再来看看ViewGroup的measure过程。ViewGroup继承于View，是一个抽象类，它并没有重写onMeasure()方法，因为不同布局类型的测量
+流程各不相同，因此onMeasure()方法由它的子类来实现。
+
+我们来看个FrameLayout的onMeasure()方法的实现。
 
 **关键点2：FrameLayout.onMeasure(int widthMeasureSpec, int heightMeasureSpec)** 
 
@@ -552,7 +613,57 @@ getWidth()/getHeigth()获得View的最终宽高。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/layout_sequence.png" height="500"/>
 
-从上面的序列图可知，View.layout()方法会首先调用setFrame()方法来设置当前视图的位置与大小，设置完成之后，如果当前视图的大小或者位置发生了变化，则调用onLayout()重新布局。
+layout()方法用来确定View本身的位置，onLayout()方法用来确定子元素的位置。
+
+```java
+public class View implements Drawable.Callback, KeyEvent.Callback, AccessibilityEventSource {
+
+   public void layout(int l, int t, int r, int b) {
+        if ((mPrivateFlags3 & PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT) != 0) {
+            onMeasure(mOldWidthMeasureSpec, mOldHeightMeasureSpec);
+            mPrivateFlags3 &= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;
+        }
+
+        int oldL = mLeft;
+        int oldT = mTop;
+        int oldB = mBottom;
+        int oldR = mRight;
+
+        //1 调用setFrame()设置View四个顶点ed位置
+        boolean changed = isLayoutModeOptical(mParent) ?
+                setOpticalFrame(l, t, r, b) : setFrame(l, t, r, b);
+
+        if (changed || (mPrivateFlags & PFLAG_LAYOUT_REQUIRED) == PFLAG_LAYOUT_REQUIRED) {
+
+            //2 调用onLayout()确定View子元素的位置
+            onLayout(changed, l, t, r, b);
+
+            if (shouldDrawRoundScrollbar()) {
+                if(mRoundScrollbarRenderer == null) {
+                    mRoundScrollbarRenderer = new RoundScrollbarRenderer(this);
+                }
+            } else {
+                mRoundScrollbarRenderer = null;
+            }
+
+            mPrivateFlags &= ~PFLAG_LAYOUT_REQUIRED;
+
+            ListenerInfo li = mListenerInfo;
+            if (li != null && li.mOnLayoutChangeListeners != null) {
+                ArrayList<OnLayoutChangeListener> listenersCopy =
+                        (ArrayList<OnLayoutChangeListener>)li.mOnLayoutChangeListeners.clone();
+                int numListeners = listenersCopy.size();
+                for (int i = 0; i < numListeners; ++i) {
+                    listenersCopy.get(i).onLayoutChange(this, l, t, r, b, oldL, oldT, oldR, oldB);
+                }
+            }
+        }
+
+        mPrivateFlags &= ~PFLAG_FORCE_LAYOUT;
+        mPrivateFlags3 |= PFLAG3_IS_LAID_OUT;
+    }
+}
+```
 
 **关键点1：View.invalidate()**
 

@@ -3,6 +3,7 @@ package com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 
 import com.guoxiaoxing.android.framework.demo.R;
 
@@ -10,10 +11,29 @@ public class ViewActivity extends AppCompatActivity {
 
     private static final String TAG = "View";
 
+    private MeasureView view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
+
+        view = (MeasureView) findViewById(R.id.view);
+
+        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+        viewTreeObserver.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+            @Override
+            public void onDraw() {
+
+            }
+        });
+
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+            }
+        });
     }
 
     @Override
@@ -44,5 +64,14 @@ public class ViewActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "Activity onDestroy()");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            int width = view.getMeasuredWidth();
+            int height = view.getMeasuredHeight();
+        }
     }
 }

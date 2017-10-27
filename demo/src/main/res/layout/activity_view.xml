@@ -6,7 +6,8 @@
     tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.ViewActivity">
 
     <com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.MeasureView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/view"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
 
 </LinearLayout>

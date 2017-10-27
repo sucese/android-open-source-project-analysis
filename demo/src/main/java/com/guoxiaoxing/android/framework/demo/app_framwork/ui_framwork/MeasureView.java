@@ -69,7 +69,7 @@ public class MeasureView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawCircle(mScrrenWidth / 2, mScreenHeight / 2, 100, mPaint);
+        canvas.drawCircle(0, 0, 100, mPaint);
     }
 
     private void setup(Context context) {
