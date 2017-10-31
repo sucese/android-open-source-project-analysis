@@ -32,7 +32,7 @@ getSupportFragmentManager().beginTransaction()
 Fragment的操作是一种事务操作，什么是事务？🤔简单来说就是一个原子操作，要么被成功执行，否则原来的操作会回滚，各个操作彼此之间互不干扰。我们先整体看下Fragment的操作
 序列图。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/fragment_operation_sequence.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/fragment_operation_sequence.png" height="500"/>
 
 嗯，看起来有点长😌，不要方，我们先来看看这里面频繁出现的几个类的作用。
 
