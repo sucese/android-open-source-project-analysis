@@ -442,8 +442,7 @@ detach后的Fragment可以再attach，而remove后的Fragment却不可以，只�
 
 我们先来看一张完整的Fragment生命周期图。
 
-
-
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/fragment_lifecycle_structure.png"/>
 
 我们都知道Fragment的生命周期依赖于它的宿主Activity，但事实的情况却并不这么简单。
 
@@ -458,4 +457,191 @@ detach后的Fragment可以再attach，而remove后的Fragment却不可以，只�
 - onStop：Fragment不再对用户可见时调用，这通常发生在宿主Activity的onStop()方法被调用或者Fragment被修改（replace、remove）。
 - onDestroyView：Fragment释放View资源时调用。
 - onDetach：Fragment与宿主Activity脱离联系时调用。
+
+在FragmentManager中，完成Fragment状态变换的主要有四个方法：
+
+moveToState(Fragment f)
+moveToState(int newState, boolean always) 
+moveFragmentToExpectedState(Fragment f)
+moveToState(Fragment f, int newState, int transit, int transitionStyle, boolean keepActive)
+
+它们的触发流程也很简单，比方说FragmentActivity触发了onResume()方法。
+
+```java
+public class FragmentActivity extends BaseFragmentActivityJB implements
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        ActivityCompatApi23.RequestPermissionsRequestCodeValidator {
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        doReallyStop(false);
+
+        mFragments.dispatchDestroy();
+        mFragments.doLoaderDestroy();
+    }
+}
+
+```
+
+它会去调用Fragment的dispatchDestory()方法，Fragment又接着会去调用FragmentManager的dispatchDestory()方法。
+
+```java
+final class FragmentManagerImpl extends FragmentManager implements LayoutInflaterFactory {
+    
+     public void dispatchDestroy() {
+         mDestroyed = true;
+         execPendingActions();
+         mExecutingActions = true;
+         moveToState(Fragment.INITIALIZING, false);
+         mExecutingActions = false;
+         mHost = null;
+         mContainer = null;
+         mParent = null;
+     }   
+}
+```
+最终这些处理都会回归到上面这四个方法中来，而这四个方法最终发挥作用当然是最后一个参数最多的方法，其他的方法都只是做了参数的处理和情况的判断。
+
+
+Fragment定义了六种状态
+
+```
+static final int INITIALIZING = 0;     // 未创建
+static final int CREATED = 1;          // 已创建
+static final int ACTIVITY_CREATED = 2; // 宿主Activity已经结束创建
+static final int STOPPED = 3;          // Fragment的onCreate()方法已完成，onStart()即将开始
+static final int STARTED = 4;          // Fragment的onCreate()和onStart()方法都已完成，onResume()即将开始
+static final int RESUMED = 5;          // Fragment的onCreate()、onStart()和onResume()方法都已完成
+```
+
+```java
+final class FragmentManagerImpl extends FragmentManager implements LayoutInflaterFactory {
+    
+    void moveToState(Fragment f, int newState, int transit, int transitionStyle,
+            boolean keepActive) {
+        //状态判断
+        ...
+        //当前状态大于新状态，从上面的状态表可以看出，状态值越小
+        //就说明处于越早的阶段，一般对应add等操作
+        if (f.mState < newState) {
+            ...
+            switch (f.mState) {
+                //未创建
+                case Fragment.INITIALIZING:
+                    ...
+                    f.onAttach(mHost.getContext());
+                    ...
+                    //Fragment被定义在布局文件里的情形，需要先从布局文件里inflate出view
+                    if (f.mFromLayout) {
+                        f.mView = f.performCreateView(f.performGetLayoutInflater(
+                                f.mSavedFragmentState), null, f.mSavedFragmentState);
+                        if (f.mView != null) {
+                            ...
+                            f.onViewCreated(f.mView, f.mSavedFragmentState);
+                        } else {
+                            f.mInnerView = null;
+                        }
+                    }
+                //已创建
+                case Fragment.CREATED:
+                    if (newState > Fragment.CREATED) {
+                        if (!f.mFromLayout) {
+                            ...
+                            if (f.mView != null) {
+                                ...
+                                f.onViewCreated(f.mView, f.mSavedFragmentState);
+                                dispatchOnFragmentViewCreated(f, f.mView, f.mSavedFragmentState,
+                                        false);
+                                ...
+                            } else {
+                                f.mInnerView = null;
+                            }
+                        }
+                        ...
+                        f.performActivityCreated(f.mSavedFragmentState);
+                        ...
+                    }
+                case Fragment.ACTIVITY_CREATED:
+                    if (newState > Fragment.ACTIVITY_CREATED) {
+                        f.mState = Fragment.STOPPED;
+                    }
+                case Fragment.STOPPED:
+                    if (newState > Fragment.STOPPED) {
+                        if (DEBUG) Log.v(TAG, "moveto STARTED: " + f);
+                        f.performStart();
+                        dispatchOnFragmentStarted(f, false);
+                    }
+                case Fragment.STARTED:
+                    if (newState > Fragment.STARTED) {
+                        if (DEBUG) Log.v(TAG, "moveto RESUMED: " + f);
+                        f.performResume();
+                        dispatchOnFragmentResumed(f, false);
+                        f.mSavedFragmentState = null;
+                        f.mSavedViewState = null;
+                    }
+            }
+        } 
+        //当前状态大于新状态，一般对应remove等操作
+        else if (f.mState > newState) {
+            switch (f.mState) {
+                case Fragment.RESUMED:
+                    if (newState < Fragment.RESUMED) {
+                        if (DEBUG) Log.v(TAG, "movefrom RESUMED: " + f);
+                        f.performPause();
+                        dispatchOnFragmentPaused(f, false);
+                    }
+                case Fragment.STARTED:
+                    if (newState < Fragment.STARTED) {
+                        if (DEBUG) Log.v(TAG, "movefrom STARTED: " + f);
+                        f.performStop();
+                        dispatchOnFragmentStopped(f, false);
+                    }
+                case Fragment.STOPPED:
+                    if (newState < Fragment.STOPPED) {
+                        if (DEBUG) Log.v(TAG, "movefrom STOPPED: " + f);
+                        f.performReallyStop();
+                    }
+                case Fragment.ACTIVITY_CREATED:
+                    if (newState < Fragment.ACTIVITY_CREATED) {
+                        ...
+                        f.performDestroyView();
+                        dispatchOnFragmentViewDestroyed(f, false);
+                        ...
+                    }
+                case Fragment.CREATED:
+                    if (newState < Fragment.CREATED) {
+                        ...
+                        if (f.getAnimatingAway() != null) {
+                            f.setStateAfterAnimating(newState);
+                            newState = Fragment.CREATED;
+                        } else {
+                            ....
+                            if (!f.mRetaining) {
+                                f.performDestroy();
+                                dispatchOnFragmentDestroyed(f, false);
+                            } else {
+                                f.mState = Fragment.INITIALIZING;
+                            }
+    
+                            f.performDetach();
+                            dispatchOnFragmentDetached(f, false);
+                            ...
+                        }
+                    }
+            }
+        }
+        ...
+    }
+}
+```
+
+可以发现进入该方法后会先将Fragment的当前状态与新状态进行比较：
+
+- 如果f.mState < newState，则说明Fragment状态会从按照INITIALIZING、CREATED、ACTIVITY_CREATED、STOPPED、STARTED、RESUMED的状态进行变化，switch语句没有break，会一直顺序
+执行，通知Fragment进入相应的状态，并回调Fragment里相应的生命周期方法。
+- 如果f.mState < newState，则刚好和上面是反过来的过程。
+
+这样便完成了Fragment状态的迁移和生命周期方法的回调。
 
