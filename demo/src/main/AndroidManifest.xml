@@ -28,12 +28,12 @@
             android:exported="true" />
 
         <activity android:name=".app_framwork.component_framwork.service.ClientActivity" />
-
         <activity android:name=".app_practice.ui_develop.UIActivity" />
-        <activity android:name=".app_practice.ui_develop.DrawActivity">
-        </activity>
+        <activity android:name=".app_practice.ui_develop.DrawActivity"></activity>
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
         <activity android:name=".app_framwork.ui_framwork.ViewActivity">
+        </activity>
+        <activity android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

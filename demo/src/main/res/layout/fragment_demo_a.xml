@@ -1,0 +1,15 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.component_framwork.fragment.DemoFragmentA">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_blue_light"
+        android:gravity="center"
+        android:text="I am fragment a"
+        android:textColor="@android:color/white" />
+
+</FrameLayout>

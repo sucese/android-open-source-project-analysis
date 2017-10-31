@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.component_framwork.fragment.DemoFragmentActivity">
+
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_add_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="add fragmet"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_remove_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="remove fragmet"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_replace_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="replace fragmet"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_hide_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="hide fragmet"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_show_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="show fragmet"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_detach_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="detach fragmet"
+                android:textAllCaps="false" />
+
+
+            <Button
+                android:id="@+id/btn_attach_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="attach fragmet"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
