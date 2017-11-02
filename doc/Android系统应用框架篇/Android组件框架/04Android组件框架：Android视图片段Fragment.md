@@ -8,9 +8,9 @@
 
 **文章目录**
 
-- Fragment管理流程
-- Fragment生命周期
-- Fragment回退栈
+- 一 Fragment管理流程
+- 二 Fragment生命周期
+- 三 Fragment回退栈
 
 >A Fragment is a piece of an application's user interface or behavior that can be placed in an Activity.
 
@@ -38,8 +38,8 @@ Fragment的操作是一种事务操作，什么是事务？🤔简单来说就�
 
 - FragmentActivity：这个自不必说，它是Fragment的容器Activity，只有你的Activity继承自FragmentActivity，你才能使用Fragment，Android的AppCompatActivity就继承自FragmentActivity。
 - FragmentManager：Fragment的管理是由FragmentManager这个类的完成的，我们通常在Activity中使用getSupportFragmentManager()方法来获取。它是一个抽象类，其实现类是FragmentManagerImpl。
-- FragmentTransaction：定义了Fragment的所有操作，我们通常通过getSupportFragmentManager().beginTransaction()方法来获取。它是一个抽象类，其实现类是BackStackRecord，BackStackRecord将Fragment与相应应的
-操作包装起来，传递给FragmentManager调用。
+- FragmentTransaction：定义了Fragment的所有操作，我们通常通过getSupportFragmentManager().beginTransaction()方法来获取。它是一个抽象类，其实现类是BackStackRecord，BackStackRecord将Fragment、入栈信息、转场动画、相应的
+操作等信息包装起来，传递给FragmentManager调用。
 - FragmentHostCallback：抽象类，它将Fragment、Activity与FragmentManager串联成一个整体，FragmentActivity的内部类HostCallbacks继承了这个抽象类。
 - FragmentController：它的主要职责是控制Fragment的生命周期，它在FragmentActivity里以HostCallbacks为参数被创建，持有HostCallbacks的引用。
 
@@ -644,4 +644,132 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
 - 如果f.mState < newState，则刚好和上面是反过来的过程。
 
 这样便完成了Fragment状态的迁移和生命周期方法的回调。
+
+## 三 Fragment回退栈
+
+什么是Fragment回退栈呢？🤔
+
+这个很好理解，和Activity栈相似，放在Activity里的Fragment，如果不做额外处理的话，在点击返回的时候，会直接finish当前Activity，Fragment回退栈就是用来处理Fragment返回的问题。
+
+Fragment的回退栈也是由Fragment来管理的，关于FragmentManger的获取，一是FragmentActivity里的getSupportFragmentManager()，二是Fragment里的getChildFragmentManager()，它们
+返回的都是FragmentManagerImpl对象，对Fragment的栈进行管理。
+
+我们先来看看常用的栈操作方法。
+
+入栈
+
+入栈操作通过etSupportFragmentManager.beiginTransaction().addToBackStack()方法完成，它的具体实现在BackRecordStack里。
+
+addToBackStack(String name)：入栈，这个方法ed实现很简单，就是将BackRecordStack的成员变量mName赋值，mAddToBackStack置true，表示自己要添加进回退栈， 这样在调用commit()方法提交操作时，FragmentManager
+会为该Fragment分配栈索引，并将它添加进回退栈列表，供后续出栈的时候调用。
+
+出栈
+
+出栈操作是通过getSupportFragmentManager.popBackStack()等方法完成的，它的具体实现在FragmentManagerImpl里。
+
+- popBackStack()：栈顶Fragment出栈操作，这是一个异步方法，放在消息队列中等待执行。
+- popBackStackImmediate()：栈顶Fragment出栈操作，这是一个同步方法，会被立即执行。
+- popBackStack(String name, int flags)：和popBackStack()方法相似，不过指定了出栈的Fragment的name，该name以上的Fragment全部出栈，flags（POP_BACK_STACK_INCLUSIVE）用来
+控制出栈的包不包括它自己。
+- popBackStackImmediate(String name, int flags)：和popBackStackImmediate()方法相似，不过指定了出栈的Fragment的name，该name以上的Fragment全部出栈，flags（POP_BACK_STACK_INCLUSIVE）用来
+控制出栈的包不包括它自己。
+- popBackStack(String id, int flags)：和popBackStack()方法相似，不过指定了出栈的Fragment的id，该id以上的Fragment全部出栈，flags（POP_BACK_STACK_INCLUSIVE）用来
+控制出栈的包不包括它自己。
+- popBackStackImmediate(String id, int flags)：和popBackStackImmediate()方法相似，不过指定了出栈的Fragment的id，该id以上的Fragment全部出栈，flags（POP_BACK_STACK_INCLUSIVE）用来
+控制出栈的包不包括它自己。
+- getBackStackEntryCount():返回栈中Fragment的个数。
+- getBackStackEntryAt(int index)：返回指定位置的Fragment。
+  
+我们再来看看这些方法的实现。
+
+```java
+final class FragmentManagerImpl extends FragmentManager implements LayoutInflaterFactory {
+
+    @Override
+    public void popBackStack() {
+        enqueueAction(new PopBackStackState(null, -1, 0), false);
+    }
+
+    @Override
+    public boolean popBackStackImmediate() {
+        checkStateLoss();
+        return popBackStackImmediate(null, -1, 0);
+    }
+}
+```
+
+PopBackStackState实现了OpGenerator接口，封装了将要出栈的Fragment的信息，包括mName、mId与mFlags信息。如果你有细心看，上面我们提到的FragmentTransaction的实现类BackStackRecord
+也实现了这个接口。
+
+
+```java
+private class PopBackStackState implements OpGenerator {
+    final String mName;
+    final int mId;
+    final int mFlags;
+
+    PopBackStackState(String name, int id, int flags) {
+        mName = name;
+        mId = id;
+        mFlags = flags;
+    }
+
+    @Override
+    public boolean generateOps(ArrayList<BackStackRecord> records,
+            ArrayList<Boolean> isRecordPop) {
+        return popBackStackState(records, isRecordPop, mName, mId, mFlags);
+    }
+}
+```
+popBackStack()也调用了enqueueAction()方法，后续的流程和上面的Fragment操作流程是一样的，出栈操作最终对应的是Fragment的remove()操作，因此它对Fragment生命周期的影响和remove()操作相同。
+
+至于popBackStackImmediate()的实现，则就是直接调用执行操作的方法，少了加入队列的等待过程，具体流程也和上面的Fragment操作一样。
+
+```java
+final class FragmentManagerImpl extends FragmentManager implements LayoutInflaterFactory {
+
+    private boolean popBackStackImmediate(String name, int id, int flags) {
+        execPendingActions();
+        ensureExecReady(true);
+
+        boolean executePop = popBackStackState(mTmpRecords, mTmpIsPop, name, id, flags);
+        if (executePop) {
+            mExecutingActions = true;
+            try {
+                optimizeAndExecuteOps(mTmpRecords, mTmpIsPop);
+            } finally {
+                cleanupExec();
+            }
+        }
+
+        doPendingDeferredStart();
+        burpActive();
+        return executePop;
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

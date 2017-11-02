@@ -28,42 +28,42 @@
                 android:id="@+id/btn_add_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="add fragmet"
+                android:text="add fragment"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_remove_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="remove fragmet"
+                android:text="remove fragment"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_replace_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="replace fragmet"
+                android:text="replace fragment"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_hide_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="hide fragmet"
+                android:text="hide fragment"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_show_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="show fragmet"
+                android:text="show fragment"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_detach_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="detach fragmet"
+                android:text="detach fragment"
                 android:textAllCaps="false" />
 
 
@@ -71,7 +71,15 @@
                 android:id="@+id/btn_attach_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="attach fragmet"
+                android:text="attach fragment"
+                android:textAllCaps="false" />
+
+
+            <Button
+                android:id="@+id/btn_pop_back_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="pop back fragment"
                 android:textAllCaps="false" />
         </LinearLayout>
     </ScrollView>

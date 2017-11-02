@@ -8,7 +8,8 @@ import android.view.View;
 
 import com.guoxiaoxing.android.framework.demo.R;
 
-public class DemoFragmentActivity extends AppCompatActivity implements DemoFragmentA.OnFragmentInteractionListener, View.OnClickListener {
+public class DemoFragmentActivity extends AppCompatActivity implements DemoFragmentA.OnFragmentInteractionListener,
+        DemoFragmentB.OnFragmentInteractionListener, DemoFragmentC.OnFragmentInteractionListener, View.OnClickListener {
 
     DemoFragmentA demoFragmentA;
 
@@ -24,6 +25,7 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
         findViewById(R.id.btn_hide_fragment).setOnClickListener(this);
         findViewById(R.id.btn_detach_fragment).setOnClickListener(this);
         findViewById(R.id.btn_attach_fragment).setOnClickListener(this);
+        findViewById(R.id.btn_pop_back_fragment).setOnClickListener(this);
     }
 
     @Override
@@ -85,6 +87,8 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
                 break;
             case R.id.btn_attach_fragment:
                 attach();
+            case R.id.btn_pop_back_fragment:
+                popBack();
                 break;
         }
     }
@@ -100,6 +104,7 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
         demoFragmentA.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, demoFragmentA)
+                .addToBackStack("FragmentA")
                 .commit();
     }
 
@@ -116,6 +121,7 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, demoFragmentB)
+                .addToBackStack("FragmentA")
                 .commit();
     }
 
@@ -141,5 +147,11 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
         getSupportFragmentManager().beginTransaction()
                 .attach(demoFragmentA)
                 .commit();
+    }
+
+
+
+    private void popBack() {
+        getSupportFragmentManager().popBackStack();
     }
 }

@@ -33,7 +33,9 @@
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
         <activity android:name=".app_framwork.ui_framwork.ViewActivity">
         </activity>
-        <activity android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity">
+        <activity
+            android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity"
+            android:screenOrientation="sensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
