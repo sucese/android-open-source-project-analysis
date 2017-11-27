@@ -60,12 +60,17 @@ detach: detach操作分离一个Fragment，会依次调用onPause, onStop and on
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/fragment_lifecycle_detach.png"/>
 
+popBackStack
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/fragment_lifecycle_pop_back.png"/>
+
 
 关于使用Fragment操作的使用建议
 
 - 如果Fragment视图被频繁的使用，或者一会要再次使用，建议使用show/hide方法，这样可以提升响应速度和性能。
 - 如果Fragment占用大量资源，使用完成后，可以使用replace方法，这样可以及时的释放资源。
 
+Fragment的复杂性或者不方便的地方，就是操作方法的调用和回退栈的管理。
 
 
 一些其他建议

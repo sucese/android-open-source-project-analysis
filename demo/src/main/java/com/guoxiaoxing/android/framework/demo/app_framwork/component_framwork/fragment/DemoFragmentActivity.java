@@ -149,8 +149,6 @@ public class DemoFragmentActivity extends AppCompatActivity implements DemoFragm
                 .commit();
     }
 
-
-
     private void popBack() {
         getSupportFragmentManager().popBackStack();
     }

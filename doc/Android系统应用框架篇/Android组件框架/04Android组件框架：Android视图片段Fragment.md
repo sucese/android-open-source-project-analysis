@@ -660,7 +660,7 @@ Fragment的回退栈也是由Fragment来管理的，关于FragmentManger的获�
 
 入栈操作通过etSupportFragmentManager.beiginTransaction().addToBackStack()方法完成，它的具体实现在BackRecordStack里。
 
-addToBackStack(String name)：入栈，这个方法ed实现很简单，就是将BackRecordStack的成员变量mName赋值，mAddToBackStack置true，表示自己要添加进回退栈， 这样在调用commit()方法提交操作时，FragmentManager
+addToBackStack(String name)：入栈，这个方法的实现很简单，就是将BackRecordStack的成员变量mName赋值，mAddToBackStack置true，表示自己要添加进回退栈， 这样在调用commit()方法提交操作时，FragmentManager
 会为该Fragment分配栈索引，并将它添加进回退栈列表，供后续出栈的时候调用。
 
 出栈
