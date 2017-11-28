@@ -8,15 +8,16 @@
 
 **文章目录**
 
-- 一 View生命周期
-- 二 View的位置、大小、边距与测量流程
+- 一 View的生命周期
+- 二 View的测量流程
 - 三 View的布局流程
 - 四 View的绘制流程
+- 五 View事件分发机制
 
 > This class represents the basic building block for user interface components. A Viewoccupies a rectangular area on the screen and is 
 responsible for drawing and event handling.
 
-View是屏幕上的一块矩形区域，负责界面的绘制与触摸事件的处理。
+View是屏幕上的一块矩形区域，负责界面的绘制与触摸事件的处理，它是一种界面层控件的抽象，所有的控件都继承自View。
 
 ## 一 View生命周期
 
@@ -252,7 +253,7 @@ protected void onDetachedFromWindow() {
 }
 ```
 
-## 二 View的位置、大小、边距与测量流程
+## 二 View的测量流程
 
 在上篇文章[04Android显示框架：Activity应用视图的创建流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Activity应用视图的创建流程.md)
 中我们分析了Activity应用视图的创建流程，这样我们便可以进行UI的绘制了。一个Android应用窗口里包含了很多UI元素，它们是以树形结构来组织的，即父子关系。在绘制UI的过程中，我们
@@ -265,7 +266,6 @@ View的绘制流程从ViewRoot.performTraversals()开始，整个流程分为三
 3. draw：将View绘制在屏幕上
 
 在上文创建View对象这一步中我们提到，Android应用窗口的顶层视图是一个类型为DecorView的UI元素，该顶层视图是由ViewRoot.performTraversals()方法来进行测量、布局与绘制操作。
-
 
 通常来说View是一个矩形区域，它有自己的位置、大小与边距。
 
@@ -1652,3 +1652,21 @@ ViewGroup.drawChild(Canvas canvas, View child, long drawingTime)用来完成子�
 1. 渲染Android应用视图的渲染流程，测量流程用来确定视图的大小、布局流程用来确定视图的位置、绘制流程最终将视图绘制在应用窗口上。
 2. Android应用程序窗口UI首先是使用Skia图形库API来绘制在一块画布上，实际地是绘制在这块画布里面的一个图形缓冲区中，这个图形缓冲区最终会被交给SurfaceFlinger服
 务，而SurfaceFlinger服务再使用OpenGL图形库API来将这个图形缓冲区渲染到硬件帧缓冲区中。
+
+## 五 View事件分发机制
+
+在介绍View的事件分发机制之前，我们要先了解两个概念。
+
+- MotionEvent：Android中用来表示各种事件的对象，例如ACTION_DOWN、ACTION_MOVE等，我们还可以通过它获取事件发生的坐标，getX/getY获取相对于当前View左上角的坐标，getRawX/getRawY获取相对于屏幕左上角的坐标。
+- TouchSlop：系统所能识别的最小滑动距离，通过ViewConfiguration.get(context).getScaledTouchSlop()方法获取。
+
+现在我们再来看看View里的事件分发机制，概括来说，可以
+
+### 5.1 View的事件分发
+### 5.2 ViewGroup的事件分发
+### 5.3 Activity的事件分发
+
+通过对源码的分析，我们已经掌握了各种场景下事件分发的规律，我们再来总结一下View事件分发的相关结论。
+
+- 一般情况下，一个事件序列只能由一个事件序列拦截并消耗
+
