@@ -8,6 +8,12 @@
 
 **文章目录**
 
+- 一 窗口类型
+- 二 窗口参数
+- 三 窗口模式
+- 四 窗口回调
+- 五 窗口实现
+
 从这篇文章开始，我们来分析和Window以及WindowManager相关的内容，
 
 >Abstract base class for a top-level window look and behavior policy.
@@ -15,7 +21,7 @@
 >Window在Android是一个窗口的概念，日常开发中我们和它接触的不多，我们更多接触的是View，但是View都是通过Window来呈现的，Window是View的直接管理者。
 而WindowManager承担者管理Window的责任。
 
-## 窗口类型
+## 一 窗口类型
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_layer.png" width="250" height="500"/>
 
@@ -59,7 +65,7 @@ z-index对应着WindowManager.LayoutParams里的type参数，具体说来。
 - public static final int TYPE_KEYGUARD           = FIRST_SYSTEM_WINDOW+4;//锁屏窗口
 - public static final int TYPE_TOAST              = FIRST_SYSTEM_WINDOW+5;//TOAST窗口
 
-## 窗口参数
+## 二 窗口参数
 
 在WindowManager里定义了一个LayoutParams内部类，它描述了窗口的参数信息，主要包括：
 
@@ -133,7 +139,7 @@ z-index对应着WindowManager.LayoutParams里的type参数，具体说来。
  }
 ```
 
-## 窗口模式
+## 三 窗口模式
 
 关于窗口模式我们就比较熟悉了，我们会在AndroidManifest.xml里Activity的标签下设置android:windowSoftInputMode="adjustNothing"，来控制输入键盘显示行为。
 
@@ -151,7 +157,7 @@ z-index对应着WindowManager.LayoutParams里的type参数，具体说来。
 ```java
 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 ```
-## 窗口回调
+## 四 窗口回调
 
 Window里定义了一个Callback接口，Activity实现了Window.Callback接口，将Activity关联给Window，Window就可以将一些事件交由Activity处理。
 
@@ -208,7 +214,7 @@ Window里定义了一个Callback接口，Activity实现了Window.Callback接口�
         public boolean onSearchRequested();
     }
 ```
-## 窗口实现
+## 五 窗口实现
 
 Window是一个抽象类，它的唯一实现类是PhoneWindow，PhoneWindow里包含了以下内容：
 
@@ -222,7 +228,6 @@ Window是一个抽象类，它的唯一实现类是PhoneWindow，PhoneWindow里�
 
 看到这些，大家有没有觉得很熟悉，这就是我们日常开发中经常见到的东西，它在PhoneWindow里被创建。另外，我们在Activity里经常调用的方法，它的实际实现也是
 在PhoneWindow里，我们分别来看一看。
-
 
 ### setContentView()
 
@@ -334,6 +339,8 @@ public class Activity extends ContextThemeWrapper
 }
 ```
 通常以上的分析，我们理解了setContentView的工作原理，另外还有addContentView、clearContentView，正如它们的名字那样，setContentView是替换View，addContentView是添加View。实现原理相同。
+
+好了，以上便是本篇文章的全部内容，下一篇文章我们来分析WindowManager的内容，分析Window的添加、移除和更新的流程。
 
 ## 附录
 
