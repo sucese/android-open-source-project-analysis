@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.WindowActivity">
+
+    <Button
+        android:id="@+id/btn_add_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="addView"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_remove_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="removeView"
+        android:textAllCaps="false" />
+</LinearLayout>
