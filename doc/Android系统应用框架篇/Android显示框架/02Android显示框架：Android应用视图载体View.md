@@ -286,9 +286,10 @@ View外边距
 
 View的测量流程看似复杂，实际遵循着简单的逻辑。
 
->在做测量的时候，measure()方法被父View调用，在measure()中做一些准备和优化工作后，调用onMeasure()来进行实际的自我测量。对于onMeasure()，View和ViewGroup有所区别：
-View：View 在 onMeasure() 中会计算出自己的尺寸然后保存；
-ViewGroup：ViewGroup在onMeasure()中会调用所有子View的measure()让它们进行自我测量，并根据子View计算出的期望尺寸来计算出它们的实际尺寸和位置然后保存。同时，它也会
+在做测量的时候，measure()方法被父View调用，在measure()中做一些准备和优化工作后，调用onMeasure()来进行实际的自我测量。对于onMeasure()，View和ViewGroup有所区别：
+
+- View：View 在 onMeasure() 中会计算出自己的尺寸然后保存；
+- ViewGroup：ViewGroup在onMeasure()中会调用所有子View的measure()让它们进行自我测量，并根据子View计算出的期望尺寸来计算出它们的实际尺寸和位置然后保存。同时，它也会
 根据子View的尺寸和位置来计算出自己的尺寸然后保存.
 
 在介绍测量流程之前，我们先来介绍下MeasureSpec，它用来把测量要求从父View传递给子View。我们知道View的大小最终由子View的LayoutParams与父View的测量要求公共决定，测量要求指的
@@ -608,9 +609,10 @@ mForegroundPaddingLeft ，mForegroundPaddingRight，mForegroundPaddingTop ，mFo
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/layout_sequence.png" height="500"/>
 
->在进行布局的时候，layout()方法被父View调用，在layout()中它会保存父View传进来的自己的位置和尺寸，并且调用onLayout()来进行实际的内部布局。对于onLayout()， View和ViewGroup有所区别：
-View：由于没有子 View，所以 View 的 onLayout() 什么也不做。
-ViewGroup：ViewGroup在onLayout()中会调用自己的所有子View的layout()方法，把它们的尺寸和位置传给它们，让它们完成自我的内部布局。
+在进行布局的时候，layout()方法被父View调用，在layout()中它会保存父View传进来的自己的位置和尺寸，并且调用onLayout()来进行实际的内部布局。对于onLayout()，View和ViewGroup有所区别：
+
+- View：由于没有子 View，所以 View 的 onLayout() 什么也不做。
+- ViewGroup：ViewGroup在onLayout()中会调用自己的所有子View的layout()方法，把它们的尺寸和位置传给它们，让它们完成自我的内部布局。
 
 layout()方法用来确定View本身的位置，onLayout()方法用来确定子元素的位置。
 
