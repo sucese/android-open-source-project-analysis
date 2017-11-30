@@ -20,7 +20,7 @@ WindowManager是应用与窗口管理服务WindowManagerService交互的接口�
 
 Window在WindowManagerService的管理下，有序的显示在屏幕上，构成了多姿多彩的用户界面，关于Android的整个窗口系统，可以用下图来表示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_structure.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_structure.png"/>
 
 - WindowManager：应用与窗口管理服务WindowManagerService交互的接口
 - WindowManagerService：窗口管理服务，该服务运行在一个单独的进程中，因此WindowManager与WindowManagerService的交互也是一个IPC的过程。
