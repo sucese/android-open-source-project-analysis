@@ -191,20 +191,123 @@ public final class ViewRootImpl implements ViewParent,
 1. 调用requestLayout()完成界面异步绘制的请求, requestLayout()会去调用scheduleTraversals()来完成View的绘制，scheduleTraversals()方法将一个TraversalRunnable提交到工作队列中执行View的绘制。而
 TraversalRunnable最终调用了performTraversals()方法来完成实际的绘制操作。提到performTraversals()方法我们已经很熟悉了，在文章[02Android显示框架：Android应用视图的载体View](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/02Android显示框架：Android应用视图载体View.md)中
 我们已经详细的分析过它的实现。
-2. 创建WindowSession并通过WindowSession请求WindowManagerService来完成Window添加的过程这是一个IPC的过程。
+2. 创建WindowSession并通过WindowSession请求WindowManagerService来完成Window添加的过程这是一个IPC的过程，WindowManagerService作为实际的窗口管理者，窗口的创建、删除和更新都是由它来完成的，它同时还负责了窗口的层叠排序和大小计算
+等工作。
 
 ## 二 Window的删除流程
+
+Window的删除流程也是在WindowManagerGlobal里完成的。
 
 ```java
 public final class WindowManagerGlobal {
     
+   public void removeView(View view, boolean immediate) {
+        if (view == null) {
+            throw new IllegalArgumentException("view must not be null");
+        }
+
+        synchronized (mLock) {
+            //1. 查找待删除View的索引
+            int index = findViewLocked(view, true);
+            View curView = mRoots.get(index).getView();
+            //2. 调用removeViewLocked()完成View的删除, removeViewLocked()方法
+            //继续调用ViewRootImpl.die()方法来完成View的删除。
+            removeViewLocked(index, immediate);
+            if (curView == view) {
+                return;
+            }
+
+            throw new IllegalStateException("Calling with view " + view
+                    + " but the ViewAncestor is attached to " + curView);
+        }
+    }
+    
+    private void removeViewLocked(int index, boolean immediate) {
+        ViewRootImpl root = mRoots.get(index);
+        View view = root.getView();
+
+        if (view != null) {
+            InputMethodManager imm = InputMethodManager.getInstance();
+            if (imm != null) {
+                imm.windowDismissed(mViews.get(index).getWindowToken());
+            }
+        }
+        boolean deferred = root.die(immediate);
+        if (view != null) {
+            view.assignParent(null);
+            if (deferred) {
+                mDyingViews.add(view);
+            }
+        }
+    }
+
 }
 ```
 
 ```java
 public final class ViewRootImpl implements ViewParent,
+
         View.AttachInfo.Callbacks, ThreadedRenderer.HardwareDrawCallbacks {
+      boolean die(boolean immediate) {
+            // Make sure we do execute immediately if we are in the middle of a traversal or the damage
+            // done by dispatchDetachedFromWindow will cause havoc on return.
+            
+            //根据immediate参数来判断是执行异步删除还是同步删除
+            if (immediate && !mIsInTraversal) {
+                doDie();
+                return false;
+            }
     
+            if (!mIsDrawing) {
+                destroyHardwareRenderer();
+            } else {
+                Log.e(mTag, "Attempting to destroy the window while drawing!\n" +
+                        "  window=" + this + ", title=" + mWindowAttributes.getTitle());
+            }
+            mHandler.sendEmptyMessage(MSG_DIE);
+            return true;
+        }
+    
+        void doDie() {
+            checkThread();
+            if (LOCAL_LOGV) Log.v(mTag, "DIE in " + this + " of " + mSurface);
+            synchronized (this) {
+                if (mRemoved) {
+                    return;
+                }
+                mRemoved = true;
+                if (mAdded) {
+                    dispatchDetachedFromWindow();
+                }
+    
+                if (mAdded && !mFirst) {
+                    destroyHardwareRenderer();
+    
+                    if (mView != null) {
+                        int viewVisibility = mView.getVisibility();
+                        boolean viewVisibilityChanged = mViewVisibility != viewVisibility;
+                        if (mWindowAttributesChanged || viewVisibilityChanged) {
+                            // If layout params have been changed, first give them
+                            // to the window manager to make sure it has the correct
+                            // animation info.
+                            try {
+                                if ((relayoutWindow(mWindowAttributes, viewVisibility, false)
+                                        & WindowManagerGlobal.RELAYOUT_RES_FIRST_TIME) != 0) {
+                                    mWindowSession.finishDrawing(mWindow);
+                                }
+                            } catch (RemoteException e) {
+                            }
+                        }
+    
+                        mSurface.release();
+                    }
+                }
+    
+                mAdded = false;
+            }
+            WindowManagerGlobal.getInstance().doRemoveView(this);
+        }
+
 }
 ```
 
