@@ -524,6 +524,11 @@ Window的更新流程也和其他流程相似：
 2. 调用ViewRootImpl.setLayoutParams()方法完成重新布局的工作，在setLayoutParams()方法里最终会调用scheduleTraversals()
 进行解码重绘制，scheduleTraversals()后续的流程就是View的measure、layout和draw流程了，这个我们在上面已经说过了。
 
+通过上面分析，我们了解了Window的添加、删除和更新流程。那么我们来思考一个问题：既然说是Window的添加、删除和更新，那为什么方法名是addView、updateViewLayout、removeView，Window的本质是什么？🤔
+
+>事实上Window是一个抽象的概念，也就是说它并不是实际存在的，它以View的形式存在，每个Window都对应着一个View和一个ViewRootImpl，Window与View通过ViewRootImpl来建立联系。推而广之，我们可以理解
+WindowManagerService实际管理的也不是Window，而是View，管理在当前状态下哪个View应该在最上层显示，SurfaceFlinger绘制也同样是View。
+
 好了本篇文章的内容到这里就讲完了，在这篇文章中我们侧重分析Android窗口服务Client这一侧的实现，事实上更多的内容是在Server这一侧，也就是WindowManagerService。只不过在日常的开发中我们较少
 接触到WindowManagerService，它属于系统的内部服务，就暂时不做进一步的展开。总体上来说，本系列文章的目的还是在于更好的服务应用层的开发者，等到关于Android应用层Framework实现原理分析完成以后，
 我们再进一步深入，去分析系统层Framework的实现。
