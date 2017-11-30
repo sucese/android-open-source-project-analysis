@@ -244,6 +244,8 @@ public final class WindowManagerGlobal {
 }
 ```
 
+我们再来看看ViewRootImpl.die()方法的实现。
+
 ```java
 public final class ViewRootImpl implements ViewParent,
 
@@ -264,6 +266,7 @@ public final class ViewRootImpl implements ViewParent,
                 Log.e(mTag, "Attempting to destroy the window while drawing!\n" +
                         "  window=" + this + ", title=" + mWindowAttributes.getTitle());
             }
+            //如果是异步删除，则发送一个删除View的消息MSG_DIE就会直接返回
             mHandler.sendEmptyMessage(MSG_DIE);
             return true;
         }
@@ -277,6 +280,7 @@ public final class ViewRootImpl implements ViewParent,
                 }
                 mRemoved = true;
                 if (mAdded) {
+                    //调用dispatchDetachedFromWindow()完成View的删除
                     dispatchDetachedFromWindow();
                 }
     
@@ -305,23 +309,141 @@ public final class ViewRootImpl implements ViewParent,
     
                 mAdded = false;
             }
+            //刷新数据，将当前移除View的相关信息从我们上面说过了三个列表：mRoots、mParms和mViews中移除。
             WindowManagerGlobal.getInstance().doRemoveView(this);
         }
+        
+        void dispatchDetachedFromWindow() {
+                //1. 回调View的dispatchDetachedFromWindow方法，通知该View已从Window中移除
+                if (mView != null && mView.mAttachInfo != null) {
+                    mAttachInfo.mTreeObserver.dispatchOnWindowAttachedChange(false);
+                    mView.dispatchDetachedFromWindow();
+                }
+        
+                mAccessibilityInteractionConnectionManager.ensureNoConnection();
+                mAccessibilityManager.removeAccessibilityStateChangeListener(
+                        mAccessibilityInteractionConnectionManager);
+                mAccessibilityManager.removeHighTextContrastStateChangeListener(
+                        mHighContrastTextManager);
+                removeSendWindowContentChangedCallback();
+        
+                destroyHardwareRenderer();
+        
+                setAccessibilityFocus(null, null);
+        
+                mView.assignParent(null);
+                mView = null;
+                mAttachInfo.mRootView = null;
+        
+                mSurface.release();
+        
+                if (mInputQueueCallback != null && mInputQueue != null) {
+                    mInputQueueCallback.onInputQueueDestroyed(mInputQueue);
+                    mInputQueue.dispose();
+                    mInputQueueCallback = null;
+                    mInputQueue = null;
+                }
+                if (mInputEventReceiver != null) {
+                    mInputEventReceiver.dispose();
+                    mInputEventReceiver = null;
+                }
+                
+                //调用WindowSession.remove()方法，这同样是一个IPC过程，最终调用的是
+                //WindowManagerService.removeWindow()方法来移除Window。
+                try {
+                    mWindowSession.remove(mWindow);
+                } catch (RemoteException e) {
+                }
+        
+                // Dispose the input channel after removing the window so the Window Manager
+                // doesn't interpret the input channel being closed as an abnormal termination.
+                if (mInputChannel != null) {
+                    mInputChannel.dispose();
+                    mInputChannel = null;
+                }
+        
+                mDisplayManager.unregisterDisplayListener(mDisplayListener);
+        
+                unscheduleTraversals();
+            }
 
 }
 ```
+
+我们再来总结一下Window的删除流程：
+
+1. 查找待删除View的索引
+2. 调用removeViewLocked()完成View的删除, removeViewLocked()方法继续调用ViewRootImpl.die()方法来完成View的删除。
+3. ViewRootImpl.die()方法根据immediate参数来判断是执行异步删除还是同步删除，如果是异步删除则则发送一个删除View的消息MSG_DIE就会直接返回。
+如果是同步删除，则调用doDie()方法。
+4. doDie()方法调用dispatchDetachedFromWindow()完成View的删除，在该方法里首先回调View的dispatchDetachedFromWindow方法，通知该View已从Window中移除，
+然后调用WindowSession.remove()方法，这同样是一个IPC过程，最终调用的是WindowManagerService.removeWindow()方法来移除Window。
 
 ## 三 Window的更新流程
 
 ```java
 public final class WindowManagerGlobal {
     
+    public void updateViewLayout(View view, ViewGroup.LayoutParams params) {
+        if (view == null) {
+            throw new IllegalArgumentException("view must not be null");
+        }
+        if (!(params instanceof WindowManager.LayoutParams)) {
+            throw new IllegalArgumentException("Params must be WindowManager.LayoutParams");
+        }
+
+        final WindowManager.LayoutParams wparams = (WindowManager.LayoutParams)params;
+
+        //更新View的LayoutParams参数
+        view.setLayoutParams(wparams);
+
+        synchronized (mLock) {
+            //查找Viewd的索引，更新mParams里的参数
+            int index = findViewLocked(view, true);
+            ViewRootImpl root = mRoots.get(index);
+            mParams.remove(index);
+            mParams.add(index, wparams);
+            //调用ViewRootImpl.setLayoutParams()完成重新布局的工作。
+            root.setLayoutParams(wparams, false);
+        }
+    }   
 }
 ```
 
+我们再来看看ViewRootImpl.setLayoutParams()方法的实现。
+
 ```java
 public final class ViewRootImpl implements ViewParent,
-        View.AttachInfo.Callbacks, ThreadedRenderer.HardwareDrawCallbacks {
-    
+
+   void setLayoutParams(WindowManager.LayoutParams attrs, boolean newView) {
+           synchronized (this) {
+               //参数预处理
+               ...
+   
+                //如果是新View，调用requestLayout()进行重新绘制
+               if (newView) {
+                   mSoftInputMode = attrs.softInputMode;
+                   requestLayout();
+               }
+   
+               // Don't lose the mode we last auto-computed.
+               if ((attrs.softInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST)
+                       == WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED) {
+                   mWindowAttributes.softInputMode = (mWindowAttributes.softInputMode
+                           & ~WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST)
+                           | (oldSoftInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST);
+               }
+   
+               mWindowAttributesChanged = true;
+               //如果不是新View，调用requestLayout()进行重新绘制
+               scheduleTraversals();
+           }
+       } 
 }
 ```
+
+Window的更新流程也和其他流程相似：
+
+1. 更新View的LayoutParams参数，查找Viewd的索引，更新mParams里的参数。
+2. 调用ViewRootImpl.setLayoutParams()方法完成重新布局的工作，在setLayoutParams()方法里最终会调用scheduleTraversals()
+进行解码重绘制，scheduleTraversals()后续的流程就是View的measure、layout和draw流程了，这个我们在上面已经说过了。
