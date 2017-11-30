@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.ViewActivity">
 
-    <com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.MeasureView
+    <com.guoxiaoxing.android.framework.demo.app_framwork.ui_framwork.CustomView
         android:id="@+id/view"
         android:layout_width="200dp"
         android:layout_height="200dp" />

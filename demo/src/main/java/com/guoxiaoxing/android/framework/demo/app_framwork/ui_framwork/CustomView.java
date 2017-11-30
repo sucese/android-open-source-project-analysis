@@ -20,7 +20,7 @@ import android.view.View;
  */
 public class CustomView extends View {
 
-    private static final String TAG = "View";
+    private static final String TAG = "CustomView";
 
     public CustomView(Context context) {
         super(context);
@@ -125,6 +125,8 @@ public class CustomView extends View {
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         Log.d(TAG, "View onWindowFocusChanged() hasWindowFocus = " + hasWindowFocus);
+        Log.d(TAG, "getMeasuredWidth(): " + getMeasuredWidth());
+        Log.d(TAG, "getMeasuredHeight(): " + getMeasuredHeight());
     }
 
     /**

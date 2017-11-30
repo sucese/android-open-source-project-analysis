@@ -18,10 +18,15 @@ WindowManager是应用与窗口管理服务WindowManagerService交互的接口�
 关于Window的介绍，我们在文章[03Android显示框架：Android应用视图的管理者Window](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/03Android显示框架：Android应用视图管理者Window.md)已经
 详细分析过，通俗来说，Window就是手机上一块显示区域，也就是Android中的绘制画布Surface，添加一个Window的过程，也就是申请分配一块Surface的过程。而整个流程的管理者正是WindowManagerService。
 
-Window在WindowManagerService的管理下，有序的显示在屏幕上，构成了多姿多彩的用户界面。
+Window在WindowManagerService的管理下，有序的显示在屏幕上，构成了多姿多彩的用户界面，关于Android的整个窗口系统，可以用下图来表示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_structure.png" width="500"/>
 
 - WindowManager：应用与窗口管理服务WindowManagerService交互的接口
 - WindowManagerService：窗口管理服务，该服务运行在一个单独的进程中，因此WindowManager与WindowManagerService的交互也是一个IPC的过程。
+- SurfaceFlinger：SurfaceFlinger服务运行在Android系统的System进程中，它负责管理Android系统的帧缓冲区（Frame Buffer)，Android设备的显示屏被抽象为一个
+帧缓冲区，而Android系统中的SurfaceFlinger服务就是通过向这个帧缓冲区写入内容来绘制应用程序的用户界面的。
+- Surface：每个显示界面的窗口都是一个Surface。
 
 WindowManager是一个接口，继承于ViewManager，实现类是WindowManagerImpl，实际上我们常用的功能，也是定义在ViewManager里的。
 
@@ -34,6 +39,12 @@ public interface ViewManager{
     //删除View
     public void removeView(View view);
 }
+```
+
+WindowManager可以通过Context来获取，WindowManager也会和其他服务一样在开机时注册到ContextImpl里的map容器里，然后通过他们的key来获取。
+
+```java
+windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 ```
 
 WindowManager的实现类是WindowManagerImpl，在WindowManagerImpl内部实际的功能是有WindowManagerGlobal来完成的，我们直接来分析它里面这三个方法的实现。
@@ -129,7 +140,8 @@ public final class WindowManagerGlobal {
 - mRoots存储着所有Window对应的ViewRootImpl对象
 - mParams存储着所有Window对应的WindowManager.LayoutParams对象
 
-这里面提到了一个我们不是很熟悉的类ViewRootImpl，它其实就是一个封装类，封装了View与WindowManager的交互力促，最后也是调用ViewRootImpl.setView()方法完成Window的添加并更新界面。
+这里面提到了一个我们不是很熟悉的类ViewRootImpl，它其实就是一个封装类，封装了View与WindowManager的交互方式，它是View与WindowManagerService通信的桥梁。
+最后也是调用ViewRootImpl.setView()方法完成Window的添加并更新界面。
 
 我们来看看这个方法的实现。
 
@@ -193,6 +205,70 @@ TraversalRunnable最终调用了performTraversals()方法来完成实际的绘�
 我们已经详细的分析过它的实现。
 2. 创建WindowSession并通过WindowSession请求WindowManagerService来完成Window添加的过程这是一个IPC的过程，WindowManagerService作为实际的窗口管理者，窗口的创建、删除和更新都是由它来完成的，它同时还负责了窗口的层叠排序和大小计算
 等工作。
+
+注：在文章[02Android显示框架：Android应用视图的载体View](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/02Android显示框架：Android应用视图载体View.md)中
+我们已经详细的分析过performTraversals()方法的实现，这里我们再简单提一下：
+
+1. 获取Surface对象，用于图形绘制。
+2. 调用performMeasure()方法测量视图树各个View的大小。
+2. 调用performLayout()方法计算视图树各个View的位置，进行布局。
+2. 调用performMeasure()方法对视图树的各个View进行绘制。
+
+既然提到WindowManager与WindowManagerService的跨进程通信，我们再讲一下它们的通信流程。Android的各种服务都是基于C/S结构来设计的，系统层提供服务，应用层使用服务。WindowManager也是一样，它与
+WindowManagerService的通信是通过WindowSession来完成的。
+
+1. 首先调用ServiceManager.getService("window")获取WindowManagerService，该方法返回的是IBinder对象，然后调用IWindowManager.Stub.asInterface()方法将WindowManagerService转换为一个IWindowManager对象。
+2. 然后调用openSession()方法与WindowManagerService建立一个通信会话，方便后续的跨进程通信。这个通信会话就是后面我们用到的WindowSession。
+
+基本上所有的Android系统服务都是基于这种方式实现的，它是一种基于AIDL实现的IPC的过程。关于AIDL读者可自行查阅资料。
+
+```java
+public final class WindowManagerGlobal {
+    
+    public static IWindowSession getWindowSession() {
+        synchronized (WindowManagerGlobal.class) {
+            if (sWindowSession == null) {
+                try {
+                    InputMethodManager imm = InputMethodManager.getInstance();
+                    //获取WindowManagerService对象，并将它转换为IWindowManager类型
+                    IWindowManager windowManager = getWindowManagerService();
+                    //调用openSession()方法与WindowManagerService建立一个通信会话，方便后续的
+                    //跨进程通信。
+                    sWindowSession = windowManager.openSession(
+                            new IWindowSessionCallback.Stub() {
+                                @Override
+                                public void onAnimatorScaleChanged(float scale) {
+                                    ValueAnimator.setDurationScale(scale);
+                                }
+                            },
+                            imm.getClient(), imm.getInputContext());
+                } catch (RemoteException e) {
+                    throw e.rethrowFromSystemServer();
+                }
+            }
+            return sWindowSession;
+        }
+    }
+    
+    public static IWindowManager getWindowManagerService() {
+        synchronized (WindowManagerGlobal.class) {
+            if (sWindowManagerService == null) {
+                //调用ServiceManager.getService("window")获取WindowManagerService，该方法返回的是IBinder对象
+                //，然后调用IWindowManager.Stub.asInterface()方法将WindowManagerService转换为一个IWindowManager对象
+                sWindowManagerService = IWindowManager.Stub.asInterface(
+                        ServiceManager.getService("window"));
+                try {
+                    sWindowManagerService = getWindowManagerService();
+                    ValueAnimator.setDurationScale(sWindowManagerService.getCurrentAnimatorScale());
+                } catch (RemoteException e) {
+                    throw e.rethrowFromSystemServer();
+                }
+            }
+            return sWindowManagerService;
+        }
+    }
+ }
+```
 
 ## 二 Window的删除流程
 
@@ -447,3 +523,7 @@ Window的更新流程也和其他流程相似：
 1. 更新View的LayoutParams参数，查找Viewd的索引，更新mParams里的参数。
 2. 调用ViewRootImpl.setLayoutParams()方法完成重新布局的工作，在setLayoutParams()方法里最终会调用scheduleTraversals()
 进行解码重绘制，scheduleTraversals()后续的流程就是View的measure、layout和draw流程了，这个我们在上面已经说过了。
+
+好了本篇文章的内容到这里就讲完了，在这篇文章中我们侧重分析Android窗口服务Client这一侧的实现，事实上更多的内容是在Server这一侧，也就是WindowManagerService。只不过在日常的开发中我们较少
+接触到WindowManagerService，它属于系统的内部服务，就暂时不做进一步的展开。总体上来说，本系列文章的目的还是在于更好的服务应用层的开发者，等到关于Android应用层Framework实现原理分析完成以后，
+我们再进一步深入，去分析系统层Framework的实现。

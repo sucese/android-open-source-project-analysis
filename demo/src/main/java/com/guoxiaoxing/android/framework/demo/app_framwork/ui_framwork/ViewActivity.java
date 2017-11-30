@@ -9,16 +9,16 @@ import com.guoxiaoxing.android.framework.demo.R;
 
 public class ViewActivity extends AppCompatActivity {
 
-    private static final String TAG = "View";
+    private static final String TAG = "ViewActivity";
 
-    private MeasureView view;
+    private CustomView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 
-        view = (MeasureView) findViewById(R.id.view);
+        view = (CustomView) findViewById(R.id.view);
 
         ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
         viewTreeObserver.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
@@ -72,6 +72,9 @@ public class ViewActivity extends AppCompatActivity {
         if(hasFocus){
             int width = view.getMeasuredWidth();
             int height = view.getMeasuredHeight();
+
+            Log.d(TAG, "view.getMeasuredWidth(): " + width);
+            Log.d(TAG, "view.getMeasuredHeight(): " + height);
         }
     }
 }
