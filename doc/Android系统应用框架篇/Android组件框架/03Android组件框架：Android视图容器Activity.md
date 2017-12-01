@@ -124,11 +124,11 @@ Activity的启动流程一共分为7大步，35小步，5个进程通信，在10
 
 Activity启动流程序列图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_sequence.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_sequence.png"/>
 
 Activity启动流程结构图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_start_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_structure.png"/>
 
 看了上述两个图，我们来分析下两个问题。
 
@@ -234,7 +234,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 
 启动栈图：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_in_same_process.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_in_same_process.png"/>
 
 启动流程：
 
@@ -247,7 +247,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 
 启动栈图：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/1/activity_in_new_process.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_in_new_process.png"/>
 
 启动流程：
 

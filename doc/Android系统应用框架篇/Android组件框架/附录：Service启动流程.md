@@ -29,7 +29,7 @@
 
 新进程中启动Service组件序列图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/10/service_start_sequence.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_start_sequence.png"/>
 
 
 #### 1 Activity.startService(Intent service)
