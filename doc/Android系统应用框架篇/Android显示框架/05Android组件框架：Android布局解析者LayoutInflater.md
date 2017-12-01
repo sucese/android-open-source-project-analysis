@@ -20,7 +20,7 @@ LayoutInflater可以把xml布局文件里内容加载成一个View，LayoutInfla
 LayoutInflater也是通过Context获取，它也是系统服务的一种，被注册在ContextImpl的map里，然后通过LAYOUT_INFLATER_SERVICE来获取。
 
 ```java
-LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 ```
 LayoutInflater是一个抽象类，它的实现类是PhoneLayoutInflater。LayoutInflater会采用深度优先遍历自顶向下遍历View树，根据View的全路径名利用反射获取构造器
 从而构建View的实例。整个逻辑还是很清晰的，我们来具体看一看。
@@ -554,3 +554,24 @@ public abstract class LayoutInflater {
         }   
 }
 ```
+
+好了，到这篇文章为止，我们对整个Android显示框架的原理分析就算是告一段落了，在这些文章里我们侧重的是Client端的分析，WindowManagerService、SurfaceFlinger这些Server端的
+并没有过多的涉及，因为对大部分开发者而言，扎实的掌握Client端的原理就足够了。等到你完全掌握了Client端的原理或者是需要进行Android Framework层的开发，可以进一步去深入Server
+端的原理。
+
+关于Android显示框架主要包括五篇文章：
+
+- [01Android显示框架：Android显示框架概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/01Android显示框架：Android显示框架概述.md)
+- [02Android显示框架：Android应用视图的载体View](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/02Android显示框架：Android应用视图载体View.md)
+- [03Android显示框架：Android应用视图的管理者Window](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/03Android显示框架：Android应用视图管理者Window.md)
+- [04Android显示框架：Android应用窗口管理者WindowManager](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Android应用窗口管理者WindowManager.md)
+- [05Android组件框架：Android布局解析者LayoutInflater](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android组件框架：Android布局解析者LayoutInflater.md)
+
+后续我们会接着进行
+
+- Android组件框架
+- Android动画框架
+- Android通信框架
+- Android多媒体框架
+
+等Android子系统的分析，后续的内容可以关注[Android open source project analysis](https://github.com/guoxiaoxing/android-open-source-project-analysis)项目。

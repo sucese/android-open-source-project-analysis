@@ -6,7 +6,7 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/view/android_ui_system.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/android_ui_system.png"/>
 
 从上图可以看出，Android的显示系统分为3层：
 
@@ -21,5 +21,4 @@
 - View：实际显示的应用视图。
 - WindowManagerService：用来创建、管理和销毁Window。
 
-后续的分析思路是这样的，我们先分析最上层的View，然后依次是Window、WindowManagerService。这样可以由浅入深，便于理解。
-至于Activity我们会放在Android组件框架里分析。
+后续的分析思路是这样的，我们先分析最上层的View，然后依次是Window、WindowManagerService。这样可以由浅入深，便于理解。至于Activity我们会放在Android组件框架里分析。
