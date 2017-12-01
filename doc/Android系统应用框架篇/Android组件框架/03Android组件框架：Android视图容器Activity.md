@@ -54,6 +54,43 @@ startActivity(intent);
 
 ## 二 Activity的生命周期
 
+Activity与Fragment生命周期图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/complete_android_fragment_lifecycle.png"/>
+
+注：这张图出自Github上一个项目[android-lifecycle](https://github.com/xxv/android-lifecycle)。
+
+
+onCreate
+
+onAttachFragment
+
+onContentChanged
+
+onStart
+
+onRestoreInstanceState
+
+onPostCreate
+
+onResume
+
+onPostResume
+
+onAccachedToWindow
+
+onCreateOptionsMenu
+
+onPause
+
+onSaveInstanceState
+
+onStop
+
+onDestory
+
+
+下面我们正式来进行Activity启动流程的分析，事实上掌握好上面的那些知识已经足够应付日常开发了。如果你想对Activity系统有更深的理解，可以去研究下Activity的启动流程。
 
 ## 三 Activity的启动流程
 
@@ -221,7 +258,7 @@ SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建�
 5. 新的应用进程创建完成后，会向ActivityManagerService发送一个新进程创建完成的进程通信请求ATTACH_APPLICATION_TRANSACTION，以便ActivityManagerService进一步执行目标Activity的启动操作。
 6. ActivityManagerService将目标Activity的信息发送给新创建的进程，新进程执行目标Activity的创建操作。
 
-从上面可以看出，三种情况下的Activity的启动流程大同小异，好了，我们下一篇文章进入正式的源码分析吧。
+从上面可以看出，三种情况下的Activity的启动流程大同小异。
 
 >注：分析的过程中，会牵扯任务、应用进程、消息循环、Binder进程通信等方面内容，这些内容我们暂时先不讨论，后面会有文章详尽地去分析这些内容，本次文章的重点在于讨论Activity的启动流程。
 

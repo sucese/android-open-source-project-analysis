@@ -73,9 +73,6 @@ public class Activity extends ContextThemeWrapper
 ```
 startActivity()会去调用startActivityForResult(intent, -1)，-1表示不需要知道Activity的执行结果。
 
-
-
-
 ### 3 Activity.startActivityForResult(Intent intent, int requestCode)
 
 ```java
