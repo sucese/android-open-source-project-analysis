@@ -27,7 +27,59 @@ LayoutInflater是一个抽象类，它的实现类是PhoneLayoutInflater。Layou
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/LayoutInflater_sequence.png"/>
 
-我们先来看看总的调度方法inflate()，这个也是我们最常用的。
+我们先来看看总的调度方法inflate()，这个也是我们最常用的
+
+```java
+public View inflate(@LayoutRes int resource, @Nullable ViewGroup root, boolean attachToRoot)
+```
+这个方法有三个参数：
+
+int resource：布局ID，也就是要解析的xml布局文件，boolean attachToRoot表示是否要添加到父布局root中去。这里面还有个关键的参数root。它用来表示根布局，这个就很常见的，我们在用
+这个方法的时候，有时候给root赋值了，有时候直接给了null（给null的时候IDE会有警告提示），这个root到底有什么作用呢？🤔
+
+它主要有两个方面的作用：
+
+- 当attachToRoot == true且root ！= null时，新解析出来的View会被add到root中去，然后将root作为结果返回。
+- 当attachToRoot == false且root ！= null时，新解析的View会直接作为结果返回，而且root会为新解析的View生成LayoutParams并设置到该View中去。
+- 当attachToRoot == false且root == null时，新解析的View会直接作为结果返回。
+
+注意第二条和第三条是由区别的，你可以去写个例子试一下，当root为null时，新解析出来的View没有LayoutParams参数，这时候你设置的layout_width和layout_height是不生效的。
+
+说到这里，有人可能有疑问了，Activity里的布局应该也是LayoutInflater加载的，我也没做什么处理，但是我设置的layout_width和layout_heigh参数都是可以生效的，这是为什么？🤔
+
+>这是因为Activity内部做了处理，我们知道Activity的setContentView()方法，实际上调用的PhoneWindow的setContentView()方法。它调用的时候将Activity的顶级DecorView（FrameLayout）
+作为root传了进去，mLayoutInflater.inflate(layoutResID, mContentParent)实际调用的是inflate(resource, root, root != null)，所以在调用Activity的setContentView()方法时
+可以将解析出的View添加到顶级DecorView中，我们设置的layout_width和layout_height参数也可以生效。
+
+具体代码如下：
+
+```java
+@Override
+public void setContentView(int layoutResID) {
+    if (mContentParent == null) {
+        installDecor();
+    } else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+        mContentParent.removeAllViews();
+    }
+
+    if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
+        final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
+                getContext());
+        transitionTo(newScene);
+    } else {
+        
+        mLayoutInflater.inflate(layoutResID, mContentParent);
+    }
+    mContentParent.requestApplyInsets();
+    final Callback cb = getCallback();
+    if (cb != null && !isDestroyed()) {
+        cb.onContentChanged();
+    }
+    mContentParentExplicitlySet = true;
+}
+```
+
+了解了inflate()方法各个参数的含义，我们正式来分析它的实现。
 
 ```java
 
