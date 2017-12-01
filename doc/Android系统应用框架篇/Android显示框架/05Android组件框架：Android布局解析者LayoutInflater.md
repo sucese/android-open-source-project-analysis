@@ -1,4 +1,4 @@
-# 03Android组件框架：Android布局渲染者LayoutInflater
+# 03Android组件框架：Android布局解析者LayoutInflater
 
 **关于作者**
 
