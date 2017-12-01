@@ -1661,8 +1661,24 @@ ViewGroup.drawChild(Canvas canvas, View child, long drawingTime)用来完成子�
 - MotionEvent：Android中用来表示各种事件的对象，例如ACTION_DOWN、ACTION_MOVE等，我们还可以通过它获取事件发生的坐标，getX/getY获取相对于当前View左上角的坐标，getRawX/getRawY获取相对于屏幕左上角的坐标。
 - TouchSlop：系统所能识别的最小滑动距离，通过ViewConfiguration.get(context).getScaledTouchSlop()方法获取。
 
-现在我们再来看看View里的事件分发机制，概括来说，可以
+现在我们再来看看View里的事件分发机制，概括来说，可以用下面代码表示：
 
+```java
+public boolean dispatchTouchEvent(MotionEvent event){
+    boolean consume = false;
+    //父View决定是否拦截事件
+    if(onInterceptTouchEvent(event)){
+        //父View调用onTouchEvent(event)消费事件
+        consume = onTouchEvent(event);
+    }else{
+        //调用子View的dispatchTouchEvent(event)方法继续分发事件
+        consume = child.dispatchTouchEvent(event);
+    }
+    return consume;
+}
+```
+
+我们再来具体看看各个场景中的事件分发。
 
 ### 5.1 Activity的事件分发
 
