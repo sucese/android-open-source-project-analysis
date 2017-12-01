@@ -6,33 +6,56 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-本篇文章我们来分析Android的视图容器Activity，这也是我们在日常开发中接触的最多的一个组件。
+本篇文章我们来分析Android的视图容器Activity，这也是我们在日常开发中接触的最多的一个组件。这篇文章其实很早以前就写好了，但是迟迟没有发出来。因为考虑到Activity系统
+非常庞杂，感觉它的复杂程度是要高于View系统的，所以想再将文章的内容重构以便，力求清晰简洁。
 
 **文章目录**
 
-- 一 Activity的生命周期
-- 一 Activity的启动流程
+- 一 Activity的启动模式
+- 二 Activity的生命周期
+- 三 Activity的启动流程
 
-😁一个简单的例子
+Activity作为Android最为常用的组件，它的复杂程度是不言而喻的。当我们点击一个应用的图标，应用的LancherActivity（MainActivity）开始启动，伴随着IntentFilter的
+匹配，Activity的生命周期从onCreate()方法开始变化，最终将界面呈现在用户的面前。
 
-```java
-public class SimpleActivity extends AppCompatActivity {
+Activity的复杂性主要体现在两个方面：
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple);
-    }
-}
+- 启动模式、Flag以及各种场景对Activity生命周期的影响。
+- 复杂的启动流程，超长的函数调用链。
+
+针对这些问题，我们来一一分析。
+
+## 一 Activity的启动模式
+
+说起Activity的启动模式，可能是一个老生常谈的问题，很多文章也分析过，但如果不是阅读过源码或者有着很多的实践，总会有种云里雾里的感觉。
+
+>启动模式会影响Activity的启动行为，默认情况下，启动一个Activity就是创建一个实例，然后进入回退栈，但是我们可以通过启动模式来改变这种行为，实现不同的交互效果。
+
+启动模式可以在xml文件里定义
+
+```xml
+android:launchMode="singleTop"
 ```
 
-基本上我们第一天接触Android的界面开发时就会看到这么一段代码，那么大家有没有思考过这段代码背后的调用逻辑是什么🤔，UI是如何呈现在Activity上的🤔
-接下来我们就来一一分析这些问题。
+也可以在代码里指定
 
-## 一 Activity的生命周期
+```java
+Intent intent = new Intent(StartActivity.this, SubInNewProcessActivity.class);
+intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+startActivity(intent);
+```
+
+启动模式一共有四种：
+
+- standard
+- singleTop
+- singleTask
+- singleInstance
+
+## 二 Activity的生命周期
 
 
-## 二 Activity的启动流程
+## 三 Activity的启动流程
 
 在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的协同，参数的包装与处理，只要我们抓
 住核心原理，所有的问题就都迎刃而解。

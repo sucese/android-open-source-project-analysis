@@ -23,7 +23,9 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_start_btn_in_new_process: {
-                startActivity(new Intent(StartActivity.this, SubInNewProcessActivity.class));
+                Intent intent = new Intent(StartActivity.this, SubInNewProcessActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
             break;
             case R.id.activity_start_btn_in_same_process: {
