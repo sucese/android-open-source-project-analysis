@@ -30,7 +30,7 @@ TCP协议是HTTP/HTTPS、WebSocket等协议的基础，我们首先来看看它�
 
 ### 1.1 IP数据报与TCP报文
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/ip_message.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/ip_message.jpg"/>
 
 1. 版本——占 4 bit，指IP协议的版本. 目前的 IP 协议版本号为 4 (即 IPv4)
 2. 首部长度——占 4 bit，可表示的最大数值是 15 个单位(一个单位为 4 字节)因此 IP 的首部长度的最大值是60字节。
@@ -45,7 +45,7 @@ TCP协议是HTTP/HTTPS、WebSocket等协议的基础，我们首先来看看它�
 11. 可选字段的长度是 可变的，1～40 字节，用于增加IP数据报的控制功能。
 12. 填充字段保证IP首部长度是 4 字节的整倍数
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/tcp_message.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/tcp_message.jpg"/>
 
 1. 源端口和目的端口字段——各占 2 字节。端口是传输层与应用层的服务接口。传输层的复用和分用功能都要通过端口才能实现。  
 2. 序号字段——占 4 字节。TCP 连接中传送的数据流中的每一个字节都编上一个序号。序号字段的值则指的是本报文段所发送的数据的第一个字节的序号。 
