@@ -265,7 +265,7 @@ GET与POST在本质上都是TCP连接，只是GET直接把参数写在请求行�
 
 如下图所示，可以很明显的看出两个的区别：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_https.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_https.png" width="500"/>
 
 注：TLS是SSL的升级替代版，具体发展历史可以参考[传输层安全性协议](https://zh.wikipedia.org/wiki/%E5%82%B3%E8%BC%B8%E5%B1%A4%E5%AE%89%E5%85%A8%E6%80%A7%E5%8D%94%E5%AE%9A)。
 
