@@ -30,6 +30,10 @@ TCP协议是HTTP/HTTPS、WebSocket等协议的基础，我们首先来看看它�
 
 ### 1.1 IP数据报与TCP报文
 
+关于IP数据报与TCP报文你只需要理解它的结构就行，不用去记它，等到使用的时候不记得了，查一下就好了。
+
+IP数据报
+
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/ip_message.jpg"/>
 
 1. 版本——占 4 bit，指IP协议的版本. 目前的 IP 协议版本号为 4 (即 IPv4)
@@ -44,6 +48,8 @@ TCP协议是HTTP/HTTPS、WebSocket等协议的基础，我们首先来看看它�
 10. 源地址和目的地址都各占 4 字节，32bit 的IP地址
 11. 可选字段的长度是 可变的，1～40 字节，用于增加IP数据报的控制功能。
 12. 填充字段保证IP首部长度是 4 字节的整倍数
+
+TCP报文
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/tcp_message.jpg"/>
 
@@ -70,7 +76,7 @@ TCP用[三次握手](https://zh.wikipedia.org/wiki/%E4%BC%A0%E8%BE%93%E6%8E%A7%E
 
 三次握手与四次分手的流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/three_way_handshake.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/three_way_handshake.jpeg"/>
 
 三次握手
 
@@ -263,6 +269,8 @@ SSL/TSL的常见开源实现是OpenSSL，OpenSSL是一个开放源代码的软�
 
 为什么需要WebSocket，因为 HTTP 协议有一个缺陷：通信只能由客户端发起。而WebSocket可以实现双向通信。一般来说WebSocket是用来实现双工通信的长连接的。HTTP想要达到
 这种效果，一般会通过轮询或者long poll来实现，这样比较占用资源且非常被动。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/websocket_connection.png"/>
 
 一个典型的WebSocket请求与响应
 
