@@ -124,7 +124,7 @@ HTTP应用程序是通过相互发送报文工作的，报文是HTTP应用程序
 - 请求头部由关键字/值对组成，每行一对，关键字和值用英文冒号“:”分隔。请求头部通知服务器有关于客户端请求的信息。
 - 请求实体不在 GET 方法中使用，而是在POST 方法中使用。POST 方法适用于需要客户填写表单的场合。与请求包体相关的最常使用的是包体类型 Content-Type 和包体长度 Content-Length。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_request_message.jpeg"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_request_message.png"/>
 
 请求报文
 
@@ -149,7 +149,7 @@ Connection: keep-alive
 - 响应首部由关键字/值对组成，每行一对，关键字和值用英文冒号“:”分隔。请求首部部通知客户端有关于服务端响应的信息。
 - 响应实体是服务器返回给客户端的文本信息。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_response_message.jpeg"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_response_message.png"/>
 
 ```
 HTTP/1.1 200 OK
