@@ -112,31 +112,55 @@ TCP用[三次握手](https://zh.wikipedia.org/wiki/%E4%BC%A0%E8%BE%93%E6%8E%A7%E
 
 >[HTTP](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE)（HyperText Transfer Protocol）是一种用于分布式、协作式和超媒体信息系统的应用层协议[1]。HTTP是万维网的数据通信的基础。
 
-HTTP是最常见的应用层
+HTTP是最常见的应用层协议，我们日常开发中基本上接触到的都是这个协议。
 
 ### 2.1 HTTP报文
 
 HTTP应用程序是通过相互发送报文工作的，报文是HTTP应用程序之间发送的数据块，报文通常分为请求报文和响应报文两种，请求报文向服务器请求一个动作，响应报文将请求结果返回给客户端。
 
+>HTTP请求报文分为三部分：请求行、请求首部、请求实体.
+
+- 请求行由方法字段、URL 字段 和HTTP 协议版本字段 3 个部分组成，他们之间使用空格隔开。
+- 请求头部由关键字/值对组成，每行一对，关键字和值用英文冒号“:”分隔。请求头部通知服务器有关于客户端请求的信息。
+- 请求实体不在 GET 方法中使用，而是在POST 方法中使用。POST 方法适用于需要客户填写表单的场合。与请求包体相关的最常使用的是包体类型 Content-Type 和包体长度 Content-Length。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_request_message.jpeg"/>
+
 请求报文
 
 ```
-GET / HTTP/1.1
-Host: www.google.com
+GET /his?wd=&from=pc_web&rf=3&hisdata=&json=1&p=3&sid=20740_20742_1424_18280_20417_17001_15840_11910_20744_20705&csor=0&cb=jQuery110206488567241711853_1469936513370&_=1469936513371 HTTP/1.1
+Host: www.baidu.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:47.0) Gecko/20100101 Firefox/47.0
+Accept: text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */／*; q=0.01
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate, br
+X-Requested-With: XMLHttpRequest
+Referer: https://www.baidu.com/
+Cookie: BAIDUID=DB24D5F4AB36694CF00C4877ADA56562:FG=1; BIDUPSID=DB24D5F4AB36694CF00C4877ADA56562; PSTM=1469936050; BDRCVFR[gltLrB7qNCt]=mk3SLVN4HKm; BD_CK_SAM=1; H_PS_PSSID=20740_20742_1424_18280_20417_17001_15840_11910_20744_20705; BD_UPN=133252; H_PS_645EC=96a0XJobAseSCdbn9%2FviULLD7KreCHN4V4HzQtcGacKF8tGu13Nzd6j9PoB2SPPVj1d5; BD_HOME=0; __bsi=11860814506529643127_00_0_I_R_25_0303_C02F_N_I_I_0
+Connection: keep-alive
 ```
 
 响应报文
 
+>HTTP响应报文分为三部分：状态行、响应首部、响应实体。
+
+- 状态行由 HTTP 协议版本字段、状态码和状态码的描述文本 3 个部分组成，他们之间使用空格隔开。
+- 响应首部由关键字/值对组成，每行一对，关键字和值用英文冒号“:”分隔。请求首部部通知客户端有关于服务端响应的信息。
+- 响应实体是服务器返回给客户端的文本信息。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_response_message.jpeg"/>
+
 ```
 HTTP/1.1 200 OK
-Content-Length: 3059
-Server: GWS/2.0
-Date: Sat, 11 Jan 2003 02:44:04 GMT
-Content-Type: text/html
-Cache-control: private
-Set-Cookie: PREF=ID=73d4aef52e57bae9:TM=1042253044:LM=1042253044:S=SMCc_HRPCQiqy
-X9j; expires=Sun, 17-Jan-2038 19:14:07 GMT; path=/; domain=.google.com
+Server: bfe/1.0.8.14
+Date: Sun, 31 Jul 2016 03:41:53 GMT
+Content-Type: baiduApp/json; v6.27.2.14; charset=UTF-8
+Content-Length: 95
 Connection: keep-alive
+Cache-Control: private
+Expires: Sun, 31 Jul 2016 04:41:53 GMT
+Set-Cookie: __bsi=12018325985460509248_00_0_I_R_4_0303_C02F_N_I_I_0; expires=Sun, 31-Jul-16 03:41:58 GMT; domain=www.baidu.com; path=/
 ```
 
 报文通常由以下部分组成：
