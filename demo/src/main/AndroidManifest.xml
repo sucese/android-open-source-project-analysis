@@ -32,17 +32,17 @@
         <activity android:name=".app_practice.ui_develop.DrawActivity" />
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
         <activity android:name=".app_framwork.ui_framwork.ViewActivity">
+        </activity>
+        <activity
+            android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity"
+            android:screenOrientation="sensor"></activity>
+        <activity android:name=".app_framwork.ui_framwork.WindowActivity"></activity>
+        <activity android:name=".app_framwork.ui_framwork.RecyclerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity"
-            android:screenOrientation="sensor">
-        </activity>
-        <activity android:name=".app_framwork.ui_framwork.WindowActivity">
         </activity>
     </application>
 
