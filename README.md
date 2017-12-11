@@ -78,7 +78,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - [03Android显示框架：Android应用视图的管理者Window](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/03Android显示框架：Android应用视图管理者Window.md)
 - [04Android显示框架：Android应用窗口管理者WindowManager](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/04Android显示框架：Android应用窗口管理者WindowManager.md)
 - [05Android显示框架：Android布局解析者LayoutInflater](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Android布局解析者LayoutInflater.md)
-- [06Android显示框架：Android列表控件RecyclerView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/05Android显示框架：Android列表控件RecyclerView.md)
+- [06Android显示框架：Android列表控件RecyclerView](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/06Android显示框架：Android列表控件RecyclerView.md)
 
 **Android组件框架**
 
