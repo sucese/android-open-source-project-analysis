@@ -25,6 +25,8 @@ RecyclerView继承于ViewGroup，实现了ScrollingView与NestedScrollingChild�
 
 RecyclerView绘制流程图
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/recyclerview_structure.png" width="500"/>
+
 Adapter将数据DataSet翻译成RecyclerView可以理解的ViewHolder，Recycler负责对这些ViewHolder进行管理，LayoutManager从Recycler获取这些ViewHolder，然后在RecyclerView里对它们进行布局，在布局
 的过程中还可以通过ItemDecoration、ItemAnimator为这些ViewHolder添加分隔条、转场动画等东西，让整个RecyclerView更加具有交互性。
 
@@ -554,7 +556,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
           //更新布局相关的状态
           updateLayoutState(layoutDirection, absDy, true, state);
           final int consumed = mLayoutState.mScrollingOffset
-                  //调用fill()方法，先回收已在显示的子View，在添加即将进入可见区域的View
+                  //调用fill()方法，先回收已在显示的子View，再添加即将进入可见区域的View
                   + fill(recycler, mLayoutState, state, false);
           if (consumed < 0) {
               if (DEBUG) {
@@ -573,6 +575,10 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
       }  
 }
 ```
+这个方法里有两个关键的方法：
+
+- updateLayoutState()：更新布局相关状态。
+- fill()：先回收已在显示的子View，再添加即将进入可见区域的View。
 
 ### 2.2 GridLayoutManager
 
