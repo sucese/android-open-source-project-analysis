@@ -91,7 +91,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 **Android组件框架**
 
 - [01Android组件框架：Android组件框架概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/01Android组件框架：组件框架概述.md)
-- 02Android组件框架：Android组件管理者ActivityManager
+- [02Android组件框架：Android组件管理者ActivityManager](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/02Android组件框架：Android组件管理者ActivityManager.md)
 - [03Android组件框架：Android视图容器Activity](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/03Android组件框架：Android视图容器Activity.md)
 - [04Android组件框架：Android视图片段Fragment](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/04Android组件框架：Android视图片段Fragment.md)
 - 05Android组件框架：Android后台服务Service
