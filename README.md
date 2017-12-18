@@ -33,7 +33,8 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 **写作风格**
 
 和大家一样，笔者也是在前人的书籍和博客的基础上开始学习Android的底层实现的，站在前人的肩膀上会看的更远。但是这些书籍和博客有个问题在于，文章中罗列了大量的代码，这样
-很容易把初学者带入到琐碎的细节之中，所以本系列文章在行文中更多的会以图文并茂的方式来分析问题，关键的地方才会去解析源码，力求为大家从宏观上理解Android的底层实现。
+很容易把初学者带入到琐碎的细节之中，所以本系列文章在行文中更多的会以图文并茂和提纲总结的方式来分析问题，关键的地方才会去解析源码，力求让大家从宏观上理解Android的底层实现。
+另外，基本上一个主题对应一篇文章，所以文章会比较长，但是文章会有详细的标题划分和提纲总结，可以有的放矢，阅读自己需要的内容。
 
 好了，让我们开始我们的寻宝之旅吧~😆
 
@@ -65,17 +66,19 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - [03Android界面开发：View自定义实践绘制篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android界面开发/03Android界面开发：View自定义实践绘制篇.md)
 - [04Android界面开发：View自定义实践交互篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android界面开发/04Android界面开发：View自定义实践交互篇.md)
 
-**Android兼容适配**
+**Android网络编程**
+
+- [01Android网络编程：基础理论汇总](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android网络编程/01Android网络编程：基础理论汇总.md)
+- 02Android网络编程：网络编程实践
 
 **Android混合编程**
 
 - [01Android混合编程：WebView实践](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android混合编程/01Android混合编程：WebView实践.md)
 
-**Android性能优化**
+**Androidy应用优化**
 
-**Android网络编程**
-
-- [01Android网络编程：基础理论汇总](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android网络编程/01Android网络编程：基础理论汇总.md)
+- 01Androidy应用优化：兼容适配
+- 02Androidy应用优化：性能优化
 
 ## Android系统应用框架篇
 
