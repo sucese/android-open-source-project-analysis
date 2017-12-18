@@ -1,32 +1,209 @@
 # Android组件框架：Android组件管理者ActivityManager
 
-作者: 郭孝星  
-邮箱: guoxiaoxingse@163.com  
-博客: http://blog.csdn.net/allenwells   
-简书: http://www.jianshu.com/users/66a47e04215b/latest_articles  
-
 **关于作者**
 
->郭孝星，非著名程序员，代码洁癖患者，爱编程，好吉他，喜烹饪，爱一切有趣的事物和人。
-
-**关于文章**
-
->作者的文章会同时发布在Github、CSDN与简书上, 文章顶部也会附上文章的Github链接。如果文章中有什么疑问也欢迎发邮件与我交流, 对于交流的问题, 请描述清楚问题并附上代码与日志, 一般都会给予回复。如果文章中有什么错误, 也欢迎斧正。如果你觉得本文章对你有所帮助, 也欢迎去star文章, 关注文章的最新的动态。另外建议大家去Github上浏览文章，一方面文章的写作都是在Github上进行的，所以Github上的更新是最及时的，另一方面感觉Github对Markdown的支持更好，文章的渲染也更加美观。
+>郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-本篇文章我们正式来分析ActivityManagerService的实现。
+**文章目录**
 
-## 一 ActivityManagerService功能结构
+- 一 客户端ActivityManager
+- 二 服务端ActivityManagerService
+- 三 Activity栈ActivityStack
+- 四 应用主线程ActivityThread
 
->ActivityManagerService继承于ActivityManagerNative，它本质上是一个Binder对象，AMS作为Android最核心的服务，它负责系统中四大组件的
-启动、切换、调度以及应用进程进程的管理与调度工作。
+ActivityManagerService是贯穿Android系统组件的核心服务，在ServiceServer执行run()方法的时候被创建，运行在独立的线程中，负责四大组件的启动、切换、调度以及应用进程的管理和调度工作。
+我们从启动一个Activity这种常见的场景入手，一步步深入分析ActivityManager家族各个成员的作用和原理。
 
-在正式介绍ActivityManagerService之前，我们先来了解一些关键的概念。
+我们都知道一个Activity从startActivity()开始要经过很多次调用才最终展现在用户的面前，具体说来：
 
+注：不理解这个流程也没关系，后面会有文章来详细的分析Activity的启动流程，你只需要知道在整个流程中涉及哪些重要角色就可以了。
+
+
+
+从以上类图中我们不难发现在整个ActivityManager家族中涉及以下重要角色：
+
+- ActivityManager：该类是客户端用来管理系统中正在运行的组件的task、memory等信息工具，它本身只是个Client端，提交相关信息给ActivityManagerService，具体功能
+都有ActivityManagerService来完成。
+- ActivityManagerService：该类作为Android系统组件的核心服务，在ServiceServer执行run()方法的时候被创建，运行在独立的线程中，负责四大组件的启动、切换、调度以
+及应用进程的管理和调度工作。
+- ActivityStack：Activity栈，用来管理Activity。
+- ActivityThread：管理应用进程中的主线程，也就是UI线程，调度和执行AWS请求的的Activity、Broadcast的各种操作。
+
+这么一分析，整个流程就非常明朗了。
+
+>ActivityManager相当于前台接待，她将客户的各种需求传达给大总管ActivityMangerService，但是大总管自己不干活，他招来了两个小弟，ActivityStack替他管理组件的进出（栈），ActivityThread替他执行真正
+的启动、退出等操作。
+
+## 一 客户端ActivityManager
+
+>Interact with the overall activities running in the system.
+
+[ActivityManager](https://android.googlesource.com/platform/frameworks/base/+/742a67127366c376fdf188ff99ba30b27d3bf90c/core/java/android/app/ActivityManager.java)是提供给客户端调用的接口，日常开发中我们可以利用
+ActivityManager来获取系统中正在运行的组件（Activity、Service）、进程（Process）、任务（Task）等信息，ActivityManager定义了相应的方法来获取和操作这些信息。
+
+ActivityManager定义了很多静态内部类来描述这些信息，具体说来：
+
+- ActivityManager.StackId： 描述组件栈ID信息
+- ActivityManager.StackInfo： 描述组件栈信息，可以利用StackInfo去系统中检索某个栈。
+- ActivityManager.MemoryInfo： 系统可用内存信息
+- ActivityManager.RecentTaskInfo： 最近的任务信息
+- ActivityManager.RunningAppProcessInfo： 正在运行的进程信息
+- ActivityManager.RunningServiceInfo： 正在运行的服务信息
+- ActivityManager.RunningTaskInfo： 正在运行的任务信息
+- ActivityManager.AppTask： 描述应用任务信息
+
+说道这里，我们有必要区分一些概念，以免以后混淆。
+
+- 进程（Process）：Android系统进行资源调度和分配的基本单位，需要注意的是同一个栈的Activity可以运行在不同的进程里。
+- 任务（Task）：Task是一组以栈的形式聚集在一起的Activity的集合，这个任务栈就是一个Task。
+                      
+在日常开发中，我们一般是不需要直接操作ActivityManager这个类，只有在一些特殊的开发场景才用的到。
+
+- isLowRamDevice()：判断应用是否运行在一个低内存的Android设备上。
+- clearApplicationUserData()：重置app里的用户数据。
+- ActivityManager.AppTask/ActivityManager.RecentTaskInfo：我们如何需要操作Activity的栈信息也可以通过ActivityManager来做。
+
+## 二 服务端ActivityManagerService
+
+[ActivityManagerService](https://android.googlesource.com/platform/frameworks/base/+/4f868ed/services/core/java/com/android/server/am/ActivityManagerService.java)就是ActivityManager家族
+的核心类了，四大组件的启动、切换、调度都是在ActivityManagerService里完成的。
+
+ActivityManagerService类图如下所示：
+
+可以看到，和ActivityManagerService相关的还有两个类：
+
+- ActivityManagerNative：该类是ActivityManagerService的父类，继承与Binder，主要用来负责进程通信，接收ActivityManager传递过来的信息，这么写可以将通信部分分离在ActivityManagerNative，使得
+ActivityManagerService可以专注组件的调度，减小了类的体积。
+- ActivityManagerProxy：该类定义在ActivityManagerNative内部，正如它的名字那样，它是ActivityManagerService的代理类，
+
+注：这两个类其实涉及的是Android的Binder通信原理，后面我们会有专门的文章来分析Binder相关实现。
+
+### 2.1 ActivityManagerService启动流程
+
+我们知道所有的系统服务都是在[SystemServer](https://android.googlesource.com/platform/frameworks/base/+/7d276c3/services/java/com/android/server/SystemServer.java)的run()方法里启动的，SystemServer
+将系统服务分为了三类：
+
+- 引导服务
+- 核心服务
+- 其他服务
+
+ActivityManagerService属于引导服务，在startBootstrapServices()方法里被创建，如下所示：
+
+```java
+mActivityManagerService = mSystemServiceManager.startService(
+        ActivityManagerService.Lifecycle.class).getService();
 ```
-ActivityManager：用来与系统中所有运行的Activity进行交互，运行在用户进程中。
-````
+SystemServiceManager的startService()方法利用反射来创建对象，Lifecycle是ActivityManagerService里的静态内部类，它继承于SystemService，在它的构造方法里
+它会调用ActivityManagerService的构造方法创建ActivityManagerService对象。
+
+```java
+public static final class Lifecycle extends SystemService {
+    private final ActivityManagerService mService;
+
+    public Lifecycle(Context context) {
+        super(context);
+        mService = new ActivityManagerService(context);
+    }
+
+    @Override
+    public void onStart() {
+        mService.start();
+    }
+
+    public ActivityManagerService getService() {
+        return mService;
+    }
+}
+```
+
+ActivityManagerService的构造方法如下所示：
+
+```java
+public ActivityManagerService(Context systemContext) {
+    mContext = systemContext;
+    mFactoryTest = FactoryTest.getMode();
+    mSystemThread = ActivityThread.currentActivityThread();
+
+    Slog.i(TAG, "Memory class: " + ActivityManager.staticGetMemoryClass());
+
+    //创建并启动系统线程以及相关Handler
+    mHandlerThread = new ServiceThread(TAG,
+            android.os.Process.THREAD_PRIORITY_FOREGROUND, false /*allowIo*/);
+    mHandlerThread.start();
+    mHandler = new MainHandler(mHandlerThread.getLooper());
+    mUiHandler = new UiHandler();
+    /* static; one-time init here */
+    if (sKillHandler == null) {
+        sKillThread = new ServiceThread(TAG + ":kill",
+                android.os.Process.THREAD_PRIORITY_BACKGROUND, true /* allowIo */);
+        sKillThread.start();
+        sKillHandler = new KillHandler(sKillThread.getLooper());
+    }
+
+    //创建用来存储各种组件Activity、Broadcast的数据结构
+    mFgBroadcastQueue = new BroadcastQueue(this, mHandler,
+            "foreground", BROADCAST_FG_TIMEOUT, false);
+    mBgBroadcastQueue = new BroadcastQueue(this, mHandler,
+            "background", BROADCAST_BG_TIMEOUT, true);
+    mBroadcastQueues[0] = mFgBroadcastQueue;
+    mBroadcastQueues[1] = mBgBroadcastQueue;
+
+    mServices = new ActiveServices(this);
+    mProviderMap = new ProviderMap(this);
+    mAppErrors = new AppErrors(mContext, this);
+
+    //创建system等各种文件夹，用来记录系统的一些事件
+    ...
+    
+    //初始化一些记录工具
+    ...
+}
+```
+可以发现，ActivityManagerService的构造方法主要做了两个事情：
+
+- 创建并启动系统线程以及相关Handler。
+- 创建用来存储各种组件Activity、Broadcast的数据结构。
+
+这里有个问题，这里创建了两个Hanlder（sKillHandler暂时忽略，它是用来kill进程的）分别是MainHandler与UiHandler，它们有什么区别呢？🤔
+
+我们知道Handler是用来向所在线程发送消息的，也就是说决定Handler定位的是它构造方法里的Looper，我们分别来看下。
+
+MainHandler里的Looper来源于线程ServiceThread，它的线程名是"ActivityManagerService"，该Handler主要用来处理组件调度相关操作。
+
+```java
+mHandlerThread = new ServiceThread(TAG,
+        android.os.Process.THREAD_PRIORITY_FOREGROUND, false /*allowIo*/);
+mHandlerThread.start();
+mHandler = new MainHandler(mHandlerThread.getLooper());
+```
+
+UiHandler里的Looper来源于线程UiThread（继承于ServiceThread），它的线程名"android.ui"，该Handler主要用来处理UI相关操作。所以我们
+平时用的getMainHandler()方法获取到的实际是这个UiHandler。
+
+```java
+
+private UiThread() {
+    super("android.ui", Process.THREAD_PRIORITY_FOREGROUND, false /*allowIo*/);
+    // Make sure UiThread is in the fg stune boost group
+    Process.setThreadGroup(Process.myTid(), Process.THREAD_GROUP_TOP_APP);
+}
+
+public UiHandler() {
+    super(com.android.server.UiThread.get().getLooper(), null, true);
+}
+```
+
+以上便是整个ActivityManagerService的启动流程，还是比较简单的。
+
+## 三 Activity栈ActivityStack
+
+## 四 应用主线程ActivityThread
+
+
+
+
 
 **ActivityManagerService类图**
 

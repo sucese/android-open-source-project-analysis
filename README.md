@@ -43,6 +43,15 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/aosp_structure.png"/>
 
+从上到下依次分为六层：
+
+- 应用框架层
+- 进程通信层
+- 系统服务层
+- Android运行时
+- 硬件抽象层
+- Linux内核层
+
 在正式阅读本系列文章之前，请先阅读导读相关内容，这会帮助你更加快捷的理解文章内容。
 
 - [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
@@ -68,7 +77,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 - [01Android网络编程：基础理论汇总](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android网络编程/01Android网络编程：基础理论汇总.md)
 
-
 ## Android系统应用框架篇
 
 **Android显示框架**
@@ -90,12 +98,11 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - 06Android组件框架：Android数据提供者Content Provider
 - 07Android组件框架：Android广播接收者Broadcast Receiver
 
-**Android动画框架**
-
 **Android通信框架**
 
-- 01Android通信框架：跨进程通信的数据存储Serializable与Parcelable
-- 02Android通信框架：跨进程通信的桥梁Binder
+- 01Android通信框架：Zygote进程通信的桥梁Socket
+- 02Android通信框架：Server进程通信的桥梁Binder
+- 03Android通信框架：线程通信的桥梁Handler
 
 **Android多媒体框架**
 
@@ -103,11 +110,8 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Android进程框架**
 
-- Android系统底层框架篇：进程与线程概览
-- Android系统底层框架篇：Zygote与System进程启动流程
-- Android系统底层框架篇：应用进程启动流程
-- Android系统底层框架篇：应用消息处理机制
-- Android系统底层框架篇：Binder进程通信机制
+- Android系统底层框架篇：进程启动流程与原理分析
+- Android系统底层框架篇：线程与线程池
 
 **Android内存框架**
 
@@ -115,7 +119,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - Android系统基础篇：硬件抽象层
 - Android系统基础篇：智能指针
 - Android系统基础篇：ART/Dalvik 虚拟机
-- Android系统驱动篇：Binder进程通信系统
 
 ## Android系统编程思想篇
 

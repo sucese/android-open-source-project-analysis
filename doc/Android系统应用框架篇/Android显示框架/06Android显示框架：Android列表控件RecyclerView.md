@@ -10,8 +10,8 @@
 
 - RecyclerView创建流程
 - RecyclerView布局策略管理器LayoutManager
-- RecyclerView视图复用器Recycler
 - RecyclerView视图描述者ViewHolder
+- RecyclerView视图复用器Recycler
 - RecyclerView视图适配器Adapter
 - RecyclerView视图动画ItemAnimator
 - RecyclerView视图分隔条ItemDecoration
@@ -21,9 +21,17 @@
 RecyclerView继承于ViewGroup，实现了ScrollingView与NestedScrollingChild接口，它是日常业务开发中使用频度非常高的一个组件，它被Android设计出来代替原来的ListView组件。RecyclerView的的
 解耦与设计是十分精妙的，应用了适配器、观察者等多种模式。
 
-一般说来，列表展示涉及两个角色：列表的数据DataSet以及最终显示在界面上的RecyclerView，这两者的转换流程如下所示：
+提到RecyclerView，就不得不说一下早期使用的AdapterView（ListView），这里做下它们的简单对比：
 
-RecyclerView绘制流程图
+- Item复用方面：RecyclerView内置了RecyclerViewPool、多级缓存、ViewHolder，而AdapterView需要手动添加ViewHolder且复用功能也没RecyclerView完善。
+- 样式丰富方面：RecyclerView通过支持水平、垂直和表格列表及其他更复杂形式，而AdapterView只支持具体某一种。
+- 效果增强方面：RecyclerView内置了ItemDecoration和ItemAnimator，可以自定义绘制itemView之间的一些特殊UI或item项数据变化时的动画效果，而用AdapterView实现时采取的做法是
+将这些特殊UI作为itemView的一部分，设置可见不可见决定是否展现，且数据变化时的动画效果没有提供，实现较为繁琐。
+- 代码内聚方面：RecyclerView将功能密切相关的类写成内部类（例如：ViewHolder，Adapter），而AdapterView则没有。
+
+我们再来看看RecyclerView的渲染流程，一般说来，列表展示涉及两个角色：列表的数据DataSet以及最终显示在界面上的RecyclerView，这两者的转换流程如下所示：
+
+RecyclerView渲染流程图
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/recyclerview_structure.png"/>
 
@@ -513,81 +521,121 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
 
 #### scrollHorizontallyBy()/scrollVerticallyBy()
 
-```java
-public class LinearLayoutManager extends RecyclerView.LayoutManager implements
-        ItemTouchHelper.ViewDropHandler, RecyclerView.SmoothScroller.ScrollVectorProvider {
- 
-        @Override
-        public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler,
-                RecyclerView.State state) {
-            if (mOrientation == VERTICAL) {
-                return 0;
-            }
-            return scrollBy(dx, recycler, state);
-        }
-   
-        @Override
-        public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler,
-                RecyclerView.State state) {
-            if (mOrientation == HORIZONTAL) {
-                return 0;
-            }
-            return scrollBy(dy, recycler, state);
-        }
-}
-```
+RecyclerView在滚动的时候主要涉及两个问题：
 
-可以看到这个方法都交由scrollBy()方法来处理。
+- 旧View的回收与新View的添加
+- 其他View重新布局，偏移到合适的位置。
+
+整个流程的序列图如下所示：
+
+
+注意观察图中标记红色和绿色的方法，它分别完成了上面说的两件事。
+
+- recycleByLayoutState()：回收不再显示的View。
+- layoutChunk()：其他View重新布局，偏移到合适的位置。。
+
+这两个方法都在fill()方法里被调用，它是LinearLayoutManager最为关键的方法，如下所示：
 
 ```java
 public class LinearLayoutManager extends RecyclerView.LayoutManager implements
         ItemTouchHelper.ViewDropHandler, RecyclerView.SmoothScroller.ScrollVectorProvider {
     
-      int scrollBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-          //当没有子元素或者滑动距离为0时直接返回
-          if (getChildCount() == 0 || dy == 0) {
-              return 0;
-          }
-          mLayoutState.mRecycle = true;
-          ensureLayoutState();
-          //根据滑动距离dy值的正负来判断滑动方向，正数表示想尾部滑动（向右/向下），负数表示想头部滑动（向左/向上）
-          final int layoutDirection = dy > 0 ? LayoutState.LAYOUT_END : LayoutState.LAYOUT_START;
-          final int absDy = Math.abs(dy);
-          //更新布局相关的状态
-          updateLayoutState(layoutDirection, absDy, true, state);
-          final int consumed = mLayoutState.mScrollingOffset
-                  //调用fill()方法，先回收已在显示的子View，再添加即将进入可见区域的View
-                  + fill(recycler, mLayoutState, state, false);
-          if (consumed < 0) {
-              if (DEBUG) {
-                  Log.d(TAG, "Don't have any more elements to scroll");
-              }
-              return 0;
-          }
-          final int scrolled = absDy > consumed ? layoutDirection * consumed : dy;
-          //调用offsetChildren()方法移动子View
-          mOrientationHelper.offsetChildren(-scrolled);
-          if (DEBUG) {
-              Log.d(TAG, "scroll req: " + dy + " scrolled: " + scrolled);
-          }
-          mLayoutState.mLastScrollDelta = scrolled;
-          return scrolled;
-      }  
+      int fill(RecyclerView.Recycler recycler, LayoutState layoutState,
+                RecyclerView.State state, boolean stopOnFocusable) {
+            // max offset we should set is mFastScroll + available
+            final int start = layoutState.mAvailable;
+            if (layoutState.mScrollingOffset != LayoutState.SCROLLING_OFFSET_NaN) {
+                // TODO ugly bug fix. should not happen
+                if (layoutState.mAvailable < 0) {
+                    layoutState.mScrollingOffset += layoutState.mAvailable;
+                }
+                //回收不再显示的子View
+                recycleByLayoutState(recycler, layoutState);
+            }
+            int remainingSpace = layoutState.mAvailable + layoutState.mExtra;
+            LayoutChunkResult layoutChunkResult = mLayoutChunkResult;
+            while ((layoutState.mInfinite || remainingSpace > 0) && layoutState.hasMore(state)) {
+                layoutChunkResult.resetInternal();
+                if (VERBOSE_TRACING) {
+                    TraceCompat.beginSection("LLM LayoutChunk");
+                }
+                layoutChunk(recycler, state, layoutState, layoutChunkResult);
+                if (VERBOSE_TRACING) {
+                    TraceCompat.endSection();
+                }
+                if (layoutChunkResult.mFinished) {
+                    break;
+                }
+                layoutState.mOffset += layoutChunkResult.mConsumed * layoutState.mLayoutDirection;
+                /**
+                 * Consume the available space if:
+                 * * layoutChunk did not request to be ignored
+                 * * OR we are laying out scrap children
+                 * * OR we are not doing pre-layout
+                 */
+                if (!layoutChunkResult.mIgnoreConsumed || mLayoutState.mScrapList != null
+                        || !state.isPreLayout()) {
+                    layoutState.mAvailable -= layoutChunkResult.mConsumed;
+                    // we keep a separate remaining space because mAvailable is important for recycling
+                    remainingSpace -= layoutChunkResult.mConsumed;
+                }
+    
+                if (layoutState.mScrollingOffset != LayoutState.SCROLLING_OFFSET_NaN) {
+                    layoutState.mScrollingOffset += layoutChunkResult.mConsumed;
+                    if (layoutState.mAvailable < 0) {
+                        layoutState.mScrollingOffset += layoutState.mAvailable;
+                    }
+                    recycleByLayoutState(recycler, layoutState);
+                }
+                if (stopOnFocusable && layoutChunkResult.mFocusable) {
+                    break;
+                }
+            }
+            if (DEBUG) {
+                validateChildOrder();
+            }
+            return start - layoutState.mAvailable;
+        }    
 }
 ```
-这个方法里有两个关键的方法：
 
-- updateLayoutState()：更新布局相关状态。
-- fill()：先回收已在显示的子View，再添加即将进入可见区域的View。
+这里面有个LayoutState类，它保存了与布局相关的状态，它里面相关变量的含义如下所示：
+
+- boolean mRecycle = true; 子View是否可以被回收
+- nt mOffset; 布局从何处开始
+- int mAvailable; 滚动完成后，空出多少空间需要被填充
+- int mCurrentPosition; Adapter上当前的位置
+- int mItemDirection; Adapter遍历数据的方向，有ITEM_DIRECTION_HEAD与ITEM_DIRECTION_TAIL两种。
+- int mLayoutDirection; 布局填充的方向，有LAYOUT_START与LAYOUT_END两种。
+- int mScrollingOffset; 添加一个新View后，还可以滑动多少空间。
+- boolean mInfinite; 无限滚动，没有新View添加限制。
+
 
 ### 2.2 GridLayoutManager
 
 ### 2.3 StaggeredGridLayoutManager
 
+## 三 RecyclerView视图描述者ViewHolder
 
-## 三 RecyclerView视图复用器Recycler
+>A ViewHolder describes an item view and metadata about its place within the RecyclerView.
 
-## 四 RecyclerView视图描述者ViewHolder
+ViewHolder正如它的名字那样，它是一个Item View 视图容器。
+
+## 四 RecyclerView视图复用器Recycler
+
+>A Recycler is responsible for managing scrapped or detached item views for reuse.
+
+Recycler实现了Item View的回收与复用，也就是说它是用来做缓存的，我们首先来关注下Recycler里面几个缓存列表：
+
+>Scrap View指的是那些已经滚动出可视范围，但还没有detach掉的Item View。
+
+- final ArrayList<ViewHolder> mAttachedScrap = new ArrayList<>(); 存放已经滚动出可视范围，但还没有detach掉的ViewHolder。
+- ArrayList<ViewHolder> mChangedScrap = null; 存放那些被标记为Scrap View的ViewHolder
+- final ArrayList<ViewHolder> mCachedViews = new ArrayList<ViewHolder>(); 存放缓存的ViewHolder
+- private final List<ViewHolder> mUnmodifiableAttachedScrap = Collections.unmodifiableList(mAttachedScrap); 一个不可变列表，用来存放mAttachedScrap。
+
+此外，Recycler里还有个缓存池的概念，也就是RecycledViewPool，它可以让我们在多个RecyclerView之间复用View，大大提高了渲染效率。使用的方式也是创建一个RecycledViewPool实例，然后
+调用RecyclerView.setRecyclerPool()方法来进行设置即可，当然RecyclerView默认会创建一个RecycledViewPool。
 
 ## 五 RecyclerView视图适配器Adapter
 
