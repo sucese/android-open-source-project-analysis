@@ -407,3 +407,9 @@ ActivityThread工作流程图如下所示：
 
 通过前面的分析，ActivityThread的整个工作流程就非常明朗了。ActivityThread内部有个Binder对象ApplicationThread，AMS可以调用ApplicationThread里的方法，而
 ApplicationThread里的方法利用mH（Handler）发送消息给ActivityThread里的消息队列，ActivityThread再去处理这些消息，进而完成诸如Activity启动等各种操作。
+
+到这里我们已经把ActivityManager家族的主要框架都梳理完了，本篇文章并没有大篇幅的去分析源码，我们的重点是梳理整体框架，让大家有整体上的认识，至于具体的细节，可以根据自己的需要有的
+放矢的去研究。这也是我们提倡的阅读Android源码的方法：不要揪着细节不放，要有整体意识。
+
+理解了AMS的内容，后续就接着来分析Activity、Service、BroadcastReceiver的启动、切换和销毁等流程，分析的过程中也会结合着日常开发中经常遇到的一些问题，带着这些问题，我们去看看源
+码里怎么写的，为什么会出现这些问题。应该如何去解决。
