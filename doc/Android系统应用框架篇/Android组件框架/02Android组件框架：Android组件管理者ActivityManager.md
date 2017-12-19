@@ -44,9 +44,9 @@ Service的启动流程图（放大可查看）如下所示：
 
 BroadcastReceiver的启动流程图（放大可查看）如下所示：
 
-主要角色有：
-
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/broadcast_start_flow.png" />
+
+主要角色有：
 
 - AMS：组件管理调度中心，什么都不干，但是什么都管。
 - BroadcastQueue：广播队列，根据广播的优先级来管理广播。
@@ -58,7 +58,7 @@ Activity、Service与BroadcastReceiver启动流程的文章中一一分析。
 
 通过上面的分析，AMS的整个调度流程就非常明朗了。
 
->ActivityManager相当于前台接待，她将客户的各种需求传达给大总管ActivityMangerService，但是大总管自己不干活，他招来了很多小弟，他最信赖的小弟ApplicationThread
+>ActivityManager相当于前台接待，她将客户的各种需求传达给大总管ActivityMangerService，但是大总管自己不干活，他招来了很多小弟，他最信赖的小弟ActivityThread
 替他完成真正的启动、切换、以及退出操作，至于其他的中间环节就交给ActivityStack、ActivityStarter等其他小弟来完成。
 
 ## 一 组件管家ActivityManagerService
