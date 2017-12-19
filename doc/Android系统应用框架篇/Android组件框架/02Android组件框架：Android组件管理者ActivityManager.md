@@ -8,10 +8,12 @@
 
 **文章目录**
 
-- 一 客户端ActivityManager
-- 二 服务端ActivityManagerService
-- 三 Activity栈ActivityStack
-- 四 应用主线程ActivityThread
+- 一 组件管家ActivityManagerService
+    - 1.1 ActivityManagerService启动流程
+    - 1.1 ActivityManagerService工作流程
+- 二 应用主线程ActivityThread
+    - 2.1 ActivityThread启动流程
+    - 2.2 ActivityThread工作
 
 ActivityManagerService是贯穿Android系统组件的核心服务，在ServiceServer执行run()方法的时候被创建，运行在独立的线程中，负责Activity、Service、BroadcastReceiver的启动、切换、调度以及应用进程的管理和调度工作。
 
@@ -280,9 +282,7 @@ public final class ActivityThread {
      }   
 }
 ````
-
 这里面还有关键的attach()方法，我们来看一下。
-
 
 ```java
 public final class ActivityThread {
