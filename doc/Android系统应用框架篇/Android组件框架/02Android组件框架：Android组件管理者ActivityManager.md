@@ -19,15 +19,15 @@ Activity、Service、BroadcastReceiver的启动、切换、调度都有着相似
 
 Activity的启动流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="600"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="800"/>
 
 Service的启动流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/broadcast_start_flow.png" width="600"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/broadcast_start_flow.png" width="800"/>
 
 BroadcastReceiver的启动流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="600"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="800"/>
 
 可以发现，除了一些辅助类，
 
@@ -85,7 +85,7 @@ ActivityManager定义了很多静态内部类来描述这些信息，具体说�
 
 ActivityManagerService类图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_manager_service_class.png" width="600"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_manager_service_class.png" width="800"/>
 
 可以看到，和ActivityManagerService相关的还有两个类：
 
