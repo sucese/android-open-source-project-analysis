@@ -26,7 +26,7 @@ Activity的启动流程图（放大可查看）如下所示：
 主要角色有：
 
 - Instrumentation: 监控应用与系统相关的交互行为。
-- AMS：组件管理调度中心，都是都不干，但是什么都管。
+- AMS：组件管理调度中心，什么都不干，但是什么都管。
 - ActivityStarter：处理Activity什么时候启动，怎么样启动相关问题，也就是处理Intent与Flag相关问题，平时提到的启动模式都可以在这里找到实现。
 - ActivityStackSupervisior：这个类的作用你从它的名字就可以看出来，它用来管理Stack和Task。
 - ActivityStack：用来管理栈里的Activity。
@@ -38,7 +38,7 @@ Service的启动流程图（放大可查看）如下所示：
 
 主要角色有：
 
-- AMS：组件管理调度中心，都是都不干，但是什么都管。
+- AMS：组件管理调度中心，什么都不干，但是什么都管。
 - ApplicationThread：最终干活的人，是ActivityThread的内部类，Activity、Service、BroadcastReceiver的启动、切换、调度等各种操作都在这个类里完成。
 - ActiveServices：主要用来管理Service，内部维护了三份列表：将启动Service列表、重启Service列表以及以销毁Service列表。
 
@@ -48,7 +48,7 @@ BroadcastReceiver的启动流程图（放大可查看）如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/broadcast_start_flow.png" />
 
-- AMS：组件管理调度中心，都是都不干，但是什么都管。
+- AMS：组件管理调度中心，什么都不干，但是什么都管。
 - BroadcastQueue：广播队列，根据广播的优先级来管理广播。
 - ApplicationThread：最终干活的人，是ActivityThread的内部类，Activity、Service、BroadcastReceiver的启动、切换、调度等各种操作都在这个类里完成。
 - ReceiverDispatcher：广播调度中心，采用反射的方式获取BroadcastReceiver的实例，然后调用它的onReceive()方法。
@@ -403,7 +403,7 @@ public final class ActivityThread {
 
 ActivityThread工作流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_start_flow.png" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_thread_structure.png" />
 
 通过前面的分析，ActivityThread的整个工作流程就非常明朗了。ActivityThread内部有个Binder对象ApplicationThread，AMS可以调用ApplicationThread里的方法，而
 ApplicationThread里的方法利用mH（Handler）发送消息给ActivityThread里的消息队列，ActivityThread再去处理这些消息，进而完成诸如Activity启动等各种操作。
