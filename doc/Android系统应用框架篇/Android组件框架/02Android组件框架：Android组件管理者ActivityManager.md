@@ -13,12 +13,25 @@
 - 三 Activity栈ActivityStack
 - 四 应用主线程ActivityThread
 
-ActivityManagerService是贯穿Android系统组件的核心服务，在ServiceServer执行run()方法的时候被创建，运行在独立的线程中，负责四大组件的启动、切换、调度以及应用进程的管理和调度工作。
-我们从启动一个Activity这种常见的场景入手，一步步深入分析ActivityManager家族各个成员的作用和原理。
+ActivityManagerService是贯穿Android系统组件的核心服务，在ServiceServer执行run()方法的时候被创建，运行在独立的线程中，负责Activity、Service、BroadcastReceiver的启动、切换、调度以及应用进程的管理和调度工作。
 
-我们都知道一个Activity从startActivity()开始要经过很多次调用才最终展现在用户的面前，具体说来：
+Activity、Service、BroadcastReceiver的启动、切换、调度都有着相似的流程，我们来看一下。
 
-注：不理解这个流程也没关系，后面会有文章来详细的分析Activity的启动流程，你只需要知道在整个流程中涉及哪些重要角色就可以了。
+Activity的启动流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="600"/>
+
+Service的启动流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/broadcast_start_flow.png" width="600"/>
+
+BroadcastReceiver的启动流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" width="600"/>
+
+可以发现，除了一些辅助类，
+
+注：不理解这些流程也没关系，后面会有专门的文章来具体的分析，你只需要知道在整个流程中涉及哪些重要角色就可以了。
 
 
 
@@ -71,6 +84,8 @@ ActivityManager定义了很多静态内部类来描述这些信息，具体说�
 的核心类了，四大组件的启动、切换、调度都是在ActivityManagerService里完成的。
 
 ActivityManagerService类图如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_manager_service_class.png" width="600"/>
 
 可以看到，和ActivityManagerService相关的还有两个类：
 
