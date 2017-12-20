@@ -6,15 +6,21 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
-本篇文章我们来分析Android的视图容器Activity，这也是我们在日常开发中接触的最多的一个组件。这篇文章其实很早以前就写好了，但是迟迟没有发出来。因为考虑到Activity系统
-非常庞杂，感觉它的复杂程度是要高于View系统的，所以想再将文章的内容重构以便，力求清晰简洁。
-
 **文章目录**
 
 - 一 Activity的启动流程
 - 二 Activity的回退栈
 - 三 Activity的生命周期
 - 四 Activity的启动模式
+
+本篇文章我们来分析Android的视图容器Activity，这也是我们在日常开发中接触的最多的一个组件，Android源码分析系列的文章终于写到了Activity，这个我们最常用源码也最复杂的一个组件，之前在网上
+看到过很多关于Activity源码分析的文章，这些文章写得都挺好，它们往往是从Activity启动流程这个角度出发，一个一个函数的去分析整个流程。但是这种做法会给文章通篇看去全是源码，而且会让读者产生
+一个疑问，这么长的流程，我该如何掌握，掌握了之后有有什么意义吗？🤔
+
+事实上，单纯去分析流程，确实看不出有什么实践意义，因此我们最好能带着日常开发遇到的问题去看源码，例如特殊场景下的生命周期是怎么变化的，为什么会出现ANR，不同启动模式下对Activity入栈出栈有何影响等。
+我们带着问题去看看源码里是怎么写的，这样更有目的性，不至于迷失在茫茫多的源码中。
+
+好了，闲话不多说，我们开始吧。😁
 
 Activity作为Android最为常用的组件，它的复杂程度是不言而喻的。当我们点击一个应用的图标，应用的LancherActivity（MainActivity）开始启动，伴随着IntentFilter的
 匹配，Activity的生命周期从onCreate()方法开始变化，最终将界面呈现在用户的面前。
