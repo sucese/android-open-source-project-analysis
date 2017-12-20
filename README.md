@@ -77,8 +77,8 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Androidy应用优化**
 
-- 01Androidy应用优化：兼容适配
-- 02Androidy应用优化：性能优化
+- 01Androidy应用优化：兼容适配实践指南
+- 02Androidy应用优化：性能优化实践指南
 
 ## Android系统应用框架篇
 

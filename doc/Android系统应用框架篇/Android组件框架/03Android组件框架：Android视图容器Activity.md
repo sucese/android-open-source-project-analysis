@@ -246,10 +246,10 @@ onDestory
 
 然后是Intent里的标志位：
 
-FLAG_ACTIVITY_NEW_TASK：每当用户再次启动其任务（在主屏幕上选择任务）时，是否应关闭（完成）现有 Activity 实例 —“true”表示应关闭，“false”表示不应关闭。 默认值为“false”。
-FLAG_ACTIVITY_SINGLE_TOP：如果正在启动的 Activity 是当前 Activity（位于返回栈的顶部），则 现有实例会接收对 onNewIntent() 的调用，而不是创建 Activity 的新实例。
+- FLAG_ACTIVITY_NEW_TASK：每当用户再次启动其任务（在主屏幕上选择任务）时，是否应关闭（完成）现有 Activity 实例 —“true”表示应关闭，“false”表示不应关闭。 默认值为“false”。
+- FLAG_ACTIVITY_SINGLE_TOP：如果正在启动的 Activity 是当前 Activity（位于返回栈的顶部），则 现有实例会接收对 onNewIntent() 的调用，而不是创建 Activity 的新实例。
 正如前文所述，这会产生与 "singleTop"launchMode 值相同的行为。
-FLAG_ACTIVITY_CLEAR_TOP：如果正在启动的 Activity 已在当前任务中运行，则会销毁当前任务顶部的所有 Activity，并通过 onNewIntent() 将此 Intent 传递给 Activity 已恢复的
+- FLAG_ACTIVITY_CLEAR_TOP：如果正在启动的 Activity 已在当前任务中运行，则会销毁当前任务顶部的所有 Activity，并通过 onNewIntent() 将此 Intent 传递给 Activity 已恢复的
 实例（现在位于顶部），而不是启动该 Activity 的新实例。
 
 启动模式一共有四种：
