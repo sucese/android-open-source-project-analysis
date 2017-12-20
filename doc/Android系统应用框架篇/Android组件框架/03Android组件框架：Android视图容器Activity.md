@@ -11,55 +11,115 @@
 
 **文章目录**
 
-- 一 Activity的启动模式
-- 二 Activity的生命周期
-- 三 Activity的启动流程
+- 一 Activity的启动流程
+- 二 Activity的回退栈
+- 三 Activity的生命周期
+- 四 Activity的启动模式
 
 Activity作为Android最为常用的组件，它的复杂程度是不言而喻的。当我们点击一个应用的图标，应用的LancherActivity（MainActivity）开始启动，伴随着IntentFilter的
 匹配，Activity的生命周期从onCreate()方法开始变化，最终将界面呈现在用户的面前。
 
 Activity的复杂性主要体现在两个方面：
 
-- 启动模式、Flag以及各种场景对Activity生命周期的影响。
 - 复杂的启动流程，超长的函数调用链。
+- 启动模式、Flag以及各种场景对Activity生命周期的影响。
 
 针对这些问题，我们来一一分析。
 
-## 一 Activity的启动模式
+我们先来分析Activity启动流程，对Activity组件有个整体性的认识。
 
-说起Activity的启动模式，可能是一个老生常谈的问题，很多文章也分析过，但如果不是阅读过源码或者有着很多的实践，总会有种云里雾里的感觉。
+## 一 Activity的启动流程
 
->启动模式会影响Activity的启动行为，默认情况下，启动一个Activity就是创建一个实例，然后进入回退栈，但是我们可以通过启动模式来改变这种行为，实现不同的交互效果。
+Activity的启动流程图（放大可查看）如下所示：
 
-启动模式可以在xml文件里定义
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" />
 
-```xml
-android:launchMode="singleTop"
-```
+主要角色有：
 
-也可以在代码里指定
+- Instrumentation: 监控应用与系统相关的交互行为。
+- AMS：组件管理调度中心，什么都不干，但是什么都管。
+- ActivityStarter：处理Activity什么时候启动，怎么样启动相关问题，也就是处理Intent与Flag相关问题，平时提到的启动模式都可以在这里找到实现。
+- ActivityStackSupervisior：这个类的作用你从它的名字就可以看出来，它用来管理Stack和Task。
+- ActivityStack：用来管理栈里的Activity。
+- ActivityThread：最终干活的人，是ActivityThread的内部类，Activity、Service、BroadcastReceiver的启动、切换、调度等各种操作都在这个类里完成。
+
+通过上面的流程图整个流程可以概括如下：
+
+>Activity的启动请求由Activity发送，以Binder通信的方式发送给了AMS，AMS接收到启动请求后，交付ActivityStarter处理Intent和Flag等信息，然后再交给ActivityStackSupervisior/ActivityStack
+处理Activity进栈相关流程，最后交付ActivityThread利用ClassLoader去加载Activity、创建Activity实例，并回调Activity的onCreate()方法。这样便完成了Activity的启动。
+
+
+## 二 Activity的回退栈
+
+Activity的回退栈是由ActivityStack与ActivityStackSupervisior来管理，具体说来：
+
+- ActivityStackSupervisior：这个类的作用你从它的名字就可以看出来，它用来管理Stack和Task。
+- ActivityStack：用来管理栈里的Activity。
+
+在理解这两个类的作用之前，我们要先理解连个数据类：
+
+
+
+### 2.1 Activity栈
+
+Activity栈是由ActivityStackSupervisior来完成的，
+
+- ActivityStack：描述栈的状态和相关操作。
+- ActivityRecord：描述栈里的Activity相关信息。
+
+关于ActivityStack
+
+关于ActivityRecord
 
 ```java
-Intent intent = new Intent(StartActivity.this, SubInNewProcessActivity.class);
-intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-startActivity(intent);
+final class ActivityRecord {
+    
+     final ActivityManagerService service; // owner
+     final IApplicationToken.Stub appToken; // window manager token
+     final ActivityInfo info; // 包含了这个Activity的所有信息（AndroidManifest.xml里activity标签里定义的和代码里定义的）
+     final ApplicationInfo appInfo; // 当前应用的所有信息（AndroidManifest.xml里application标签里定义的）
+     final int launchedFromUid; // always the uid who started the activity.
+     final String launchedFromPackage; // 启动当前Activity的包名
+     
+     final Intent intent;    // the original intent that generated us
+
+     final String packageName; // Intent信息里的componentName
+     final String processName; // 当前组件所在的进程名
+     final String taskAffinity; // 和 ActivityInfo.taskAffinity相同，
+
+     TaskRecord task;        // 当前Activity所在的task
+
+     ActivityRecord resultTo; // 启动当前Activity的目标Activity，目标Activity会收到当前Activity返回的结果
+     final String resultWho; // additional identifier for use by resultTo.
+     final int requestCode;  // code given by requester (resultTo)
+   
+     ProcessRecord app;      // if non-null, hosting application
+     ActivityState state;    // Activity当前的状态
+
+     int launchMode;         // 启动模式
+     final ActivityStackSupervisor mStackSupervisor;//栈管理器
+}
 ```
 
-启动模式一共有四种：
+Activity在栈里有种状态：
 
-- standard
-- singleTop
-- singleTask
-- singleInstance
+- INITIALIZING：初始化
+- RESUMED：已显示
+- PAUSING：暂停中
+- PAUSED：已暂停
+- STOPPING：停止中
+- STOPPED：已停止
+- FINISHING：结束中
+- DESTROYING：销毁中
+- DESTROYE：已销毁
 
-## 二 Activity的生命周期
+## 三 Activity的生命周期
 
 Activity与Fragment生命周期图
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/complete_android_fragment_lifecycle.png"/>
 
-注：这张图出自Github上一个项目[android-lifecycle](https://github.com/xxv/android-lifecycle)。
-
+注：该图出自项目[android-lifecycle](https://github.com/xxv/android-lifecycle)。
 
 onCreate
 
@@ -89,178 +149,29 @@ onStop
 
 onDestory
 
+## 四 Activity的启动模式
 
-下面我们正式来进行Activity启动流程的分析，事实上掌握好上面的那些知识已经足够应付日常开发了。如果你想对Activity系统有更深的理解，可以去研究下Activity的启动流程。
+说起Activity的启动模式，可能是一个老生常谈的问题，很多文章也分析过，但如果不是阅读过源码或者有着很多的实践，总会有种云里雾里的感觉。
 
-## 三 Activity的启动流程
+>启动模式会影响Activity的启动行为，默认情况下，启动一个Activity就是创建一个实例，然后进入回退栈，但是我们可以通过启动模式来改变这种行为，实现不同的交互效果。
 
-在分析源码过程中，我们专注流程与框架的理解，不要陷入到具体的细节之中，随着分析的深入，这些前面觉得疑惑的问题后面都会一一得到解决，毕竟代码岁虽多，流程虽长，但本质上都是组件间的协同，参数的包装与处理，只要我们抓
-住核心原理，所有的问题就都迎刃而解。
+启动模式可以在xml文件里定义
 
-笔者在分析的过程中，也会为读者提供各种结构图、时序图来辅助理解，每个小节完成后，也会再次做小节汇总，力求让读者看得明白，记得深刻。另外，Android四大组件的启动流程有异曲同工之处我们掌握了Activity，后面各组件以
-及其他系统都可以举一反三，触类旁通。
-
-由于本文篇幅比较长，正式开始本篇文章前，先说明一下文章中经常出现的名词的含义。
-
-```
-源Activity：执行启动操作的Activity组件
-目标Activity：将要启动的Activity组件。
-Launcher：如果目标Activity是应用的Launcher Activity，那么当用户点击应用图标后，由Launcher组件来进行启动启动。这里的Launcher也是一个Activity。
+```xml
+android:launchMode="singleTop"
 ```
 
-好了，让我们开始吧。😁
+也可以在代码里指定
 
-Activity组件的启动流程分为3种情况：
-
-```
-1 目标Activity是应用的LauncherActivity，启动目标Activity是Launcher组件，两者处在不同进程中，需要进行跨进程通信。这个启动流程同样也是一个应用的启动流程。
-2 目标Activity与源Activity在同一进程中。启动目标Activity无需创建新进程。
-3 目标Activity与源Activity在不同进程中，启动目标Activity需要创建新进程。
+```java
+Intent intent = new Intent(StartActivity.this, SubInNewProcessActivity.class);
+intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+startActivity(intent);
 ```
 
-3种情况的启动流程大体相似，但是也有差别，下面分析的过程中，会一一说明这些差别。
+启动模式一共有四种：
 
-Activity的启动流程一共分为7大步，35小步，5个进程通信，在10个组件中执行。我们先来看看整个启动流程的序列图，先对整个流程有个大致印象。
-
-Activity启动流程序列图
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_sequence.png"/>
-
-Activity启动流程结构图
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_structure.png"/>
-
-看了上述两个图，我们来分析下两个问题。
-
-Activity启动的过程中牵扯到了哪些组件？
-
-```
-Launcher：Launcher继承于Activity，它也是一个Activity。它就是我们手机的桌面，负责启动应用，显示桌面菜单等。
-Activity：所有页面的基类。
-Instrumentation：应用监控器，监控应用与系统的交互行为，还可以定义一些用于探测和分析应用性能呢等相关的类（Instrumentation测试框架）。
-ActivityManagerProxy：实现了IActivityManager，ActivityManagerService的代理对象。
-ActivityManagerService：继承于ActivityManagerNative，用来管理系统的四大组件Activity、ervice、Brocast Receiver与Content Provider。
-ActivityStack：Activity栈，用来控制Activity的出栈与入栈。
-ApplicationThreadProxy：ApplicationThreadd的代理对象。
-ApplicationThread：它是ActivityThread的一个内部类，继承与ApplicationThreadNative，本质上是一个Binder对象，用于进程间通信。
-ActivityThread：用来描述一个应用进程。
-```
-
-关于上述组件，读者可以先大致了解它们的功能，后续还会有有文章去介绍它们的源码和原理。
-
-在这些组件的交互中，有哪些跨进程通信，这些进程通信都是为了完成什么工作？
-
-```
-START_ACTIVITY_TRANSACTION：Launcher发出，ActivityManagerService处理，启动Activity。
-SCHEDULE_PAUSE_ACTIVITY_TRANSACTION：ActivityManagerService发出，Launcher处理，要求终止源Activity。
-ACTIVITY_PAUSED_TRANSACTION：Launcher发出，ActivityManagerService处理，通知ActivityManagerService源Activity以及终止。
-ATTACH_APPLICATION_TRANSACTION：新创建的应用进程发出，ActivityManagerService处理，通知ActivityManagerService新进程已经创建，可以开始目标Activity创建工作。
-SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION：ActivityManagerService发出，新创建应用进程处理，ActivityManagerService通知新建应用进程创建目标Activity。
-```
-
-### 启动Launcher Activity
-
-1. 在Launcher中执行，把Activity的启动过程交由Instrumentation监控，并向ActivityManagerService发送一个启动目标Activity的进程间通信请求START_ACTIVITY_TRANSACTION，进一步执行目标Activity启动操作。
-
-```
-1 auncher.startActivitySafely(Intent intent, Object tag)
-2 Activity.startActivity(Intent intent)
-3 Activity.startActivityForResult(Intent intent, int requestCode)
-4 Instrumentation.execStartActivity(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, int requestCode)
-5 ApplicationThreadProxy.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
-```
-2. 在ActivityManagerService中执行，接收Launcher发出的START_ACTIVITY_TRANSACTION进程通信请求。调用ActivityStack里的方法，解析Activity信息以及传递过来的Intent信息。并向Launcher
-发送一个通知源Activity进入终止状态的进程间通信请求START_ACTIVITY_TRANSACTION，请求执行暂停源Activity的操作。
-
-```
-6 ActivityManagerService.startActivity(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded, boolean debug)
-7 ActivityStack.startActivityMayWait(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, IBinder resultTo, String resultWho, int requestCode, boolean onlyIfNeeded,  boolean debug, WaitResult outResult, Configuration config)
-8 ActivityStack.startActivityLocked(IApplicationThread caller, Intent intent, String resolvedType, Uri[] grantedUriPermissions, int grantedMode, ActivityInfo aInfo, IBinder resultTo, String resultWho, int requestCode, int callingPid, int callingUid, boolean onlyIfNeeded, boolean componentSpecified)
-9 ActivityStack.startActivityUncheckedLocked(ActivityRecord r, ActivityRecord sourceRecord, Uri[] grantedUriPermissions, int grantedMode, boolean onlyIfNeeded, boolean doResume) 
-10 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
-11 ActivityStack.startPausingLocked(boolean userLeaving, boolean uiSleeping)
-12 ApplicationThreadProxy。schedulePauseActivity(prev, prev.finishing, userLeaving, prev.configChangeFlags)
-```
-3. 在Launcher中执行，接收ActivityManagerService发出的SCHEDULE_PAUSE_ACTIVITY_TRANSACTION进程通信请求。执行暂停源Activity的操作。并向ActivityManagerService发送一个源Activity已经进入终止状态的
-进程通信请求SCHEDULE_PAUSE_ACTIVITY_TRANSACTION，通知源Activity已经被暂停。
-
-```
-13 ActivityThread.schedulePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges)
-14 ActivityThread.queueOrSendMessage(int what, Object obj, int arg1, int arg2)
-15 H.handleMessage(Message msg)
-16 ActivityThread.handlePauseActivity(IBinder token, boolean finished, boolean userLeaving, int configChanges) 
-17 ActivityManagerProxy.activityPaused(IBinder token, Bundle state)
-```
-
-4. 在ActivityManagerService中执行，接收Launcher发出的ACTIVITY_PAUSED_TRANSACTION进程通信请求，创建新进程，为进一步启动目标Activity做准备。
-
-```
-18 ActivityManagerService.activityPaused(IBinder token, Bundle icicle)
-19 ActivityStack.activityPaused(IBinder token, Bundle icicle, boolean timeout)
-20 ActivityStack.completePauseLocked()
-21 ActivityStack.resumeTopActivityLocked(ActivityRecord prev) 
-22 ActivityStack.startSpecificActivityLocked(ActivityRecord r, boolean andResume, boolean checkConfig)
-23 ActivityManagerService.startProcessLocked(String processName, ApplicationInfo info, boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName, boolean allowWhileBooting)
-```
-
-5. 在新创建的进程中执行，并向ActivityManagerService发送一个新进程创建完成的进程通信请求ATTACH_APPLICATION_TRANSACTION，通知新进程已经被创建，可以进一步执行Activity启动操作。
-
-```
-24 ActivityThread.main(String[] args)
-25 ActivityManagerProxy.attachApplication(IApplicationThread app)
-```
-
-6. 在ActivityManagerService中执行，接收新进程发出的ATTACH_APPLICATION_TRANSACTION进程通信请求，包装新进程信息，检查目标Activity进程信息与新进程信息是否一致，为最终在新进程中
-启动目标Activity做准备。
-
-```
-26 ActivityManagerService.attachApplication(IApplicationThread thread)
-27 ActivityManagerService.attachApplicationLocked(IApplicationThread thread, int pid)
-28 ActivityStack.realStartActivityLocked(ActivityRecord r, ProcessRecord app, boolean andResume, boolean checkConfig)
-29 ApplicationThreadProxy.scheduleLaunchActivity(Intent intent, IBinder token, int ident, ActivityInfo info, Bundle state, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, boolean notResumed, boolean isForward)
-```
-
-7. 在新进程中执行，接收ActivityManagerService发出的SCHEDULE_LAUNCH_ACTIVITY_TRANSACTION进程间通信请求，最终执行目标Activity的启动操作。
-
-```
-30 ActivityThread.scheduleRelaunchActivity(IBinder token, List<ResultInfo> pendingResults, List<Intent> pendingNewIntents, int configChanges, boolean notResumed, Configuration config)
-31 ActivityThread.queueOrSendMessage(int what, Object obj)
-32 H.handleMessage(Message msg)
-33 ActivityThread.handleLaunchActivity(ActivityClientRecord r, Intent customIntent) 
-34 ActivityThread.performLaunchActivity(ActivityClientRecord r, Intent customIntent)
-35 Activity.onCreate(Bundle savedInstanceState) 
-```
-### 相同进程启动Activity
-
-启动栈图：
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_in_same_process.png"/>
-
-启动流程：
-
-1. 源Activity向ActivityManagerService发送一个启动目标Activity的进程间通信请求START_ACTIVITY_TRANSACTION。
-2. ActivityManagerService首先将目标Activity的信息保存下来，然后再向源Activity发送一个通知源Activity进入终止状态的进程间通信请求START_ACTIVITY_TRANSACTION。
-3. 源Activity进入终止状态后，再向ActivityManagerService发送一个源Activity已经进入终止状态的进程通信请求SCHEDULE_PAUSE_ACTIVITY_TRANSACTION，以便ActivityManagerService进一步执行目标Activity启动操作。
-4. ActivityManagerService发现运行目标Activity组件的应用进程已经存在，便把目标Activity的信息发送一个该应用进程，该应用进程最终执行目标Activity的启动操作。
-
-### 新进程启动Activity
-
-启动栈图：
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_in_new_process.png"/>
-
-启动流程：
-
-1. 源Activity向ActivityManagerService发送一个启动目标Activity的进程间通信请求START_ACTIVITY_TRANSACTION。
-2. ActivityManagerService首先将目标Activity的信息保存下来，然后再向源Activity发送一个通知源Activity进入终止状态的进程间通信请求START_ACTIVITY_TRANSACTION。
-3. 源Activity进入终止状态后，再向ActivityManagerService发送一个源Activity已经进入终止状态的进程通信请求SCHEDULE_PAUSE_ACTIVITY_TRANSACTION，以便ActivityManagerService进一步执行目标Activity启动操作。
-4. ActivityManagerService发现运行目标Activity组件的应用进程并不存在，它会先去启动一个新的应用进程。
-5. 新的应用进程创建完成后，会向ActivityManagerService发送一个新进程创建完成的进程通信请求ATTACH_APPLICATION_TRANSACTION，以便ActivityManagerService进一步执行目标Activity的启动操作。
-6. ActivityManagerService将目标Activity的信息发送给新创建的进程，新进程执行目标Activity的创建操作。
-
-从上面可以看出，三种情况下的Activity的启动流程大同小异。
-
->注：分析的过程中，会牵扯任务、应用进程、消息循环、Binder进程通信等方面内容，这些内容我们暂时先不讨论，后面会有文章详尽地去分析这些内容，本次文章的重点在于讨论Activity的启动流程。
-
-讲到这里，你也许发现我只是在梳理流程，并没有提到源码，因为源码调用链实在是太长了，直接贴在这里影响阅读体验，如果你有足够的耐心，可以去[附录：Activity启动流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/附录：Activity启动流程.md)查看，一共有
-35个方法，略长😎。
+- standard
+- singleTop
+- singleTask
+- singleInstance

@@ -13,7 +13,13 @@
         <activity android:name=".app_framwork.ApplicationActivity" />
         <activity android:name=".program_idea.ProgramActivity" />
         <activity android:name=".native_framwork.SystemActivity" />
-        <activity android:name=".app_framwork.component_framwork.activity.StartActivity" />
+        <activity android:name=".app_framwork.component_framwork.activity.StartActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".app_framwork.component_framwork.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
@@ -38,11 +44,6 @@
             android:screenOrientation="sensor"></activity>
         <activity android:name=".app_framwork.ui_framwork.WindowActivity"></activity>
         <activity android:name=".app_framwork.ui_framwork.RecyclerActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
