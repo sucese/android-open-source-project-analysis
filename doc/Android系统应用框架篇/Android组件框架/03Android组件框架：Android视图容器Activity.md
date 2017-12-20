@@ -61,6 +61,7 @@ Activity的启动流程图（放大可查看）如下所示：
 
 要理解Activity回退栈，我们就要先理解Activity回退栈的功能结构，它的结构图如下所示：
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_stack_structure.png" />
 
 主要角色有：
 
@@ -72,6 +73,8 @@ Activity的启动流程图（放大可查看）如下所示：
 可能属于不同ProcessRecord，反之，运行在不同TaskRecord的ActivityRecord可能属于同一个ProcessRecord。
 
 通过上面的图解分析，我想大家应该理解了Activity栈里的数据结构，接下来，我们再简单分析下这个数据类里的字段，字段比较多，大家有个印象就行，不必记住。
+
+### 2.1 ActivityRecord
 
 >ActivityRecord基本上是一个纯数据类，里面包含了Activity的各种信息。
 
@@ -93,6 +96,8 @@ Activity的启动流程图（放大可查看）如下所示：
 - newIntents	Intent数组，用于暂存还没有调度到应用进程Activity的Intent
 
 这个对象在ActivityStarter的startActivityLocked()方法里被构建，下面分析ActivityStarter的时候我们会说。
+
+### 2.2 TaskRecord
 
 >TaskRecord的职责就是管理ActivityRecord，事实上，我们平时说的任务栈指的就是TaskRecord，所有ActivityRecord都必须要有宿主任务，如果不存在则新建一个。
 
@@ -118,6 +123,8 @@ addActivityToTop()/addActivityAtBottom()：将ActivityRecord添加到任务栈�
 TaskRecord中，待启动ActivityRecord之上的其他ActivityRecord都会被清除。
 
 基本上就是围绕ArrayList进行增删改查操作，再附加上一些状态变化，整个流程还是比较清晰的。
+
+### 2.3 ActivityStack
 
 >ActivityStack的职责是管理多个任务栈TaskRecord。
 
@@ -167,6 +174,8 @@ ActivityStackSupervisor间接通过ActivityDisplay来维护多个ActivityStack�
 - mDisplay	获取显示设备信息的工具类，
 - mDisplayInfo	显示设备信息的数据结构，包括类型、大小、分辨率等
 - mStacks	绑定到显示设备上的ActivityStack
+
+### 2.4 ActivityStackSupervisior
 
 >ActivityStackSupervisior用来管理ActivityStack。
 
@@ -218,23 +227,30 @@ onDestory
 
 ## 四 Activity的启动模式
 
-说起Activity的启动模式，可能是一个老生常谈的问题，很多文章也分析过，但如果不是阅读过源码或者有着很多的实践，总会有种云里雾里的感觉。
-
 >启动模式会影响Activity的启动行为，默认情况下，启动一个Activity就是创建一个实例，然后进入回退栈，但是我们可以通过启动模式来改变这种行为，实现不同的交互效果。
 
-启动模式可以在xml文件里定义
+那么有哪些设置会影响这种行为呢？🤔
 
-```xml
-android:launchMode="singleTop"
-```
+首先是<activity>标签里的参数：
 
-也可以在代码里指定
+- taskAffinity：指定Activity所在的任务栈。
+- launchMode：Activity启动模式。
+- allowTaskReparenting：当启动 Activity 的任务栈接下来转至前台时，Activity 是否能从该任务栈转移至其他任务栈，“true”表示它可以转移，“false”表示它仍须留在启动它的任务栈。
+- clearTaskOnLaunch：是否每当从主屏幕重新启动任务时都从中移除根 Activity 之外的所有 Activity，“true”表示始终将任务清除到只剩其根 Activity；“false”表示不做清除。 默认值为“false”。
+该属性只对启动新任务的 Activity（根 Activity）有意义；对于任务中的所有其他 Activity，均忽略该属性。
+- alwaysRetainTaskState：系统是否始终保持 Activity 所在任务的状态，“true”表示保持，“false”表示允许系统在特定情况下将任务重置到其初始状态。默认值为“false”。
+该属性只对任务的根 Activity 有意义；对于所有其他 Activity，均忽略该属性。
+- finishOnTaskLaunch：每当用户再次启动其任务（在主屏幕上选择任务）时，是否应关闭（完成）现有 Activity 实例，“true”表示应关闭，“false”表示不应关闭。默认值为“false”。
 
-```java
-Intent intent = new Intent(StartActivity.this, SubInNewProcessActivity.class);
-intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-startActivity(intent);
-```
+注：更多和标签相关的参数可以参见[](https://developer.android.com/guide/topics/manifest/activity-element.html#aff)。
+
+然后是Intent里的标志位：
+
+FLAG_ACTIVITY_NEW_TASK：每当用户再次启动其任务（在主屏幕上选择任务）时，是否应关闭（完成）现有 Activity 实例 —“true”表示应关闭，“false”表示不应关闭。 默认值为“false”。
+FLAG_ACTIVITY_SINGLE_TOP：如果正在启动的 Activity 是当前 Activity（位于返回栈的顶部），则 现有实例会接收对 onNewIntent() 的调用，而不是创建 Activity 的新实例。
+正如前文所述，这会产生与 "singleTop"launchMode 值相同的行为。
+FLAG_ACTIVITY_CLEAR_TOP：如果正在启动的 Activity 已在当前任务中运行，则会销毁当前任务顶部的所有 Activity，并通过 onNewIntent() 将此 Intent 传递给 Activity 已恢复的
+实例（现在位于顶部），而不是启动该 Activity 的新实例。
 
 启动模式一共有四种：
 
