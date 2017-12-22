@@ -12,6 +12,7 @@
 - 二 Activity的回退栈
 - 三 Activity的生命周期
 - 四 Activity的启动模式
+- 五 Activity的通信方式
 
 本篇文章我们来分析Android的视图容器Activity，Android源码分析系列的文章终于写到了Activity，这个我们最常用，源码也最复杂的一个组件，之前在网上看到过很多关于Activity源码
 分析的文章，这些文章写得都挺好，它们往往是从Activity启动流程这个角度出发，一个一个函数的去分析整个流程。但是这种做法会让文章通篇看去全是源码，而且会让读者产生一个疑问：这么
@@ -393,3 +394,39 @@ public static final int LAUNCH_SINGLE_INSTANCE = 3;
 ## 4.1 singleTop
 ## 4.1 singleTask
 ## 4.1 singleInstance
+
+## 五 Activity的通信方式
+
+Activity之间也经常需要传递数据，这个一般通过以下方式来完成。
+
+原始Activity
+
+```java
+startActivityForResult(intent, requestCode, resultCode);
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+}
+```
+
+目标Activity
+
+```java
+setResult(resultCode, intent);
+```
+
+我们来看下setResult()方法的实现。
+
+```java
+public final void setResult(int resultCode, Intent data) {
+    synchronized (this) {
+        mResultCode = resultCode;
+        mResultData = data;
+    }
+}
+```
+就是个简单的赋值操作，这说明会有方法来去这个变量的值，什么时候来取？🤔根据平时的开发经验，Activity finsh()或者onBackPress()来取，将这两个值通过
+onActivityResult(int requestCode, int resultCode, Intent data)返回给原始Activity。
+
+我们来梳理一下整个流程。
