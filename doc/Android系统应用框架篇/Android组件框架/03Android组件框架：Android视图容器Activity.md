@@ -64,7 +64,7 @@ Activity的启动流程图（放大可查看）如下所示：
 
 要理解Activity回退栈，我们就要先理解Activity回退栈的功能结构，它的结构图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_stack_structure.png" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_stack_structure.png" width="600" />
 
 主要角色有：
 
@@ -194,11 +194,11 @@ ensureActivitiesVisibleLocked()。
 
 ## 三 Activity的生命周期
 
-Activity与Fragment生命周期图
+Activity的生命周期也是个老生常谈的问题，今天我们从源码的角度去分析Activity的生命周期是如何驱动的，以及它是如何变化的。
+
+这里贴一张[android-lifecycle](https://github.com/xxv/android-lifecycle)项目关于Activity与Fragment生命周期图
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/complete_android_fragment_lifecycle.png"/>
-
-注：该图出自项目[android-lifecycle](https://github.com/xxv/android-lifecycle)。
 
 读者可以从上图看出，Activity有很多种状态，状态之间的变化也比较复杂，在众多状态中，只有三种是常驻状态：
 
