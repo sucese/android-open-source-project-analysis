@@ -45,10 +45,13 @@ Activity的启动流程图（放大可查看）如下所示：
 
 - Instrumentation: 监控应用与系统相关的交互行为。
 - AMS：组件管理调度中心，什么都不干，但是什么都管。
-- ActivityStarter：处理Activity什么时候启动，怎么样启动相关问题，也就是处理Intent与Flag相关问题，平时提到的启动模式都可以在这里找到实现。
-- ActivityStackSupervisior：这个类的作用你从它的名字就可以看出来，它用来管理Stack和Task。
-- ActivityStack：用来管理栈里的Activity。
+- ActivityStarter：Activity启动的控制器，处理Intent与Flag对Activity启动的影响，具体说来有：1 寻找符合启动条件的Activity，如果有多个，让用户选择；2 校验启动参数的合法性；3 返回int参数，代表Activity是否启动成功。
+- ActivityStackSupervisior：这个类的作用你从它的名字就可以看出来，它用来管理任务栈。
+- ActivityStack：用来管理任务栈里的Activity。
 - ActivityThread：最终干活的人，是ActivityThread的内部类，Activity、Service、BroadcastReceiver的启动、切换、调度等各种操作都在这个类里完成。
+
+注：这里单独提一下ActivityStackSupervisior，这是高版本才有的类，它用来管理多个ActivityStack，早期的版本只有一个ActivityStack对应着手机屏幕，后来高版本支持多屏以后，就
+有了多个ActivityStack，于是就引入了ActivityStackSupervisior用来管理多个ActivityStack。
 
 通过上面的流程图整个流程可以概括如下：
 
@@ -197,33 +200,137 @@ Activity与Fragment生命周期图
 
 注：该图出自项目[android-lifecycle](https://github.com/xxv/android-lifecycle)。
 
-onCreate
+读者可以从上图看出，Activity有很多种状态，状态之间的变化也比较复杂，在众多状态中，只有三种是常驻状态：
 
-onAttachFragment
+- Resumed（运行状态）：Activity处于前台，用户可以与其交互。
+- Paused（暂停状态）：Activity被其他Activity部分遮挡，无法接受用户的输入。
+- Stopped（停止状态）：Activity被完全隐藏，对用户不可见，进入后台。
 
-onContentChanged
+其他的状态都是中间状态。
 
-onStart
+我们再来看看生命周期变化时的整个调度流程，生命周期调度流程图如下所示：
 
-onRestoreInstanceState
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_lifecycle_structure.png" />
 
-onPostCreate
+所以你可以看到，整个流程是这样的：
 
-onResume
+1. 比方说我们点击跳转一个新Activity，这个时候Activity会入栈，同时它的生命周期也会从onCreate()到onResume()开始变换，这个过程是在ActivityStack里完成的，ActivityStack
+是运行在Server进程里的，这个时候Server进程就通过ApplicationThread的代理对象ApplicationThreadProxy向运行在app进程ApplicationThread发起操作请求。
+2. ApplicationThread接收到操作请求后，因为它是运行在app进程里的其他线程里，所以ApplicationThread需要通过Handler向主线程发送操作消息。
+3. 主线程接收到ApplicationThread发出的消息后，执行响应的操作，并回调Activity相应的周期方法。
 
-onPostResume
+上述这个流程的函数调用链如下所示：
 
-onAccachedToWindow
+```java
+ActivityThread.handleLaunchActivity
+    ActivityThread.handleConfigurationChanged
+        ActivityThread.performConfigurationChanged
+            ComponentCallbacks2.onConfigurationChanged
 
-onCreateOptionsMenu
+    ActivityThread.performLaunchActivity
+        LoadedApk.makeApplication
+            Instrumentation.callApplicationOnCreate
+                Application.onCreate
 
-onPause
+        Instrumentation.callActivityOnCreate
+            Activity.performCreate
+                Activity.onCreate
 
-onSaveInstanceState
+        Instrumentation.callActivityonRestoreInstanceState
+            Activity.performRestoreInstanceState
+                Activity.onRestoreInstanceState
 
-onStop
+    ActivityThread.handleResumeActivity
+        ActivityThread.performResumeActivity
+            Activity.performResume
+                Activity.performRestart
+                    Instrumentation.callActivityOnRestart
+                        Activity.onRestart
 
-onDestory
+                    Activity.performStart
+                        Instrumentation.callActivityOnStart
+                            Activity.onStart
+
+                Instrumentation.callActivityOnResume
+                    Activity.onResume
+```
+
+其他的生命周期在变化时调用流程和上面是一样的，读者可以自己举一反三。
+
+启动新的Activity发出的消息是LAUNCH_ACTIVITY，这些消息定义在ActivityThread的内部类H（Handler）里，一共有54个，大部分都是我们熟悉的操作。
+
+```java
+public static final int LAUNCH_ACTIVITY         = 100;
+public static final int PAUSE_ACTIVITY          = 101;
+public static final int PAUSE_ACTIVITY_FINISHING= 102;
+public static final int STOP_ACTIVITY_SHOW      = 103;
+public static final int STOP_ACTIVITY_HIDE      = 104;
+public static final int SHOW_WINDOW             = 105;
+public static final int HIDE_WINDOW             = 106;
+public static final int RESUME_ACTIVITY         = 107;
+public static final int SEND_RESULT             = 108;
+public static final int DESTROY_ACTIVITY        = 109;
+public static final int BIND_APPLICATION        = 110;
+public static final int EXIT_APPLICATION        = 111;
+public static final int NEW_INTENT              = 112;
+public static final int RECEIVER                = 113;
+public static final int CREATE_SERVICE          = 114;
+public static final int SERVICE_ARGS            = 115;
+public static final int STOP_SERVICE            = 116;
+
+public static final int CONFIGURATION_CHANGED   = 118;
+public static final int CLEAN_UP_CONTEXT        = 119;
+public static final int GC_WHEN_IDLE            = 120;
+public static final int BIND_SERVICE            = 121;
+public static final int UNBIND_SERVICE          = 122;
+public static final int DUMP_SERVICE            = 123;
+public static final int LOW_MEMORY              = 124;
+public static final int ACTIVITY_CONFIGURATION_CHANGED = 125;
+public static final int RELAUNCH_ACTIVITY       = 126;
+public static final int PROFILER_CONTROL        = 127;
+public static final int CREATE_BACKUP_AGENT     = 128;
+public static final int DESTROY_BACKUP_AGENT    = 129;
+public static final int SUICIDE                 = 130;
+public static final int REMOVE_PROVIDER         = 131;
+public static final int ENABLE_JIT              = 132;
+public static final int DISPATCH_PACKAGE_BROADCAST = 133;
+public static final int SCHEDULE_CRASH          = 134;
+public static final int DUMP_HEAP               = 135;
+public static final int DUMP_ACTIVITY           = 136;
+public static final int SLEEPING                = 137;
+public static final int SET_CORE_SETTINGS       = 138;
+public static final int UPDATE_PACKAGE_COMPATIBILITY_INFO = 139;
+public static final int TRIM_MEMORY             = 140;
+public static final int DUMP_PROVIDER           = 141;
+public static final int UNSTABLE_PROVIDER_DIED  = 142;
+public static final int REQUEST_ASSIST_CONTEXT_EXTRAS = 143;
+public static final int TRANSLUCENT_CONVERSION_COMPLETE = 144;
+public static final int INSTALL_PROVIDER        = 145;
+public static final int ON_NEW_ACTIVITY_OPTIONS = 146;
+public static final int CANCEL_VISIBLE_BEHIND = 147;
+public static final int BACKGROUND_VISIBLE_BEHIND_CHANGED = 148;
+public static final int ENTER_ANIMATION_COMPLETE = 149;
+public static final int START_BINDER_TRACKING = 150;
+public static final int STOP_BINDER_TRACKING_AND_DUMP = 151;
+public static final int MULTI_WINDOW_MODE_CHANGED = 152;
+public static final int PICTURE_IN_PICTURE_MODE_CHANGED = 153;
+public static final int LOCAL_VOICE_INTERACTION_STARTED = 154;
+```
+
+我们前面说到Activity的生命周期是由ActivityStack来驱动的，应用的Activity在切换时，ActivityStack会对相应的任务战TaskRecord进行调整，以前的Activity要出栈
+销毁或者移动到后台，要显示的Activity添加到栈顶。伴随着对任务栈的操作，Activity的生命周期也在不断的变化。
+
+在ActivityStack里与Activity生命周期变化有关的函数主要有以下几个：
+
+- startActivityLocked()
+- resumeTopActivityLocked()
+- completeResumeLocked()
+- startPausingLocked()
+- completePauseLocked()
+- stopActivityLocked()
+- activityPausedLocked()
+- finishActivityLocked()
+- activityDestroyedLocked()
 
 ## 四 Activity的启动模式
 
@@ -233,8 +340,8 @@ onDestory
 
 首先是<activity>标签里的参数：
 
-- taskAffinity：指定Activity所在的任务栈。
-- launchMode：Activity启动模式。
+- taskAffinity：指定Activity所在的任务栈，<appliocation>和<activity>标签均可设置，如果没有设置taskAffinity就是当前包名。
+- launchMode：Activity的启动模式。
 - allowTaskReparenting：当启动 Activity 的任务栈接下来转至前台时，Activity 是否能从该任务栈转移至其他任务栈，“true”表示它可以转移，“false”表示它仍须留在启动它的任务栈。
 - clearTaskOnLaunch：是否每当从主屏幕重新启动任务时都从中移除根 Activity 之外的所有 Activity，“true”表示始终将任务清除到只剩其根 Activity；“false”表示不做清除。 默认值为“false”。
 该属性只对启动新任务的 Activity（根 Activity）有意义；对于任务中的所有其他 Activity，均忽略该属性。
@@ -242,7 +349,7 @@ onDestory
 该属性只对任务的根 Activity 有意义；对于所有其他 Activity，均忽略该属性。
 - finishOnTaskLaunch：每当用户再次启动其任务（在主屏幕上选择任务）时，是否应关闭（完成）现有 Activity 实例，“true”表示应关闭，“false”表示不应关闭。默认值为“false”。
 
-注：更多和标签相关的参数可以参见[](https://developer.android.com/guide/topics/manifest/activity-element.html#aff)。
+注：更多和标签相关的参数可以参见[activity-element](https://developer.android.com/guide/topics/manifest/activity-element.html#aff)。
 
 然后是Intent里的标志位：
 
@@ -254,10 +361,30 @@ onDestory
 
 启动模式一共有四种：
 
-- standard
-- singleTop
-- singleTask
-- singleInstance
+- standard：多实例模式，每次启动都会有创建一个实例，默认会进入启动它的那个Activity所属的任务栈的栈顶，读者以前可能使用过Application Context去启动Activity，这是情况下会报错，就是因为
+Application Context没有所谓的任务栈，解决的方式就是给它添加一个FLAG_ACTIVITY_NEW_TASK的标志位，创建一个新的任务栈。
+- singleTop：栈顶复用模式，如果新启动的Activity已经位于任务栈顶，则不会创建新的实例，而是回调原来Activity实例的onNewIntent()方法，如果新启动的Activity没有位于任务栈顶，则会创建
+新的Activity实例。
+- singleTask：栈内复用模式，如果新启动的Activity已经位于任务栈内，则不会创建新的实例，而是回调原来Activity实例的onNewIntent()方法并且**清除它之上的Activity（这里需要注意一下：任务栈里
+的Activity是永远不会重排序的，所以它会清楚上方所有的Activity来让自己回到栈顶）**，如果新启动的Activity
+没有位于任务栈，则新建一个Activity实例。
+- singleInstance：单实例模式，和singleTask相似，但是singleTask可以在多个栈里拥有多个实例，而singleInstance在多个栈里只能有唯一实例，这个一般用在特殊场景里，例如电话界面。
+
+我们再来总结一下这些启动模式的区别：
+
+- standard和singleTop的行为很相近，但遇到相同的栈顶Activity实例，standard会再次新建一个，而singleTop不会;
+- singleTop和singleTask在找到目标的Activity实例时，会调用其onNewIntent()方法; singleTop可以存在多个相同的Activity实例，而singleTask仅存在一个;
+- singleTask和singleInstance都只会存在一个相同的Activity实例，singleTask任务中可以有其他不同的Activity实例，而singleInstance栈中仅有一个Activity实例。
+
+我们前面说过，ActivityRecord里有个ActivityInfo成员变量用来描述Activity的相关信息，ActivityInfo是在解析AndroidManifest.xml里的<activity>标签获取的。
+它里面的launchMode对应上面启动模式。
+
+```java
+public static final int LAUNCH_MULTIPLE = 0;
+public static final int LAUNCH_SINGLE_TOP = 1;
+public static final int LAUNCH_SINGLE_TASK = 2;
+public static final int LAUNCH_SINGLE_INSTANCE = 3;
+```
 
 ## 4.1 standard
 

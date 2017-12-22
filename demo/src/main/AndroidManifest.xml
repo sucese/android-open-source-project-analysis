@@ -13,12 +13,7 @@
         <activity android:name=".app_framwork.ApplicationActivity" />
         <activity android:name=".program_idea.ProgramActivity" />
         <activity android:name=".native_framwork.SystemActivity" />
-        <activity android:name=".app_framwork.component_framwork.activity.StartActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".app_framwork.component_framwork.activity.StartActivity">
         </activity>
         <activity
             android:name=".app_framwork.component_framwork.activity.SubInProcessActivity"
@@ -37,13 +32,20 @@
         <activity android:name=".app_practice.ui_develop.UIActivity" />
         <activity android:name=".app_practice.ui_develop.DrawActivity" />
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
-        <activity android:name=".app_framwork.ui_framwork.ViewActivity">
-        </activity>
+        <activity android:name=".app_framwork.ui_framwork.ViewActivity"></activity>
         <activity
             android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity"
-            android:screenOrientation="sensor"></activity>
-        <activity android:name=".app_framwork.ui_framwork.WindowActivity"></activity>
-        <activity android:name=".app_framwork.ui_framwork.RecyclerActivity">
+            android:screenOrientation="sensor" />
+        <activity android:name=".app_framwork.ui_framwork.WindowActivity" />
+        <activity android:name=".app_framwork.ui_framwork.RecyclerActivity"></activity>
+        <activity
+            android:name=".app_practice.performance_optimization.PerformanceActivity"
+            android:screenOrientation="fulls">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
