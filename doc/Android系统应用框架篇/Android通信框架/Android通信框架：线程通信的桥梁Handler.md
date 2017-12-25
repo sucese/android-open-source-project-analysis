@@ -37,7 +37,6 @@ Message描述了消息机制里的消息，他有很多成员字段，具体说�
 
 此外关于Message还有一个消息池的概念，它可以帮助我们回收对象，避免创建过多的对象，和消息池相关的主要有两个方法。
 
-
 ```java
 public final class Message implements Parcelable {
     
