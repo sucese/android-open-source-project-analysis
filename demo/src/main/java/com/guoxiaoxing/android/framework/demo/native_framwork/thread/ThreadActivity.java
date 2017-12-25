@@ -3,6 +3,7 @@ package com.guoxiaoxing.android.framework.demo.native_framwork.thread;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +52,7 @@ public class ThreadActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d(TAG, "Thread.currentThread(): " + Thread.currentThread());
             }
         });
+
     }
 
     @Override

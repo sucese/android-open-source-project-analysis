@@ -15,6 +15,8 @@ Android系统有两大通信手段，一个是进程通信Binder，另一个就�
 
 Android消息机制流程图如下所示：
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progresss/android_message_structure.png"/>
+
 现在整个消息机制的流程就很清晰了，具体说来：
 
 1. Handler通过sendMessage()发送消息Message到消息队列MessageQueue。
@@ -549,7 +551,8 @@ public class Handler {
 }
 ```
 
-对于构造方法而言，我们最常用的是无参构造方法，它没有Callback回调，且消息处理方式为同步处理。
+对于构造方法而言，我们最常用的是无参构造方法，它没有Callback回调，且消息处理方式为同步处理，从这里我们也可以看出你在哪个线程里创建了Handler，就默认使用当前线程的Looper。
+
 
 从上面的loop()方法中，我们知道Looper会调用MessageQueue的dispatchMessage()方法进行消息的分发，我们来看看这个方法的实现。
 
@@ -589,3 +592,84 @@ public class Handler {
 大部分代码都是以匿名内部类的形式实现了Handler，所以一般会走到第三个流程。
 
 可以看到所以发送消息的方法最终都是调用MessageQueue的enqueueMessage()方法来实现，这个我们上面在分析MessageQueue的时候已经说过，这里就不再赘述。
+
+理解了上面的内容，相信读者已经对Android的消息机制有了大致的了解，我们趁热打铁来聊一聊实际业务开发中遇到的一些问题。
+
+>在日常的开发中，我们通常在子线程中执行耗时任务，主线程更新UI，更新的手段也多种多样，如Activity#runOnUIThread()、View#post()等等，它们之间有何区别呢？如果我的代码了
+既没有Activity也没有View，我该如何将代码切换回主线程呢？🤔
+
+我们一一来分析。
+
+首先，Activity里的Handler直接调用的就是默认的无参构造方法。可以看到在上面的构造方法里调用Looper.myLooper()去获取当前线程的Looper，对于Activity而言当前线程就是主线程（UI线程），那主线程
+的Looper是什么时候创建的呢？🤔
+
+在[03Android组件框架：Android视图容器Activity](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android组件框架/03Android组件框架：Android视图容器Activity.md)一文
+里我们就分析过，ActivityThread的main()函数作为应用的入口，会去初始化Looper，并开启消息循环。
+
+```java
+public final class ActivityThread {
+      public static void main(String[] args) {
+          ...
+          Looper.prepareMainLooper();
+          ...
+          if (sMainThreadHandler == null) {
+              sMainThreadHandler = thread.getHandler();
+          }
+          ...
+          Looper.loop();
+          throw new RuntimeException("Main thread loop unexpectedly exited");
+      }  
+}
+```
+
+主线程的Looper已经准备就绪了，我们再调用Handler的构造函数去构建Handler对象时就会默认使用这个Handler，如下所示：
+
+```java
+public class Activity {
+    
+   final Handler mHandler = new Handler();
+
+   public final void runOnUiThread(Runnable action) {
+          if (Thread.currentThread() != mUiThread) {
+              mHandler.post(action);
+          } else {
+              action.run();
+          }
+      }  
+}
+```
+
+```java
+public class View implements Drawable.Callback, KeyEvent.Callback,
+        AccessibilityEventSource {
+    
+    public boolean post(Runnable action) {
+        
+        //当View被添加到window时会添加一些附加信息，这里面就包括Handler
+        final AttachInfo attachInfo = mAttachInfo;
+        if (attachInfo != null) {
+            return attachInfo.mHandler.post(action);
+        }
+
+        //Handler等相关信息还没有被关联到Activity，先建立一个排队队列。
+        //这其实就相当于你去银行办事，银行没开门，你们在门口排队等着一样。
+        getRunQueue().post(action);
+        return true;
+    }
+}
+```
+
+这里面也是利用attachInfo.mHandler来处理消息，它事实上是一个Handler的子类ViewRootHandler，同样的它也是使用Looper.prepareMainLooper()构建出来的Looper。
+
+所以你可以看出Activity#runOnUIThread()、View#post()这两种方式并没有本质上的区别，最终还都是通过Handler来发送消息。那么对于那些既不在Activity里、也不在View里的代码
+当我们想向主线程发送消息或者将某段代码（通常都是接口的回调方法，在这些方法里需要更新UI）post到主线程中执行，就可以按照以下方式进行：
+
+```java
+Handler handler = new Handler(Looper.getMainLooper());
+handler.post(new Runnable() {
+    @Override
+    public void run() {
+        //TODO refresh ui
+    }
+})
+```
