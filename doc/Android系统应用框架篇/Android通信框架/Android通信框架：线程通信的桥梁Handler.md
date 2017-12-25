@@ -4,18 +4,29 @@
 
 >郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
 
+**文章目录**
+
+- 一 消息Message
+- 二 消息队列MessageQueue
+- 三 消息循环器Looper
+- 四 消息处理器Handler
+
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 Android系统有两大通信手段，一个是进程通信Binder，另一个就是我们今天要讲的线程通信Handler，提到Handler实际上说的Android的消息系统，它由四个部分组成：
 
-- Message：消息，分为硬件产生的消息（例如：按钮、触摸）和软件产生的消息。
-- MessageQueue：消息队列，主要用来向消息池添加消息和取走消息。
-- Handler：消息处理器，主要向消息池发送各种消息以及处理各种消息。
-- Looper：循环器，主要用来把消息分发给相应的处理者。
+Android是一个消息驱动型的系统，管理者用户界面的主线程在创建的时候会开启消息循环，等待着处理
 
 Android消息机制流程图如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_message_structure.png"/>
+
+主要涉及的角色如下所示：
+
+- Message：消息，分为硬件产生的消息（例如：按钮、触摸）和软件产生的消息。
+- MessageQueue：消息队列，主要用来向消息池添加消息和取走消息。
+- Looper：消息循环器，主要用来把消息分发给相应的处理者。
+- Handler：消息处理器，主要向消息池发送各种消息以及处理各种消息。
 
 现在整个消息机制的流程就很清晰了，具体说来：
 
@@ -23,7 +34,7 @@ Android消息机制流程图如下所示：
 2. Looper通过loop()不断提取触发条件的Message，并将Message交给对应的target handler来处理。
 3. target handler调用自身的handleMessage()方法来处理Message。
 
-## Message
+## 一 消息Message
 
 Message描述了消息机制里的消息，他有很多成员字段，具体说来：
 
@@ -36,6 +47,8 @@ Message描述了消息机制里的消息，他有很多成员字段，具体说�
 - Runnable	callback	回调方法
 
 此外关于Message还有一个消息池的概念，它可以帮助我们回收对象，避免创建过多的对象，和消息池相关的主要有两个方法。
+
+### 1.1 recycle()
 
 ```java
 public final class Message implements Parcelable {
@@ -84,7 +97,7 @@ public final class Message implements Parcelable {
         }
 }
 ```
-
+### 1.2 obtain()
 
 ```java
 public final class Message implements Parcelable {
@@ -118,189 +131,11 @@ public final class Message implements Parcelable {
 2. 当对象加入对象池时，用sPool持有最新加入的对象，next持有上一次加入的对象（链表的添加操作）。
 3. 当对象从对象池中取出时，返回sPool当前持有的对象即可，并且修改对应节点的后继（链表的删除操作）。
 
-## Looper
-
->Class used to run a message loop for a thread. 
-
-Looper可以为线程添加一个消息循环的功能，具体说来，为了给线程添加一个消息循环，我们通常会这么做：
-
-```java
-public class LooperThread extends Thread {
-
-    public Handler mHandler;
-
-    @Override
-    public void run() {
-        Looper.prepare();
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                // process incoming messages here
-            }
-        };
-        Looper.loop();
-    }
-}
-```
-这里面有两个关键的方法：
-
-Looper.prepare()：为当前线程初始化一个Looper。
-Looper.loop()：开启消息循环。
-
-我们分别来看看它们的实现。
-
-
-```java
-public final class Looper {
-    
-   // sThreadLocal.get() will return null unless you've called prepare().
-   static final ThreadLocal<Looper> sThreadLocal = new ThreadLocal<Looper>();
-       
-   public static void prepare() {
-          prepare(true);
-      }
-  
-  private static void prepare(boolean quitAllowed) {
-      if (sThreadLocal.get() != null) {
-          throw new RuntimeException("Only one Looper may be created per thread");
-      }
-      sThreadLocal.set(new Looper(quitAllowed));
-  }
-}
-
-```
-
-prepare()会调用prepare(true)方法，表示当前创建的是不会退出的Loope，这里使用的是ThreadLocal来存储新创建的Looper对象。
-
->ThreadLocal描述的是线程本地存储区，不同的线程不能访问对方的线程本地存储区，当前线程可以对自己的线程本地存储区进行独立的修改和读取。
-
-之所以会采用ThreadLocal来存储Looper，是因为每个具备消息循环能力的线程都有自己独立的Looper，它们彼此独立，所以需要用线程本地存储区来存储Looper。
-
-我们在接着来看看Looper的构造函数，如下所示：
-
-```java
-public final class Looper {
-    
-  private Looper(boolean quitAllowed) {
-      //创建消息队列
-      mQueue = new MessageQueue(quitAllowed);
-      //指向当前线程
-      mThread = Thread.currentThread();
-   }  
-}
-```
-
-Looper的构造函数也很简单，构造了一个消息队列MessageQueue，并将成员变量MThread指向当前线程。
-
-关于这个方法我们再提一点，我们都知道Android里有个主线程（UI线程），它也是个有消息循环能力的线程，它在初始化的时候调用的是pre
-
-```java
-public final class Looper {
-    
-    private static Looper sMainLooper;  // guarded by Looper.class
-
-    //创建主线程的Looper，应用启动的时候会右系统调用，我们一般不需要调用这个方法。
-    public static void prepareMainLooper() {
-        prepare(false);
-        synchronized (Looper.class) {
-            if (sMainLooper != null) {
-                throw new IllegalStateException("The main Looper has already been prepared.");
-            }
-            sMainLooper = myLooper();
-        }
-    }
-    
-    //返回和当前线程相关的Looper
-    public static @Nullable Looper myLooper() {
-        return sThreadLocal.get();
-    }
-}
-```
-
-我们再来看看loop()方法的实现。
-
-```java
-```java
-public final class Looper {
-    
-     public static void loop() {
-        //获取当前线程的Looper
-        final Looper me = myLooper();
-        if (me == null) {
-            throw new RuntimeException("No Looper; Looper.prepare() wasn't called on this thread.");
-        }
-        
-        //获取当前线程的消息队列
-        final MessageQueue queue = me.mQueue;
-
-        //确保当前线程处于本地进程中，Handler仅限于处于同一进程间的不同线程的通信。
-        Binder.clearCallingIdentity();
-        final long ident = Binder.clearCallingIdentity();
-
-        //进入loop主循环方法
-        for (;;) {
-            //不断的获取下一条消息，这个方法可能会被阻塞
-            Message msg = queue.next();
-            if (msg == null) {
-                //如果没有消息需要处理，则退出当前循环。
-                return;
-            }
-
-            // 默认为null，可通过setMessageLogging来指定输出，用于debug
-            final Printer logging = me.mLogging;
-            if (logging != null) {
-                logging.println(">>>>> Dispatching to " + msg.target + " " +
-                        msg.callback + ": " + msg.what);
-            }
-
-            final long traceTag = me.mTraceTag;
-            if (traceTag != 0 && Trace.isTagEnabled(traceTag)) {
-                Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
-            }
-            //分发消息
-            try {
-                msg.target.dispatchMessage(msg);
-            } finally {
-                if (traceTag != 0) {
-                    Trace.traceEnd(traceTag);
-                }
-            }
-
-            if (logging != null) {
-                logging.println("<<<<< Finished to " + msg.target + " " + msg.callback);
-            }
-
-            // Make sure that during the course of dispatching the
-            // identity of the thread wasn't corrupted.
-            final long newIdent = Binder.clearCallingIdentity();
-            if (ident != newIdent) {
-                Log.wtf(TAG, "Thread identity changed from 0x"
-                        + Long.toHexString(ident) + " to 0x"
-                        + Long.toHexString(newIdent) + " while dispatching to "
-                        + msg.target.getClass().getName() + " "
-                        + msg.callback + " what=" + msg.what);
-            }
-
-            //把message回收到消息池，以便重复利用。
-            msg.recycleUnchecked();
-        }
-     }
-}
-```
-整体来看这个方法不断重复着以下三件事：
-
-1. 读取MessageQueue的下一条Message。
-2. 把Message分发给相应的target。
-3. 再把分发的Message回收到消息池，以便重复利用。
-
-我们再来看看MessageQueue里的一些操作。
-
-
-## MessageQueue
+## 二 消息队列MessageQueue
 
 MessageQueue是Android消息机制Java层和C++层的纽带，其中很多核心方法都交由native方法实现。
 
-### next()
+### 2.1 next()
 
 >next()从消息队列中提取一条消息并将其从消息队列中移除。
 
@@ -418,7 +253,7 @@ public final class MessageQueue {
 从上面可以看出next()是一个无限循环方法，如果当前消息队列中没有消息，该方法会一直阻塞在这里，等到有新消息时，next()方法会返回这条
 消息并将其从链表中移除。
 
-### enqueueMessage()
+### 2.2 enqueueMessage()
 
 >enqueueMessage()向消息队列插入一条消息。
 
@@ -488,9 +323,188 @@ public final class MessageQueue {
 }
 ```
 
+## 三 消息循环器Looper
+
+>Class used to run a message loop for a thread. 
+
+Looper可以为线程添加一个消息循环的功能，具体说来，为了给线程添加一个消息循环，我们通常会这么做：
+
+```java
+public class LooperThread extends Thread {
+
+    public Handler mHandler;
+
+    @Override
+    public void run() {
+        Looper.prepare();
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                // process incoming messages here
+            }
+        };
+        Looper.loop();
+    }
+}
+```
+这里面有两个关键的方法：
+
+Looper.prepare()：为当前线程初始化一个Looper。
+Looper.loop()：开启消息循环。
+
+我们分别来看看它们的实现。
+
+### 3.1 prepare()/prepareMainLooper()
+
+```java
+public final class Looper {
+    
+   // sThreadLocal.get() will return null unless you've called prepare().
+   static final ThreadLocal<Looper> sThreadLocal = new ThreadLocal<Looper>();
+       
+   public static void prepare() {
+          prepare(true);
+      }
+  
+  private static void prepare(boolean quitAllowed) {
+      if (sThreadLocal.get() != null) {
+          throw new RuntimeException("Only one Looper may be created per thread");
+      }
+      sThreadLocal.set(new Looper(quitAllowed));
+  }
+}
+
+```
+
+prepare()会调用prepare(true)方法，表示当前创建的是不会退出的Loope，这里使用的是ThreadLocal来存储新创建的Looper对象。
+
+>ThreadLocal描述的是线程本地存储区，不同的线程不能访问对方的线程本地存储区，当前线程可以对自己的线程本地存储区进行独立的修改和读取。
+
+之所以会采用ThreadLocal来存储Looper，是因为每个具备消息循环能力的线程都有自己独立的Looper，它们彼此独立，所以需要用线程本地存储区来存储Looper。
+
+我们在接着来看看Looper的构造函数，如下所示：
+
+```java
+public final class Looper {
+    
+  private Looper(boolean quitAllowed) {
+      //创建消息队列
+      mQueue = new MessageQueue(quitAllowed);
+      //指向当前线程
+      mThread = Thread.currentThread();
+   }  
+}
+```
+
+Looper的构造函数也很简单，构造了一个消息队列MessageQueue，并将成员变量MThread指向当前线程。
+
+关于这个方法我们再提一点，我们都知道Android里有个主线程（UI线程），它也是个有消息循环能力的线程，它在初始化的时候调用的是pre
+
+```java
+public final class Looper {
+    
+    private static Looper sMainLooper;  // guarded by Looper.class
+
+    //创建主线程的Looper，应用启动的时候会右系统调用，我们一般不需要调用这个方法。
+    public static void prepareMainLooper() {
+        prepare(false);
+        synchronized (Looper.class) {
+            if (sMainLooper != null) {
+                throw new IllegalStateException("The main Looper has already been prepared.");
+            }
+            sMainLooper = myLooper();
+        }
+    }
+    
+    //返回和当前线程相关的Looper
+    public static @Nullable Looper myLooper() {
+        return sThreadLocal.get();
+    }
+}
+```
+
+我们再来看看loop()方法的实现。
+
+### 3.2 loop() 
+
+```java
+public final class Looper {
+    
+     public static void loop() {
+        //获取当前线程的Looper
+        final Looper me = myLooper();
+        if (me == null) {
+            throw new RuntimeException("No Looper; Looper.prepare() wasn't called on this thread.");
+        }
+        
+        //获取当前线程的消息队列
+        final MessageQueue queue = me.mQueue;
+
+        //确保当前线程处于本地进程中，Handler仅限于处于同一进程间的不同线程的通信。
+        Binder.clearCallingIdentity();
+        final long ident = Binder.clearCallingIdentity();
+
+        //进入loop主循环方法
+        for (;;) {
+            //不断的获取下一条消息，这个方法可能会被阻塞
+            Message msg = queue.next();
+            if (msg == null) {
+                //如果没有消息需要处理，则退出当前循环。
+                return;
+            }
+
+            // 默认为null，可通过setMessageLogging来指定输出，用于debug
+            final Printer logging = me.mLogging;
+            if (logging != null) {
+                logging.println(">>>>> Dispatching to " + msg.target + " " +
+                        msg.callback + ": " + msg.what);
+            }
+
+            final long traceTag = me.mTraceTag;
+            if (traceTag != 0 && Trace.isTagEnabled(traceTag)) {
+                Trace.traceBegin(traceTag, msg.target.getTraceName(msg));
+            }
+            //分发消息
+            try {
+                msg.target.dispatchMessage(msg);
+            } finally {
+                if (traceTag != 0) {
+                    Trace.traceEnd(traceTag);
+                }
+            }
+
+            if (logging != null) {
+                logging.println("<<<<< Finished to " + msg.target + " " + msg.callback);
+            }
+
+            // Make sure that during the course of dispatching the
+            // identity of the thread wasn't corrupted.
+            final long newIdent = Binder.clearCallingIdentity();
+            if (ident != newIdent) {
+                Log.wtf(TAG, "Thread identity changed from 0x"
+                        + Long.toHexString(ident) + " to 0x"
+                        + Long.toHexString(newIdent) + " while dispatching to "
+                        + msg.target.getClass().getName() + " "
+                        + msg.callback + " what=" + msg.what);
+            }
+
+            //把message回收到消息池，以便重复利用。
+            msg.recycleUnchecked();
+        }
+     }
+}
+```
+整体来看这个方法不断重复着以下三件事：
+
+1. 读取MessageQueue的下一条Message。
+2. 把Message分发给相应的target。
+3. 再把分发的Message回收到消息池，以便重复利用。
+
+我们再来看看MessageQueue里的一些操作。
+
 可以看到，消息是按照触发时间的顺序插入到消息队列中的，消息队列头部的消息总是最早需要执行的消息。
 
-## Handler
+## 四 消息处理器Handler
 
 Handler主要用来发送和处理消息，它会和自己的Thread以及MessageQueue相关联，当创建一个Hanlder时，它就会被绑定到创建它的线程上，它会向
 这个线程的消息队列分发Message和Runnable。
