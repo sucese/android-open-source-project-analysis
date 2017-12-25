@@ -13,8 +13,7 @@
         <activity android:name=".app_framwork.ApplicationActivity" />
         <activity android:name=".program_idea.ProgramActivity" />
         <activity android:name=".native_framwork.SystemActivity" />
-        <activity android:name=".app_framwork.component_framwork.activity.StartActivity">
-        </activity>
+        <activity android:name=".app_framwork.component_framwork.activity.StartActivity"></activity>
         <activity
             android:name=".app_framwork.component_framwork.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
@@ -32,15 +31,18 @@
         <activity android:name=".app_practice.ui_develop.UIActivity" />
         <activity android:name=".app_practice.ui_develop.DrawActivity" />
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
-        <activity android:name=".app_framwork.ui_framwork.ViewActivity"></activity>
+        <activity android:name=".app_framwork.ui_framwork.ViewActivity" />
         <activity
             android:name=".app_framwork.component_framwork.fragment.DemoFragmentActivity"
             android:screenOrientation="sensor" />
         <activity android:name=".app_framwork.ui_framwork.WindowActivity" />
-        <activity android:name=".app_framwork.ui_framwork.RecyclerActivity"></activity>
+        <activity android:name=".app_framwork.ui_framwork.RecyclerActivity" />
         <activity
             android:name=".app_practice.performance_optimization.PerformanceActivity"
-            android:screenOrientation="fulls">
+            android:screenOrientation="sensor">
+
+        </activity>
+        <activity android:name=".native_framwork.thread.ThreadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

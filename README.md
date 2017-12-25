@@ -101,12 +101,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - 06Android组件框架：Android数据提供者Content Provider
 - 07Android组件框架：Android广播接收者Broadcast Receiver
 
-**Android通信框架**
-
-- 01Android通信框架：Zygote进程通信的桥梁Socket
-- 02Android通信框架：Server进程通信的桥梁Binder
-- 03Android通信框架：线程通信的桥梁Handler
-
 **Android多媒体框架**
 
 ## Android系统底层框架篇
@@ -115,6 +109,9 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 - Android系统底层框架篇：进程启动流程与原理分析
 - Android系统底层框架篇：线程与线程池
+- Android通信框架：Zygote进程通信的桥梁Socket
+- Android通信框架：Server进程通信的桥梁Binder
+- Android通信框架：线程通信的桥梁Handler
 
 **Android内存框架**
 
