@@ -15,7 +15,7 @@ Android系统有两大通信手段，一个是进程通信Binder，另一个就�
 
 Android消息机制流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progresss/android_message_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_message_structure.png"/>
 
 现在整个消息机制的流程就很清晰了，具体说来：
 
