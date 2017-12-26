@@ -17,7 +17,7 @@ Android系统有两大通信手段，一个是进程通信Binder，另一个就�
 
 Android是一个消息驱动型的系统，管理者用户界面的主线程在创建的时候会开启消息循环，等待着处理
 
-Android消息机制流程图如下所示：
+Android消息循环流程图如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_message_structure.png"/>
 
@@ -28,11 +28,18 @@ Android消息机制流程图如下所示：
 - Looper：消息循环器，主要用来把消息分发给相应的处理者。
 - Handler：消息处理器，主要向消息池发送各种消息以及处理各种消息。
 
-现在整个消息机制的流程就很清晰了，具体说来：
+现在整个消息的循环流程就很清晰了，具体说来：
 
 1. Handler通过sendMessage()发送消息Message到消息队列MessageQueue。
 2. Looper通过loop()不断提取触发条件的Message，并将Message交给对应的target handler来处理。
 3. target handler调用自身的handleMessage()方法来处理Message。
+
+事实上，在整个消息循环的流程中，并不只有Java层参与，很多重要的工作都是在C++层来完成的。我们来看下这些类的调用
+关系。
+
+在这些类中MessageQueue是Java层与C++层维系的桥梁，MessageQueue与Looper相关功能都通过MessageQueue的Native方法来完成。我们
+来具体看一看。
+
 
 ## 一 消息Message
 
@@ -134,6 +141,108 @@ public final class Message implements Parcelable {
 ## 二 消息队列MessageQueue
 
 MessageQueue是Android消息机制Java层和C++层的纽带，其中很多核心方法都交由native方法实现。
+
+我们首先来看看MessageQueue的构造函数，也就是消息队列是如何被创建的。
+
+### 2.1 MessageQueue(boolean quitAllowed)
+
+```java
+public final class MessageQueue {
+    
+    private long mPtr; // used by native code
+    
+    MessageQueue(boolean quitAllowed) {
+        mQuitAllowed = quitAllowed;
+        mPtr = nativeInit();
+    }
+}
+```
+可以看到它调用的是native方法来完成初始化，这个方法定义在了一个android_os_MessageQueue的C++类类。
+
+```java
+static jlong android_os_MessageQueue_nativeInit(JNIEnv* env, jclass clazz) {
+    //构建NativeMessageQueue对象
+    NativeMessageQueue* nativeMessageQueue = new NativeMessageQueue();
+    if (!nativeMessageQueue) {
+        jniThrowRuntimeException(env, "Unable to allocate native queue");
+        return 0;
+    }
+
+    nativeMessageQueue->incStrong(env);
+    //将nativeMessageQueue对象的地址值转成long型返回该Java层
+    return reinterpret_cast<jlong>(nativeMessageQueue);
+}
+```
+可以看到该方法构建了一个NativeMessageQueue对象，并将NativeMessageQueue对象的地址值转成long型返回给Java层，这里我们知道实际上是mPtr持有了这个
+地址值。
+
+NativeMessageQueue继承域MessageQueue.cpp类，我们来看看NativeMessageQueue的构造方法。
+
+```java
+NativeMessageQueue::NativeMessageQueue() :
+        mPollEnv(NULL), mPollObj(NULL), mExceptionObj(NULL) {
+    
+    //先检查是否已经为当前线程创建过一个Looper对象
+    mLooper = Looper::getForThread();
+    if (mLooper == NULL) {
+        //创建Looper对象
+        mLooper = new Looper(false);
+        //为当前线程设置Looper对象
+        Looper::setForThread(mLooper);
+    }
+}
+```
+
+可以看到NativeMessageQueue构造方法先检查是否已经为当前线程创建过一个Looper对象，如果没有，则创建Looper对象并为当前线程设置Looper对象。
+
+我们再来看看Looper的构造方法。
+
+````java
+Looper::Looper(bool allowNonCallbacks) :
+        mAllowNonCallbacks(allowNonCallbacks), mSendingMessage(false),
+        mResponseIndex(0), mNextMessageUptime(LLONG_MAX) {
+    int wakeFds[2];
+    //创建管道
+    int result = pipe(wakeFds);
+    LOG_ALWAYS_FATAL_IF(result != 0, "Could not create wake pipe.  errno=%d", errno);
+    //读端文件描述符
+    mWakeReadPipeFd = wakeFds[0];
+    //写端文件描述符
+    mWakeWritePipeFd = wakeFds[1];
+    result = fcntl(mWakeReadPipeFd, F_SETFL, O_NONBLOCK);
+    LOG_ALWAYS_FATAL_IF(result != 0, "Could not make wake read pipe non-blocking.  errno=%d",
+            errno);
+    result = fcntl(mWakeWritePipeFd, F_SETFL, O_NONBLOCK);
+    LOG_ALWAYS_FATAL_IF(result != 0, "Could not make wake write pipe non-blocking.  errno=%d",
+            errno);
+    //创建一个epoll实例，并将它的文件描述符保存在变量mEpollFd中
+    mEpollFd = epoll_create(EPOLL_SIZE_HINT);
+    LOG_ALWAYS_FATAL_IF(mEpollFd < 0, "Could not create epoll instance.  errno=%d", errno);
+    struct epoll_event eventItem;
+    memset(& eventItem, 0, sizeof(epoll_event)); // zero out unused members of data field union
+    eventItem.events = EPOLLIN;
+    eventItem.data.fd = mWakeReadPipeFd;
+    //将前面创建的管道读端描述符和写端描述符添加到这个epoll实例中，以便它可以对管道的写操作进行监听
+    result = epoll_ctl(mEpollFd, EPOLL_CTL_ADD, mWakeReadPipeFd, & eventItem);
+    LOG_ALWAYS_FATAL_IF(result != 0, "Could not add wake read pipe to epoll instance.  errno=%d",
+            errno);
+}
+````
+
+这里面提到两个概念：管道与epoll机制。
+
+关于管道
+
+>管道在本质上也是文件，但它不是普通的文件，它不属于任何文件类型，而且它只存在与内存之中且有固定大小的缓存区，一般为1页即4kb。它分为读端和写端，读端负责从
+管道读取数据，当数据为空时则阻塞，写端负责向管道写数据，当管道缓存区满时则阻塞。那管道在线程通信中主要用来通知另一个线程。例如：线程A准备好了Message放入
+了消息队列，这个时候需要通知线程B去处理，这个时候线程A就像管道的写端写入数据，管道有了数据之后就回去唤醒线程B区处理消息。也正是基于管道来进行线程的休眠与
+唤醒，才保住了线程中的loop循环不会让线程卡死。
+
+关于epoll机制
+
+>
+
+讲到这里整个消息队列便创建完成了。
 
 ### 2.1 next()
 
