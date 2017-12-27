@@ -154,7 +154,9 @@ Looper::Looper(bool allowNonCallbacks) :
 
 关于epoll机制
 
->epoll机制是Linux系统为了监听多个文件描述符的IO读写事件而设计的。它可以使用一个或多个文件描述符。
+>epoll机制用来监听多个文件描述符的IO读写事件，在Android的消息机制用来监听管道的读写IO事件。
+
+关于epool机制，这里有个[简单易懂的解释](https://www.zhihu.com/question/20122137)。
 
 epoll一共有三个操作方法：
 
