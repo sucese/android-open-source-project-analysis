@@ -43,16 +43,22 @@ public class ThreadActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void addHandlerThread() {
-        HandlerThread handlerThread = new HandlerThread("HandlerThread#1");
-        handlerThread.start();
-        Handler handler = new Handler(handlerThread.getLooper());
-        handler.post(new Runnable() {
+//        HandlerThread handlerThread = new HandlerThread("HandlerThread#1");
+//        handlerThread.start();
+//        Handler handler = new Handler(handlerThread.getLooper());
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(TAG, "Thread.currentThread(): " + Thread.currentThread());
+//            }
+//        });
+
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "Thread.currentThread(): " + Thread.currentThread());
+                Log.d(TAG, "post runnable to message queue");
             }
         });
-
     }
 
     @Override

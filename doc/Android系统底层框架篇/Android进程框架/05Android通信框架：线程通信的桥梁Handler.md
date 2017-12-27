@@ -238,10 +238,6 @@ Looper::Looper(bool allowNonCallbacks) :
 了消息队列，这个时候需要通知线程B去处理，这个时候线程A就像管道的写端写入数据，管道有了数据之后就回去唤醒线程B区处理消息。也正是基于管道来进行线程的休眠与
 唤醒，才保住了线程中的loop循环不会让线程卡死。
 
-关于epoll机制
-
->
-
 讲到这里整个消息队列便创建完成了。
 
 ### 2.1 next()
@@ -258,22 +254,24 @@ public final class MessageQueue {
                return null;
            }
    
-           //循环迭代首次为-1
+           //pendingIdleHandlerCount保存的是注册到消息队列中空闲Handler个个数
            int pendingIdleHandlerCount = -1; 
-           //nextPollTimeoutMillisb表示下一个消息到来前还需要等待的时长，-1表示会无线等待
+           //nextPollTimeoutMillisb表示当前无消息到来时，当前线程需要进入睡眠状态的
+           //时间，0表示不进入睡眠状态，-1表示进入无限等待的睡眠状态，直到有人将它唤醒
            int nextPollTimeoutMillis = 0;
            for (;;) {
                if (nextPollTimeoutMillis != 0) {
                    Binder.flushPendingCommands();
                }
    
-               //nativePollOnce是阻塞操作，当等待nextPollTimeoutMillis时长或者消息队列被唤醒，都会返回。
+               //nativePollOnce是阻塞操作，用来检测当前线程的消息队列中是否有消息需要处理
                nativePollOnce(ptr, nextPollTimeoutMillis);
    
                synchronized (this) {
                    // Try to retrieve the next message.  Return if found.
                    final long now = SystemClock.uptimeMillis();
                    Message prevMsg = null;
+                   //mMessages代表了当前线程需要处理的消息
                    Message msg = mMessages;
                    //当处理该消息的Handler为空时，则查询消息队列中下一条异步消息。
                    if (msg != null && msg.target == null) {
@@ -283,11 +281,13 @@ public final class MessageQueue {
                        } while (msg != null && !msg.isAsynchronous());
                    }
                    if (msg != null) {
+                       //如果消息的执行时间大于当前时间，则计算线程需要睡眠等待的时间
                        if (now < msg.when) {
                            //当异步消息的触发时间大于当前时间，则使者下一次轮询的超时时长
                            nextPollTimeoutMillis = (int) Math.min(msg.when - now, Integer.MAX_VALUE);
-                       } else {
-                           //获取一条消息并返回
+                       } 
+                       //如果消息的执行时间小于当前时间，则说明该消息需要立即执行，则将该消息返回
+                       else {
                            mBlocked = false;
                            if (prevMsg != null) {
                                prevMsg.next = msg.next;
@@ -301,7 +301,8 @@ public final class MessageQueue {
                            return msg;
                        }
                    } else {
-                       // 没有更多消息
+                       // 如果没有更多消息需要处理，则将nextPollTimeoutMillis置为-1，让当前线程进入无限睡眠状态，直到
+                       //被其他线程唤醒。
                        nextPollTimeoutMillis = -1;
                    }
    
@@ -310,7 +311,6 @@ public final class MessageQueue {
                        dispose();
                        return null;
                    }
-   
                    
                    //pendingIdleHandlerCount指的是等待执行的Handler的数量，mIdleHandlers是一个空闲Handler列表
                    if (pendingIdleHandlerCount < 0
@@ -359,8 +359,17 @@ public final class MessageQueue {
        } 
 }
 ```
-从上面可以看出next()是一个无限循环方法，如果当前消息队列中没有消息，该方法会一直阻塞在这里，等到有新消息时，next()方法会返回这条
-消息并将其从链表中移除。
+
+next()方法主要用来从消息队列里循环获取消息，每个消息都是按照执行时间排列在消息队列里的，所以next()对它们的处理也不一样具体说来：
+
+1. 调用nativePollOnce(ptr, nextPollTimeoutMillis)方法从消息队列里拉取消息，获取到的消息会存在mMessages里，它代表了当前需要处理的消息。
+2. 等到nativePollOnce(ptr, nextPollTimeoutMillis)方法返回后，如果返回消息为空则nextPollTimeoutMillis置为-1，当前线程进入无限睡眠等待状态，如果消息不为空，则进入步骤3.
+3. 如果返回的消息不为空，则判断消息的执行时间，如果消息的执行时间大于当前时间，则说明线程需要进行睡眠等待，如果消息执行时间小于当前时间，则说明消息需要立即执行，则返回该消息。
+
+可以看到这里调用的是native方法nativePollOnce()来检查当前线程是否有消息需要处理，调用该方法时，线程有可能进入睡眠状态，具体由nextPollTimeoutMillis参数决定。0表示不进入睡眠状态，-1表示
+进入无限等待的睡眠状态，直到有人将它唤醒。
+
+我们接着来看看nativePollOnce()方法的实现。
 
 ### 2.2 enqueueMessage()
 
@@ -394,18 +403,14 @@ public final class MessageQueue {
                 msg.when = when;
                 Message p = mMessages;
                 boolean needWake;
-                //三个条件：消息队列里没有消息；触发时间为0代表立即执行；触发时间是队列中最早的
+                
                 if (p == null || when == 0 || when < p.when) {
                     // New head, wake up the event queue if blocked.
                     msg.next = p;
                     mMessages = msg;
                     needWake = mBlocked;
                 } else {
-                    //needWake代表了是否需要唤醒消息队列，一般不需要除非存在以下两种情况：
-                    //① 在消息队列头部存在barrier，就是存在那种没有target handler的同步消息阻塞了当前队列的情况
-                    //② 要插入的这个消息是当前消息队列最早需要执行的异步消息
                     needWake = mBlocked && p.target == null && msg.isAsynchronous();
-                    
                     //将消息按照时间顺序插入到消息队列中
                     Message prev;
                     for (;;) {
@@ -431,10 +436,16 @@ public final class MessageQueue {
         }
 }
 ```
+enqueueMessage()以时间为序将消息插入到消息队列中去，以下三种情况下需要插入到队列头部：
+
+- 消息队列为空
+- 要插入的消息的执行时间为0
+- 要插入的消息的执行时间小于消息队列头的消息的执行时间
+
+上面三种情况很容易想到，其他情况以时间为序插入到队列中间。当有新的消息插入到消息队列头时，当前线程就需要去唤醒目标线程（如果它已经睡眠（mBlocked = true）就执行唤醒操作，否则不需要），以便
+它可以来处理新插入消息头的消息。
 
 ## 三 消息循环器Looper
-
->Class used to run a message loop for a thread. 
 
 Looper可以为线程添加一个消息循环的功能，具体说来，为了给线程添加一个消息循环，我们通常会这么做：
 
