@@ -1,4 +1,4 @@
-# Android通信框架：线程通信的桥梁Handler
+# Android进程框架：线程通信的桥梁Handler
 
 **关于作者**
 
