@@ -544,28 +544,30 @@ setThreadScheduler(int tid, int policy, int priority)
 
 **Activity**
 
-ActivityManagerService.realStartActivityLocked: 启动Activity
-ActivityStack.resumeTopActivityInnerLocked: 恢复栈顶Activity
-ActivityStack.finishCurrentActivityLocked: 结束当前Activity
-ActivityStack.destroyActivityLocked: 摧毁当前Activity
+- ActivityManagerService.realStartActivityLocked: 启动Activity
+- ActivityStack.resumeTopActivityInnerLocked: 恢复栈顶Activity
+- ActivityStack.finishCurrentActivityLocked: 结束当前Activity
+- ActivityStack.destroyActivityLocked: 摧毁当前Activity
 
 **Service**
 
-ActiveServices.realStartServiceLocked: 启动服务
-ActiveServices.bindServiceLocked: 绑定服务(只更新当前app)
-ActiveServices.unbindServiceLocked: 解绑服务 (只更新当前app)
-ActiveServices.bringDownServiceLocked: 结束服务 (只更新当前app)
-ActiveServices.sendServiceArgsLocked: 在bringup或则cleanup服务过程调用 (只更新当前app)
+- ActiveServices.realStartServiceLocked: 启动服务
+- ActiveServices.bindServiceLocked: 绑定服务(只更新当前app)
+- ActiveServices.unbindServiceLocked: 解绑服务 (只更新当前app)
+- ActiveServices.bringDownServiceLocked: 结束服务 (只更新当前app)
+- ActiveServices.sendServiceArgsLocked: 在bringup或则cleanup服务过程调用 (只更新当前app)
 
 **BroadcastReceiver**
 
-BroadcastQueue.processNextBroadcast: 处理下一个广播
-BroadcastQueue.processCurBroadcastLocked: 处理当前广播
-BroadcastQueue.deliverToRegisteredReceiverLocked: 分发已注册的广播 (只更新当前app)
+- BroadcastQueue.processNextBroadcast: 处理下一个广播
+- BroadcastQueue.processCurBroadcastLocked: 处理当前广播
+- BroadcastQueue.deliverToRegisteredReceiverLocked: 分发已注册的广播 (只更新当前app)
 
-ActivityManagerService.removeContentProvider: 移除provider
-ActivityManagerService.publishContentProviders: 发布provider (只更新当前app)
-ActivityManagerService.getContentProviderImpl: 获取provider (只更新当前app)
+**ContentProvider**
+
+- ActivityManagerService.removeContentProvider: 移除provider
+- ActivityManagerService.publishContentProviders: 发布provider (只更新当前app)
+- ActivityManagerService.getContentProviderImpl: 获取provider (只更新当前app)
 
 另外，Lowmemorykiller也会根据当前的内存情况逐级进行进程释放，一共有六个级别（上面加粗的部分）：
 
