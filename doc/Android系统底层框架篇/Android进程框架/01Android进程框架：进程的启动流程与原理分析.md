@@ -8,6 +8,8 @@
 
 Android系统的启动流程如下所示：
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_process.png" />
+
 Loader层
 
 1. 当手机处于关机状态时，长按电源键开机，引导芯片开始从固化在Boot ROM里的预设代码开始执行，然后加载引导程序Boot Loader到RAM。
@@ -38,7 +40,6 @@ Zygote进程孵化出的第一个应用进程是Launcher进程（桌面），它
 通过上述流程的分析，想必读者已经对Android的整个进程模型有了大致的理解。作为一个应用开发者我们往往更为关注Framework层和App层里进程的创建与管理相关原理，我们来
 一一分析。
 
-
 ## 一 进程的创建流程
 
 前面我们理解系统里运行的各种进程，那么这些进程如何被创建呢？🤔
@@ -61,6 +62,8 @@ Zygote进程孵化出的第一个应用进程是Launcher进程（桌面），它
 注：整个流程会涉及Binder和Socket两种进程通信方式，这个我们后续会有专门的文章单独分析，这个就不再展开。
 
 整个流程大致就是这样，我们接着来看看具体的代码实现，先来看一张进程启动序列图：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_start_sequence.png" />
 
 ### 1.1 system_server进程发起创建请求
 
