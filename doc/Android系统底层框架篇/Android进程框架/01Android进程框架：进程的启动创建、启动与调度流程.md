@@ -1,4 +1,4 @@
-# Android进程框架：进程的启动流程与原理分析
+# Android进程框架：进程的启动创建、启动与调度流程
 
 **关于作者**
 
@@ -59,7 +59,7 @@ Zygote进程孵化出的第一个应用进程是Launcher进程（桌面），它
 这个新进程就是zygote进程通过复制自身来创建的，新进程在启动的过程中还会创建一个Binder线程池（用来做进程通信）和一个消息循环（用来做线程通信）
 整个流程如下图所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_start_flow.png" width="600" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_start_flow.png" width="500" />
 
 1. 当我们点击应用图标启动应用时或者在应用内启动一个带有process标签的Activity时，都会触发创建新进程的请求，这种请求会先通过Binder
 发送给system_server进程，也即是发送给ActivityManagerService进行处理。
@@ -444,7 +444,7 @@ Process.killProcess()开始讲起，继续分析进程的结束流程。
 
 进程按照优先级大小不同又可以分为实时进程与普通进程。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_priority.png" width="600" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_priority.png" width="400" />
 
 prio值越小表示进程优先级越高，
 
