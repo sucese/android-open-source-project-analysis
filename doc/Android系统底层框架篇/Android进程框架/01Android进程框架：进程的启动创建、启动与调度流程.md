@@ -12,7 +12,7 @@
 
 Android系统的启动流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_process.png" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_process.png" width="500"  />
 
 Loader层
 
@@ -59,7 +59,7 @@ Zygote进程孵化出的第一个应用进程是Launcher进程（桌面），它
 这个新进程就是zygote进程通过复制自身来创建的，新进程在启动的过程中还会创建一个Binder线程池（用来做进程通信）和一个消息循环（用来做线程通信）
 整个流程如下图所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_start_flow.png" width="500" />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/process_start_flow.png" width="400" />
 
 1. 当我们点击应用图标启动应用时或者在应用内启动一个带有process标签的Activity时，都会触发创建新进程的请求，这种请求会先通过Binder
 发送给system_server进程，也即是发送给ActivityManagerService进行处理。
