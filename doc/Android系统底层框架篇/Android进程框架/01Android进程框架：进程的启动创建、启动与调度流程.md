@@ -12,7 +12,7 @@
 
 Android系统的启动流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_process.png" width="600"  />
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_process.png" width="700"  />
 
 Loader层
 
