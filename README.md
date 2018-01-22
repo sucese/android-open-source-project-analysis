@@ -109,9 +109,9 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 - [01Android进程框架：进程的启动创建、启动与调度流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的启动创建、启动与调度流程.md)
 - [02Android进程框架：线程与线程池](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/02Android进程框架：线程与线程池.md)
-- 03Android进程框架：Zygote进程通信的桥梁Socket
-- 04Android进程框架：Server进程通信的桥梁Binder
-- [05Android进程框架：线程通信的桥梁Handler](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/05Android进程框架：线程通信的桥梁Handler.md)
+- [03Android进程框架：线程通信的桥梁Handler](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/03Android进程框架：线程通信的桥梁Handler.md)
+- 04Android进程框架：进程通信的桥梁Binder
+- 05Android进程框架：进程通信的桥梁Socket
 
 **Android内存框架**
 

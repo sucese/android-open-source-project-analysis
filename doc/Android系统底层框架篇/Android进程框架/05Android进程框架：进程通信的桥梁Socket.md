@@ -1,4 +1,4 @@
-# Android进程框架：进程通信的桥梁Binder
+# Android进程框架：进程通信的桥梁Socket
 
 **关于作者**
 
