@@ -28,29 +28,9 @@ hexdump TestClass.class
 ```
 Class文件内容如下所示：
 
-```
-0000000 ca fe ba be 00 00 00 34 00 0f 0a 00 03 00 0c 07
-0000010 00 0d 07 00 0e 01 00 06 3c 69 6e 69 74 3e 01 00
-0000020 03 28 29 56 01 00 04 43 6f 64 65 01 00 0f 4c 69
-0000030 6e 65 4e 75 6d 62 65 72 54 61 62 6c 65 01 00 03
-0000040 73 75 6d 01 00 05 28 49 49 29 49 01 00 0a 53 6f
-0000050 75 72 63 65 46 69 6c 65 01 00 0e 54 65 73 74 43
-0000060 6c 61 73 73 2e 6a 61 76 61 0c 00 04 00 05 01 00
-0000070 43 63 6f 6d 2f 67 75 6f 78 69 61 6f 78 69 6e 67
-0000080 2f 61 6e 64 72 6f 69 64 2f 66 72 61 6d 65 77 6f
-0000090 72 6b 2f 64 65 6d 6f 2f 6e 61 74 69 76 65 5f 66
-00000a0 72 61 6d 77 6f 72 6b 2f 76 6d 2f 54 65 73 74 43
-00000b0 6c 61 73 73 01 00 10 6a 61 76 61 2f 6c 61 6e 67
-00000c0 2f 4f 62 6a 65 63 74 00 21 00 02 00 03 00 00 00
-00000d0 00 00 02 00 01 00 04 00 05 00 01 00 06 00 00 00
-00000e0 1d 00 01 00 01 00 00 00 05 2a b7 00 01 b1 00 00
-00000f0 00 01 00 07 00 00 00 06 00 01 00 00 00 0a 00 01
-0000100 00 08 00 09 00 01 00 06 00 00 00 1c 00 02 00 03
-0000110 00 00 00 04 1b 1c 60 ac 00 00 00 01 00 07 00 00
-0000120 00 06 00 01 00 00 00 0d 00 01 00 0a 00 00 00 02
-0000130 00 0b                                          
-0000132
-```
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_1.png"/>
+
+注：笔者用的二进制查看软件是iHex，可以去AppStore下载，Windows用户可以使用WinHex。
 
 这是一份十六进制表示的二进制流，每个位排列紧密，都有其对应的含义，具体说来，如下所示：
 
@@ -93,6 +73,8 @@ Class文件内容如下所示：
 
 >ca fe ba be
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_2.png"/>
+
 ### 1.2 版本号
 
 具体含义
@@ -102,6 +84,8 @@ Class文件内容如下所示：
 对应数值
 
 >5-6字节是次版本号0x0000（即0），7-8字节是主版本号0x0034（即52）.
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_2.png"/>
 
 JDK版本号与数值的对应关系如下所示：
 
@@ -118,42 +102,244 @@ JDK版本号与数值的对应关系如下所示：
 
 具体含义
 
->常量池计数：常量池中常量的数量不是固定的，因此常量池入口处会防止一项u2类型的数据，代表常量池容器计数。注意容器计数从1开始，索引为0代表不引用任何一个
+>常量池计数：常量池中常量的数量不是固定的，因此常量池入口处会放置一项u2类型的数据，代表常量池容器计数。注意容器计数从1开始，索引为0代表不引用任何一个
 常量池的项目。
 
 对应数值
 
-如果所示：
+>9-10字节是常量池容器计数0x000f（即15）。说明常量池里有14个常量，从1-14.
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/class_hex_structure_3.png"/>
-
-9-10字节是常量池容器计数0x000f（即15）。说明常量池里有14个常量，从1-14.
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_3.png"/>
 
 我们用javap命令分析一下字节码文件
 
 ```
-javap -verbose StandardClass.class
+javap -verbose TestClass.class
 ```
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/class_constant_pool.png"/>
+运行结果如下所示：
 
-如图所示，正如我们分析的那样，常量池里有14个常量。比方说我们看下第13个常量表示的类的全限定名，它对应的十六进制如下所示：
+```j
+Classfile /Users/guoxiaoxing/Github-app/android-open-source-project-analysis/demo/src/main/java/com/guoxiaoxing/android/framework/demo/native_framwork/vm/TestClass.class
+  Last modified 2018-1-23; size 306 bytes
+  MD5 checksum 86b5d89fa1de346213d812d5b6d3b5d7
+  Compiled from "TestClass.java"
+public class com.guoxiaoxing.android.framework.demo.native_framwork.vm.TestClass
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#12         // java/lang/Object."<init>":()V
+   #2 = Class              #13            // com/guoxiaoxing/android/framework/demo/native_framwork/vm/TestClass
+   #3 = Class              #14            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               sum
+   #9 = Utf8               (II)I
+  #10 = Utf8               SourceFile
+  #11 = Utf8               TestClass.java
+  #12 = NameAndType        #4:#5          // "<init>":()V
+  #13 = Utf8               com/guoxiaoxing/android/framework/demo/native_framwork/vm/TestClass
+  #14 = Utf8               java/lang/Object
+{
+  public com.guoxiaoxing.android.framework.demo.native_framwork.vm.TestClass();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 10: 0
 
-<img src="https://github.com/guoxiaoxing/java/raw/master/art/jvm/class_hex_structure_4.png"/>
+  public int sum(int, int);
+    descriptor: (II)I
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=3
+         0: iload_1
+         1: iload_2
+         2: iadd
+         3: ireturn
+      LineNumberTable:
+        line 13: 0
+}
+SourceFile: "TestClass.java"
 
-常量池主要存放字面量与符号引用。字面量包括：
+```
+
+如图所示，正如我们分析的那样，常量池里有14个常量。我们来看看这个TestClass全路径名的常量。
+
+```
+#13 = Utf8               com/guoxiaoxing/android/framework/demo/native_framwork/vm/TestClass
+```
+
+它的常量值如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_4.png"/>
+
+常量池主要存放字面量与符号引用。
+
+字面量包括：
+
+- 文本字符串
+- 声明为final的常量值等
+
+符号引用包括：
 
 - 类与接口的全限定名
 - 字段的名称与描述符
 - 方法的名称与描述符
 
-常量池中每一项常量都是一个表，目前共有14种表结构，如下所示：
+常量池里的每个常量都用一个表来表示，表的结构如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/constant_pool_data_type.png"/>
+```java
+cp_info {
+    //代表常量类型
+    u1 tag;
+    //代表存储的常量，不同的常量类型有不同的结构
+    u1 info[];
+}
+```
+目标一共有十四中常量类型，如下所示：
 
-### 访问标志
+注：下表字段分别为 类型、标志（tag）、描述
 
->访问标志：常量池之后就是访问标志，该标志用于识别一些类或则接口层次的访问信息。
+- CONSTANT_Utf8_info	    1	UTF8编码的Unicode字符串
+- CONSTANT_Integer_info	    3	整型字面量
+- CONSTANT_Float_info	    4	浮点型字面量
+- CONSTANT_Long_info	    5	长整型字面量
+- CONSTANT_Double_info	    6	双精度浮点型字面量
+- CONSTANT_Class_info	    7	类或接口的符号引用
+- CONSTANT_String_info	    8	字符串类型字面量
+- CONSTANT_Fieldref_info	9	字段的符号引用
+- CONSTANT_Methodref_info	10	类中方法的符号引用
+- CONSTANT_InterfaceMethodref_info	11	接口中方法的符号引用
+- CONSTANT_NameAndType_info	12	字段或方法的部分符号引用
 
-这些访问信息包括：
+### 1.4 访问标志
+
+具体含义
+
+>访问标志：常量池之后就是访问标志，该标志用于识别一些类或则接口层次的访问信息。这些访问信息包括这个Class是类还是接口，是否定义Abstract类型等。
+
+对应数值
+
+>常量池之后就是访问标志，前两个字节代表访问标志。
+
+从上面的分析中常量池最后一个常量是#14 = Utf8 java/lang/Object，所以它后面的两个字节就代表访问标志，如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_5.png"/>
+
+访问表示值与含义如下所示：
+
+- ACC_PUBLIC	0x0001	是否为public
+- ACC_FINAL	0x0010	是否为final
+- ACC_SUPER	0x0020	JDK 1.0.2以后编译出来的类该标志位都为真
+- ACC_INTERFACE	0x0200	是否为接口
+- ACC_ABSTRACT	0x0400	是否为抽象的（接口和抽象类）
+- ACC_SYNTHETIC	0x1000	表示这个代码并非由用户产生的
+- ACC_ANNOTATION	0x2000	是否为注解
+- ACC_ENUM	0x4000	是否为枚举
+
+我们上面写了一个普通的Java类，ACC_PUBLIC位为真，又由于JDK 1.0.2以后编译出来的类ACC_SUPER标志位都为真，所以最终的值为：
+
+```
+0x0001 & 0x0020 = 0x0021
+```
+
+这个值就是上图中的值。
+
+### 1.5 类索引、父类索引与接口索引
+
+具体含义
+
+>类索引（用来确定该类的全限定名）、父类索引（用来确定该类的父类的全限定名）是一个u2类型的数据（单个类、单继承），接口索引是一个u2类型的集合（多接口实现，用来描述该类实现了哪些接口）
+
+对应数值
+
+>类索引、父类索引与接口索引紧紧排列在访问标志之后。
+
+类索引为0x0002，它的全限定名为com/guoxiaoxing/android/framework/demo/native_framwork/vm/TestClass。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_6.png"/>
+
+父类索引为0x0003，它的全限定名为java/lang/Object。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_7.png"/>
+
+接口索引的第一项是一个u2类型的数据表示接口计数器，表示实现接口的个数。这里没有实现任何接口，所以为0x0000。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_8.png"/>
+
+### 1.6 字段表集合
+
+具体含义
+
+>字段表用来描述接口或者类里声明的变量、字段。包括类级变量以及实例级变量，但不包括方法内部声明的变量。
+
+字段表结构如下所示：
+
+```java
+field_info {
+    u2             access_flags;//访问标志位，例如private、public等
+    u2             name_index;//字段的简单名称
+    u2             descriptor_index;//方法的描述符，描述字段的数据类型，方法的参数列表和返回值
+    u2             attributes_count;
+    attribute_info attributes[attributes_count];
+}
+```
+access_flags取值如下所示：
+
+- ACC_PUBLIC	0x0001	是否为 public; 
+- ACC_PRIVATE	0x0002	是否为 private; 
+- ACC_PROTECTED	0x0004	是否为 protected; 
+- ACC_STATIC	0x0008	是否为 static;
+- ACC_FINAL	0x0010	是否为 final; 
+- ACC_VOLATILE	0x0040	是否为 volatile; 
+- ACC_TRANSIENT	0x0080	是否为 transient; 
+- ACC_SYNTHETIC	0x1000	是否为 synthetic;
+- ACC_ENUM	0x4000	是否为enum.
+
+descriptor_index里描述符的含义如下所示：
+
+- B	byte
+- C	char
+- D	double
+- F	float
+- I	int
+- J	long
+- S	short
+- Z	boolean
+- V	void
+- L	Object, 例如 Ljava/lang/Object
+
+
+对应数值
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/TestClass_9.png"/>
+
+根据这些描述符的含义，我们上面的写的方法。
+
+```java
+public int sum(int a, int b){
+    return a + b;
+}
+```
+
+access_flags为：
+
+```
+flags: ACC_PUBLIC
+```
+
+descriptor_index为：
+
+```java
+descriptor: (II)I
+
+```
 
