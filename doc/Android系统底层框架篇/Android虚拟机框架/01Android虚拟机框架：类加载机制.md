@@ -370,7 +370,7 @@ method_info {
 
 类加载的流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/class_load_flow.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/class_load_flow.png" width="600"/>
 
 **加载**
 
@@ -446,7 +446,7 @@ method_info {
 
 这个时候就要提到类加载器的双亲委派模型，流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/class_load_flow.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/classloader_model_structure.png" width="600"/>
 
 双亲委派模型的整个工作流程非常的简单，如下所示：
 
