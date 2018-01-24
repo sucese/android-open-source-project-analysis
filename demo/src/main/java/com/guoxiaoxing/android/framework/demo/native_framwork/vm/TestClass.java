@@ -9,7 +9,9 @@ package com.guoxiaoxing.android.framework.demo.native_framwork.vm;
  */
 public class TestClass {
 
-    public int sum(int a, int b) {
-        return a + b;
+    private int m;
+
+    public int inc() {
+        return m + 1;
     }
 }
