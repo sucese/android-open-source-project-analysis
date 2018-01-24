@@ -6,7 +6,11 @@
 
 **文章目录**
 
-这篇文章我们来讲解JVM的类加载机制，为后续的Android虚拟机的类加载机制做铺垫，在理解JVM的类加载机制之前，我们需要先理解class文件的结构。
+这篇文章我们来聊一聊关于Android虚拟机的那些事，当然这里我们需要去讲解关于虚拟机的底层细节，所讲的东西都是大家平常在开发中经常用的的。例如类的加载机制、资源加载机制、APK打包流程、APK安装流程
+以及App的启动流程等。讲解这些知识是为了后续的文章《大型Android项目的工程化实践：插件化》、《大型Android项目的工程化实践：热更新》、《大型Android项目的工程化实践：模块化》等系列的文章做一个
+原理铺垫。
+
+好了，让我们开始吧~😁
 
 ## 一 类文件基本结构
 
@@ -515,7 +519,7 @@ Android类加载器类图如下所示：
 
 除了这两个子类以为，还有两个类：
 
-- DexPathList：就根它的名字那样，该类主要用来查找Dex、SO库的路径，并这些路径整体呈一个数组。
+- DexPathList：就跟它的名字那样，该类主要用来查找Dex、SO库的路径，并这些路径整体呈一个数组。
 - DexFile：用来描述Dex文件，Dex的加载以及Class额查找都是由该类调用它的native方法完成的。
 
 我们先来看看基类BaseDexClassLoader的构造方法
@@ -608,7 +612,7 @@ private DexFile(String sourceName, String outputName, int flags, ClassLoader loa
 
 所以你可以看到DexClassLoader在加载Dex文件的时候比PathClassLoader多了一个openDexFile()方法，该方法调用的是native方法openDexFileNative()方法。
 
--[dalvik_system_DexFile.cpp](https://android.googlesource.com/platform/dalvik/+/0dcf6bb/vm/native/dalvik_system_DexFile.cpp)
+👉 [dalvik_system_DexFile.cpp](https://android.googlesource.com/platform/dalvik/+/0dcf6bb/vm/native/dalvik_system_DexFile.cpp)
 
 这个方法并不是真的打开Dex文件，而是将Dex文件以一种mmap的方式映射到虚拟机进程的地址空间中去，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系。实现这样的映射关系后，虚拟机
 进程就可以采用指针的方式读写操作这一段内存，而系统会自动回写脏页面到对应的文件磁盘上，即完成了对文件的操作而不必再调用read,write等系统调用函数。
