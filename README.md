@@ -123,6 +123,9 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 **Android虚拟机框架**
 
 - [01Android虚拟机框架：类加载机制](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android虚拟机框架/01Android虚拟机框架：类加载机制.md)
+- 02Android虚拟机框架：资源加载机制
+- 03Android虚拟机框架：APK打包流程
+- 04Android虚拟机框架：APK安装流程
 
 ## Android系统编程思想篇
 
