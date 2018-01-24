@@ -505,7 +505,7 @@ Java虚拟机加载的是class文件，而Android虚拟机加载的是dex文件�
 
 Android类加载器类图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/avm_classloader_class.png" width="700"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/avm_classloader_class.png"/>
 
 可以看到Android类加载器的基类是BaseDexClassLoader，它有派生出两个子类加载器：
 
@@ -518,24 +518,22 @@ Android类加载器类图如下所示：
 - DexPathList：就根它的名字那样，该类主要用来查找Dex、SO库的路径，并这些路径整体呈一个数组。
 - DexFile：用来描述Dex文件，Dex的加载以及Class额查找都是由该类调用它的native方法完成的。
 
-我们先来看看基类BaseDexClassLoader的实现。
+我们先来看看基类BaseDexClassLoader的构造方法
 
 ```java
-public class BaseDexClassLoader extends ClassLoader {
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        List<Throwable> suppressedExceptions = new ArrayList<Throwable>();
-        //调用DexPathList的findClass()执行类的查找
-        Class c = pathList.findClass(name, suppressedExceptions);
-        if (c == null) {
-            ClassNotFoundException cnfe = new ClassNotFoundException("Didn't find class \"" + name + "\" on path: " + pathList);
-            for (Throwable t : suppressedExceptions) {
-                cnfe.addSuppressed(t);
-            }
-            throw cnfe;
-        }
+public BaseDexClassLoader(String dexPath, File optimizedDirectory,
+        String librarySearchPath, ClassLoader parent) {
+    super(parent);
+    this.pathList = new DexPathList(this, dexPath, librarySearchPath, optimizedDirectory);
 }
 ```
+BaseDexClassLoader构造方法的四个参数的含义如下：
+
+- dexPath：指的是在Androdi包含类和资源的jar/apk类型的文件集合，指的是包含dex文件。多个文件用“：”分隔开，用代码就是File.pathSeparator。
+- optimizedDirectory：指的是odex优化文件存放的路径，可以为null，那么就采用默认的系统路径。
+- libraryPath：指的是native库文件存放目录，也是以“：”分隔。
+- parent：parent类加载器
+
 DexClassLoader与PathClassLoader都继承于BaseDexClassLoader，这两个类只是提供了自己的构造函数，没有额外的实现，我们对比下它们的构造函数的区别。
 
 **PathClassLoader**
@@ -569,55 +567,55 @@ public class DexClassLoader extends BaseDexClassLoader {
 
 上面我们也说过，Dex的加载以及Class额查找都是由DexFile调用它的native方法完成的，我们来看看它的实现。
 
+我们来看看Dex文件加载、类的查找加载的序列图，如下所示：
 
-首先看看它的构造函数。
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/find_class_sequence.png"/>
+
+从上图Dex加载的流程可以看出，optimizedDirectory决定了调用哪一个DexFile的构造函数。
+
+如果optimizedDirectory为空，这个时候其实是PathClassLoader，则调用：
 
 ```java
-DexFile(String fileName, ClassLoader loader, DexPathList.Element[] elements) throws IOException {
-    mCookie = openDexFile(fileName, null, 0, loader, elements);
-    mInternalCookie = mCookie;
-    mFileName = fileName;
-    //System.out.println("DEX FILE cookie is " + mCookie + " fileName=" + fileName);
+DexFile(File file, ClassLoader loader, DexPathList.Element[] elements)
+        throws IOException {
+    this(file.getPath(), loader, elements);
 }
 ```
 
-类的查找的序列图如下所示：
-
-可以发现最红是调用dalvik_system_DexFile.cc的defineClassNative()方法完成类的查找，如下所示：
+如果optimizedDirectory不为空，这个时候其实是DexClassLoader，则调用：
 
 ```java
-static jclass DexFile_defineClassNative(JNIEnv* env, jclass, jstring javaName, jobject javaLoader,
-                                        jobject cookie) {
-  std::unique_ptr<std::vector<const DexFile*>> dex_files = ConvertJavaArrayToNative(env, cookie);
-  if (dex_files.get() == nullptr) {
-    return nullptr; //dex文件为空, 则直接返回
-  }
-
-  ScopedUtfChars class_name(env, javaName);
-  if (class_name.c_str() == nullptr) {
-    return nullptr; //类名为空, 则直接返回
-  }
-
-  const std::string descriptor(DotToDescriptor(class_name.c_str()));
-  const size_t hash(ComputeModifiedUtf8Hash(descriptor.c_str())); //将类名转换为hash码
-  for (auto& dex_file : *dex_files) {
-    const DexFile::ClassDef* dex_class_def = dex_file->FindClassDef(descriptor.c_str(), hash);
-    if (dex_class_def != nullptr) {
-      ScopedObjectAccess soa(env);
-      ClassLinker* class_linker = Runtime::Current()->GetClassLinker();
-      class_linker->RegisterDexFile(*dex_file);
-      StackHandleScope<1> hs(soa.Self());
-      Handle<mirror::ClassLoader> class_loader(
-          hs.NewHandle(soa.Decode<mirror::ClassLoader*>(javaLoader)));
-      //获取目标类
-      mirror::Class* result = class_linker->DefineClass(soa.Self(), descriptor.c_str(), hash,
-                                                        class_loader, *dex_file, *dex_class_def);
-      if (result != nullptr) {
-        // 找到目标对象
-        return soa.AddLocalReference<jclass>(result);
-      }
+private DexFile(String sourceName, String outputName, int flags, ClassLoader loader,
+        DexPathList.Element[] elements) throws IOException {
+    if (outputName != null) {
+        try {
+            String parent = new File(outputName).getParent();
+            if (Libcore.os.getuid() != Libcore.os.stat(parent).st_uid) {
+                throw new IllegalArgumentException("Optimized data directory " + parent
+                        + " is not owned by the current user. Shared storage cannot protect"
+                        + " your application from code injection attacks.");
+            }
+        } catch (ErrnoException ignored) {
+            // assume we'll fail with a more contextual error later
+        }
     }
-  }
-  return nullptr; //没有找到目标类
+
+    mCookie = openDexFile(sourceName, outputName, flags, loader, elements);
+    mFileName = sourceName;
+    //System.out.println("DEX FILE cookie is " + mCookie + " sourceName=" + sourceName + " outputName=" + outputName);
 }
 ```
+
+所以你可以看到DexClassLoader在加载Dex文件的时候比PathClassLoader多了一个openDexFile()方法，该方法调用的是native方法openDexFileNative()方法。
+
+-[dalvik_system_DexFile.cpp](https://android.googlesource.com/platform/dalvik/+/0dcf6bb/vm/native/dalvik_system_DexFile.cpp)
+
+这个方法并不是真的打开Dex文件，而是将Dex文件以一种mmap的方式映射到虚拟机进程的地址空间中去，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系。实现这样的映射关系后，虚拟机
+进程就可以采用指针的方式读写操作这一段内存，而系统会自动回写脏页面到对应的文件磁盘上，即完成了对文件的操作而不必再调用read,write等系统调用函数。
+
+关于mmap，它是一种很有用的文件读写方式，限于篇幅这里不再展开，更多关于mmap的内容可以参见文章：http://www.cnblogs.com/huxiao-tee/p/4660352.html
+
+到这里，Android虚拟机的类加载机制就讲的差不多了，我们再来总结一下。
+
+>Android虚拟机有两个类加载器DexClassLoader与PathClassLoader，它们都继承于BaseDexClassLoader，它们内部都维护了一个DexPathList的对象，DexPathList主要用来存放指明包含dex文件、native库和优化odex目录。
+Dex文件采用DexFile这个类来描述，Dex的加载以及类的查找都是通过DexFile调用它的native方法来完成的。
