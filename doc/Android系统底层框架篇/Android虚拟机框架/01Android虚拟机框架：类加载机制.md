@@ -505,7 +505,7 @@ Java虚拟机加载的是class文件，而Android虚拟机加载的是dex文件�
 
 Android类加载器类图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/avm_classloader_class.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/avm_classloader_class.png" width="700"/>
 
 可以看到Android类加载器的基类是BaseDexClassLoader，它有派生出两个子类加载器：
 
