@@ -39,7 +39,7 @@ APK的打包流程如下图所示：
 
 Android系统常见的文件类型如下所示：
 
-👉[MimeUtils.java](https://android.googlesource.com/platform/libcore/+/master/luni/src/main/java/libcore/net/MimeUtils.java)
+👉 [MimeUtils.java](https://android.googlesource.com/platform/libcore/+/master/luni/src/main/java/libcore/net/MimeUtils.java)
 
 - add("application/zip", "zip");
 - add("application/vnd.android.package-archive", "apk");
@@ -66,7 +66,7 @@ PackageInstallerActivity显示的是个对话框，当点击确定安装以后�
 
 整个APK的安装流程如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/package/apk_install_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/package/apk_install_structure.png"/>
 
 1. 复制APK到/data/app目录下，解压并扫描安装包。
 2. 资源管理器解析APK里的资源文件。
@@ -94,7 +94,7 @@ Linux用户ID与Linux用户组ID的分配与管理是由Settings类来完成的�
 
 点击图片查看高清大图
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/package/apk_install_sequence.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/package/apk_install_sequence.png"/>
 
 嗯，看起来有点长😤，但只要我们掌握核心逻辑和原理，再长的函数调用链都是纸老虎。😎
 
@@ -308,6 +308,6 @@ public final class Installer {
 ```
 守护进程调用Command.c里的dexopt()方法执行dexopt操作，如果你对dexopt的C++层的实现感兴趣可以异步：
 
-👉[Android ART运行时无缝替换Dalvik虚拟机的过程分析](http://blog.csdn.net/luoshengyang/article/details/18006645)
+👉 [Android ART运行时无缝替换Dalvik虚拟机的过程分析](http://blog.csdn.net/luoshengyang/article/details/18006645)
 
 APK安装完成以后会在桌面生成一个快捷图标，点击图标就可以启动应用了。
