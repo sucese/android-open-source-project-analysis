@@ -95,10 +95,9 @@ Android会先获取自己的设备信息，然后根据设备信息去查找对�
 - 次字节是Type ID，表示资源的类型，例如：anim、color、string等。
 - 最低两个字节是Entry ID，表示资源在其所属资源类型中所出现的次序。
 
-Android系统自己定义了两个Package ID，如下所示：
+**关于Package ID**
 
-- 系统资源命名空间：0x01
-- 应用资源命名空间：0x7f
+>Android系统自己定义了两个Package ID，系统资源命名空间：0x01 和 应用资源命名空间：0x7f。
 
 所有处于这两个值之间的空间都是合法的，我们可以从R.java文件中看到应用资源命令空间0x7f，如下所示：
 
@@ -117,14 +116,6 @@ public final class R {
      //...
 }
 ```
-
-
-1. xml编写的Android资源文件都会编译成二进制格式的xml文件。
-2. 赋予每个非asset资源一个ID值，这些ID值以常量的形式保存在R.java文件中。
-3. 生成一个resources.arsc文件，它相当于一个资源索引表，描述那些具有ID值的资源的配置信息。
-
-
-
 ## 二 APK安装流程
 
 我们来思考一下Android系统是如何安装一个APK文件的，从直观的流程上，当我们点击一个APK文件或者从应用商店下载一个APK文件，会弹起一个安装对话框，点击安装就可以安装应用。
@@ -412,13 +403,13 @@ APK安装完成以后会在桌面生成一个快捷图标，点击图标就可�
 
 ## 三 APK加载流程
 
-我们前面说过APK可以分为代码与资源两部分，那么在加载APK时也会涉及代码的加载和资源的加载，代码的加载事实上对应的就是Android应用进程的创建流程，关于这一块的内容我们在文章[01Android进程框架：进程的启动创建、启动与调度流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的启动创建、启动与调度流程.md)已经分析过，本篇文章
+我们前面说过APK可以分为代码与资源两部分，那么在加载APK时也会涉及代码的加载和资源的加载，代码的加载事实上对应的就是Android应用进程的创建流程，关于这一块的内容我们在文章[01Android进程框架：进程的创建、启动与调度流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的创建、启动与调度流程.md)已经分析过，本篇文章
 我们着重来分析资源的加载流程。
 
-我们知道在代码中我们通常会通过getResource()去获取Resource对象，Resource对象是应用进程内的一个全局对象，它用来访问应用的资源。Resource的实现类是ResourceImpl，ResourceImpl内部有个
-AssetManager对象，它才是真正用来进行资源访问的。我们来看看它的实现。
+我们知道在代码中我们通常会通过getResource()去获取Resources对象，Resource对象是应用进程内的一个全局对象，它用来访问应用的资源。除了Resources对象我们还可以通过getAsset()获取
+AssetManger来读取指定文件路径下的文件。Resource与AssetManger这对兄弟就构造了资源访问框架的基础。
 
-那么AssetManager对象在哪里创建的呢？🤔
+那么AssetManager对象与Resources对象在哪里创建的呢？🤔
 
 ### 3.1 AssetManager的创建流程
 
@@ -704,4 +695,11 @@ getNativeStringBlock()方法实际上就是将每一个资源包里面的resourc
 再将该StringPool对象封装成Java层的StringBlock中。
 
 如此，AssetManager和Resources对象的创建流程便分析完了，这两个对象构成了Android应用程序资源管理器的核心基础，APK资源的加载就是借由这两个对象来完成的。
+
+### 3.3 资源的查找流程
+
+前面我们分析了AssetManager和Resources对象的创建流程，AssetManager根据文件名来查找资源，Resouces根据资源ID查找资源，如果资源ID对应的是个文件，那么会Resouces先根据资源ID查找
+出文件名，AssetManger再根据文件名查找出具体的资源。
+
+整个流程还是比较简单的，具体序列图如下所示：
 
