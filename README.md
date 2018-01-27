@@ -103,7 +103,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 **Android包管理框架**
 
-- [01Android包管理框架：APK打包流程与安装流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android包管理框架/01Android包管理框架：APK打包流程与安装流程.md)
+- [01Android包管理框架：APK打包、安装与加载流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android包管理框架/01Android包管理框架：APK打包、安装与加载流程.md)
 
 ## Android系统底层框架篇
 

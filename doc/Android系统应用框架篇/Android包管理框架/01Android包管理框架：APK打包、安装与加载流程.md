@@ -1,4 +1,4 @@
-# Android虚拟机框架：APK打包流程、安装流程与加载流程
+# Android虚拟机框架：APK打包、安装与加载流程
 
 **关于作者**
 
@@ -412,7 +412,7 @@ APK安装完成以后会在桌面生成一个快捷图标，点击图标就可�
 
 ## 三 APK加载流程
 
-我们前面说过APK可以分为代码与资源两部分，那么在加载APK时也会涉及代码的加载和资源的加载，代码的加载事实上对应的就是Android应用进程的创建流程，关于这一块的内容我们在文章[]()已经分析过，本篇文章
+我们前面说过APK可以分为代码与资源两部分，那么在加载APK时也会涉及代码的加载和资源的加载，代码的加载事实上对应的就是Android应用进程的创建流程，关于这一块的内容我们在文章[01Android进程框架：进程的启动创建、启动与调度流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的启动创建、启动与调度流程.md)已经分析过，本篇文章
 我们着重来分析资源的加载流程。
 
 我们知道在代码中我们通常会通过getResource()去获取Resource对象，Resource对象是应用进程内的一个全局对象，它用来访问应用的资源。Resource的实现类是ResourceImpl，ResourceImpl内部有个
