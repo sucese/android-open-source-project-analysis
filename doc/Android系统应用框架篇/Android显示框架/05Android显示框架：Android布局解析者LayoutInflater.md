@@ -8,8 +8,9 @@
 
 **文章目录**
 
-- 一 View树解析
-- 二 View解析
+- 一 获取XmlResourceParser
+- 二 解析View树
+- 三 解析View
 
 >Instantiates a layout XML file into its corresponding {@link android.view.View}objects. 
 
@@ -25,7 +26,7 @@ layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLAT
 LayoutInflater是一个抽象类，它的实现类是PhoneLayoutInflater。LayoutInflater会采用深度优先遍历自顶向下遍历View树，根据View的全路径名利用反射获取构造器
 从而构建View的实例。整个逻辑还是很清晰的，我们来具体看一看。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/LayoutInflater_sequence.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/LayoutInflater_inflate_sequence.png"/>
 
 我们先来看看总的调度方法inflate()，这个也是我们最常用的
 
@@ -92,123 +93,168 @@ public abstract class LayoutInflater {
                     + Integer.toHexString(resource) + ")");
         }
         
-        //获取xml资源解析器
+        //获取xml资源解析器XmlResourceParser
         final XmlResourceParser parser = res.getLayout(resource);
         try {
-            return inflate(parser, root, attachToRoot);
+            return inflate(parser, root, attachToRoot);//解析View
         } finally {
             parser.close();
         }
     }
-
-    public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
-        synchronized (mConstructorArgs) {
-            Trace.traceBegin(Trace.TRACE_TAG_VIEW, "inflate");
-
-            final Context inflaterContext = mContext;
-            final AttributeSet attrs = Xml.asAttributeSet(parser);
-            
-            //Context对象
-            Context lastContext = (Context) mConstructorArgs[0];
-            mConstructorArgs[0] = inflaterContext;
-            
-            //存储根视图
-            View result = root;
-
-            try {
-                // 获取根元素
-                int type;
-                while ((type = parser.next()) != XmlPullParser.START_TAG &&
-                        type != XmlPullParser.END_DOCUMENT) {
-                    // Empty
-                }
-
-                if (type != XmlPullParser.START_TAG) {
-                    throw new InflateException(parser.getPositionDescription()
-                            + ": No start tag found!");
-                }
-
-                final String name = parser.getName();
-                
-                if (DEBUG) {
-                    System.out.println("**************************");
-                    System.out.println("Creating root view: "
-                            + name);
-                    System.out.println("**************************");
-                }
-
-                //1. 解析merge标签，rInflate()方法会将merge下面的所有子View直接添加到根容器中，这里
-                //我们也理解了为什么merge标签可以达到简化布局的效果。
-                if (TAG_MERGE.equals(name)) {
-                    if (root == null || !attachToRoot) {
-                        throw new InflateException("<merge /> can be used only with a valid "
-                                + "ViewGroup root and attachToRoot=true");
-                    }
-
-                    rInflate(parser, root, inflaterContext, attrs, false);
-                } else {
-                    //2. 不是merge标签那么直接调用createViewFromTag()方法解析成布局中的视图，这里的参数name就是要解析视图的类型，例如：ImageView
-                    final View temp = createViewFromTag(root, name, inflaterContext, attrs);
-
-                    ViewGroup.LayoutParams params = null;
-
-                    if (root != null) {
-                        if (DEBUG) {
-                            System.out.println("Creating params from root: " +
-                                    root);
-                        }
-                        //3. 调用generateLayoutParams()f方法生成布局参数，如果attachToRoot为false，即不添加到根容器里，为View设置布局参数
-                        params = root.generateLayoutParams(attrs);
-                        if (!attachToRoot) {
-                            // Set the layout params for temp if we are not
-                            // attaching. (If we are, we use addView, below)
-                            temp.setLayoutParams(params);
-                        }
-                    }
-
-                    if (DEBUG) {
-                        System.out.println("-----> start inflating children");
-                    }
-
-                    //4. 调用rInflateChildren()方法解析当前View下面的所有子View
-                    rInflateChildren(parser, temp, attrs, true);
-
-                    if (DEBUG) {
-                        System.out.println("-----> done inflating children");
-                    }
-
-                    //如果根容器不为空，且attachToRoot为true，则将解析出来的View添加到根容器中
-                    if (root != null && attachToRoot) {
-                        root.addView(temp, params);
-                    }
-
-                    //如果根布局为空或者attachToRoot为false，那么解析出来的额View就是返回结果
-                    if (root == null || !attachToRoot) {
-                        result = temp;
-                    }
-                }
-
-            } catch (XmlPullParserException e) {
-                final InflateException ie = new InflateException(e.getMessage(), e);
-                ie.setStackTrace(EMPTY_STACK_TRACE);
-                throw ie;
-            } catch (Exception e) {
-                final InflateException ie = new InflateException(parser.getPositionDescription()
-                        + ": " + e.getMessage(), e);
-                ie.setStackTrace(EMPTY_STACK_TRACE);
-                throw ie;
-            } finally {
-                // Don't retain static reference on context.
-                mConstructorArgs[0] = lastContext;
-                mConstructorArgs[1] = null;
-
-                Trace.traceEnd(Trace.TRACE_TAG_VIEW);
-            }
-
-            return result;
-        }
 }
 ```
+
+可以发现在该方法里，主要完成了两件事情：
+
+1. 获取xml资源解析器XmlResourceParser。
+2. 解析View
+
+我们先来看看XmlResourceParser是如何获取的。
+
+从上面的序列图可以看出，调用了Resources的getLayout(resource)去获取对应的XmlResourceParser。getLayout(resource)又去调用了Resources的loadXmlResourceParser()
+方法来完成XmlResourceParser的加载，如下所示：
+
+```java
+public class Resources {
+    
+     XmlResourceParser loadXmlResourceParser(@AnyRes int id, @NonNull String type)
+             throws NotFoundException {
+         final TypedValue value = obtainTempTypedValue();
+         try {
+             final ResourcesImpl impl = mResourcesImpl;
+             //1. 获取xml布局资源，并保存在TypedValue中。
+             impl.getValue(id, value, true);
+             if (value.type == TypedValue.TYPE_STRING) {
+                 //2. 加载对应的loadXmlResourceParser解析器。
+                 return impl.loadXmlResourceParser(value.string.toString(), id,
+                         value.assetCookie, type);
+             }
+             throw new NotFoundException("Resource ID #0x" + Integer.toHexString(id)
+                     + " type #0x" + Integer.toHexString(value.type) + " is not valid");
+         } finally {
+             releaseTempTypedValue(value);
+         }
+     }   
+}
+```
+
+可以发现这个方法又被分成了两步：
+
+1. 获取xml布局资源，并保存在TypedValue中。
+2. 加载对应的loadXmlResourceParser解析器。
+
+从上面的序列图可以看出，资源的获取涉及到resources.arsc的解析过程，这个我们已经在**Resources的创建流程**简单聊过，这里就不再赘述。通过
+getValue()方法获取到xml资源以后，就会调用ResourcesImpl的loadXmlResourceParser()方法对该布局资源进行解析，以便得到一个UI布局视图。
+
+我们来看看它的实现。
+
+## 一 获取XmlResourceParser
+
+```java
+public class ResourcesImpl {
+    
+    XmlResourceParser loadXmlResourceParser(@NonNull String file, @AnyRes int id, int assetCookie,
+               @NonNull String type)
+               throws NotFoundException {
+           if (id != 0) {
+               try {
+                   synchronized (mCachedXmlBlocks) {
+                       //... 从缓存中查找xml资源
+   
+                       // Not in the cache, create a new block and put it at
+                       // the next slot in the cache.
+                       final XmlBlock block = mAssets.openXmlBlockAsset(assetCookie, file);
+                       if (block != null) {
+                           final int pos = (mLastCachedXmlBlockIndex + 1) % num;
+                           mLastCachedXmlBlockIndex = pos;
+                           final XmlBlock oldBlock = cachedXmlBlocks[pos];
+                           if (oldBlock != null) {
+                               oldBlock.close();
+                           }
+                           cachedXmlBlockCookies[pos] = assetCookie;
+                           cachedXmlBlockFiles[pos] = file;
+                           cachedXmlBlocks[pos] = block;
+                           return block.newParser();
+                       }
+                   }
+               } catch (Exception e) {
+                   final NotFoundException rnf = new NotFoundException("File " + file
+                           + " from xml type " + type + " resource ID #0x" + Integer.toHexString(id));
+                   rnf.initCause(e);
+                   throw rnf;
+               }
+           }
+   
+           throw new NotFoundException("File " + file + " from xml type " + type + " resource ID #0x"
+                   + Integer.toHexString(id));
+       } 
+}
+```
+
+我们先来看看这个方法的四个形参：
+
+- String file：xml文件的路径
+- int id：xml文件的资源ID
+- int assetCookie：xml文件的资源缓存
+- String type：资源类型
+
+ResourcesImpl会缓存最近解析的4个xml资源，如果不在缓存里则调用AssetManger的openXmlBlockAsset()方法创建一个XmlBlock。XmlBlock是已编译的xml文件的一个包装类。
+
+AssetManger的openXmlBlockAsset()方法的实现如下所示：
+
+```java
+public final class AssetManager implements AutoCloseable {
+   /*package*/ final XmlBlock openXmlBlockAsset(int cookie, String fileName)
+       throws IOException {
+       synchronized (this) {
+           //...
+           long xmlBlock = openXmlAssetNative(cookie, fileName);
+           if (xmlBlock != 0) {
+               XmlBlock res = new XmlBlock(this, xmlBlock);
+               incRefsLocked(res.hashCode());
+               return res;
+           }
+       }
+       //...
+   } 
+}
+```
+
+可以看出该方法会调用native方法openXmlAssetNative()去代开fileName指定的xml文件，成功打开该文件后，会得到C++层的ResXMLTree对象的地址xmlBlock，然后将xmlBlock封装进
+XmlBlock中返回给调用者。ResXMLTreed对象会存放打开后xml资源的内容。
+
+上述序列图里的AssetManger.cpp的方法的具体实现也就是一个打开资源文件的过程，资源文件一般存放在APK中，APK是一个zip包，所以最终会调用openAssetFromZipLocked()方法打开xml文件。
+
+XmlBlock封装完成后，会调用XmlBlock对象的newParser()方法去构建一个XmlResourceParser对象，实现如下所示：
+
+```java
+final class XmlBlock {
+    public XmlResourceParser newParser() {
+        synchronized (this) {
+            //mNative指向的是C++层的ResXMLTree对象的地址
+            if (mNative != 0) {
+                return new Parser(nativeCreateParseState(mNative), this);
+            }
+            return null;
+        }
+    }
+    
+    private static final native long nativeCreateParseState(long obj);
+}
+```
+
+mNative指向的是C++层的ResXMLTree对象的地址，native方法nativeCreateParseState()根据这个地址找到ResXMLTree对象，利用ResXMLTree对象对象构建一个ResXMLParser对象，并将ResXMLParser对象
+的地址封装进Java层的Parser对象中，构建一个Parser对象。所以他们的对应关系如下所示：
+
+- XmlBlock <--> ResXMLTree
+- Parser <--> ResXMLParser
+
+就是建立了Java层与C++层的对应关系，实际的实现还是由C++层完成。
+
+等获取了XmlResourceParser对象以后就可以调用inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) 方法进行View的解析了，在解析View时
+，会先去调用rInflate()方法解析View树，然后再调用createViewFromTag()方法创建具体的View，我们来详细的看一看。
+
+## 二 解析View
 
 1. 解析merge标签，rInflate()方法会将merge下面的所有子View直接添加到根容器中，这里我们也理解了为什么merge标签可以达到简化布局的效果。
 2. 不是merge标签那么直接调用createViewFromTag()方法解析成布局中的视图，这里的参数name就是要解析视图的类型，例如：ImageView。
@@ -218,9 +264,122 @@ public abstract class LayoutInflater {
 
 接下来，我们分别看下View树解析以及View的解析。
 
-## 一 View树解析
+```java
+public abstract class LayoutInflater {
+    
+    public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
+           synchronized (mConstructorArgs) {
+               Trace.traceBegin(Trace.TRACE_TAG_VIEW, "inflate");
+   
+               final Context inflaterContext = mContext;
+               final AttributeSet attrs = Xml.asAttributeSet(parser);
+               
+               //Context对象
+               Context lastContext = (Context) mConstructorArgs[0];
+               mConstructorArgs[0] = inflaterContext;
+               
+               //存储根视图
+               View result = root;
+   
+               try {
+                   // 获取根元素
+                   int type;
+                   while ((type = parser.next()) != XmlPullParser.START_TAG &&
+                           type != XmlPullParser.END_DOCUMENT) {
+                       // Empty
+                   }
+   
+                   if (type != XmlPullParser.START_TAG) {
+                       throw new InflateException(parser.getPositionDescription()
+                               + ": No start tag found!");
+                   }
+   
+                   final String name = parser.getName();
+                   
+                   if (DEBUG) {
+                       System.out.println("**************************");
+                       System.out.println("Creating root view: "
+                               + name);
+                       System.out.println("**************************");
+                   }
+   
+                   //1. 解析merge标签，rInflate()方法会将merge下面的所有子View直接添加到根容器中，这里
+                   //我们也理解了为什么merge标签可以达到简化布局的效果。
+                   if (TAG_MERGE.equals(name)) {
+                       if (root == null || !attachToRoot) {
+                           throw new InflateException("<merge /> can be used only with a valid "
+                                   + "ViewGroup root and attachToRoot=true");
+                       }
+   
+                       rInflate(parser, root, inflaterContext, attrs, false);
+                   } else {
+                       //2. 不是merge标签那么直接调用createViewFromTag()方法解析成布局中的视图，这里的参数name就是要解析视图的类型，例如：ImageView
+                       final View temp = createViewFromTag(root, name, inflaterContext, attrs);
+   
+                       ViewGroup.LayoutParams params = null;
+   
+                       if (root != null) {
+                           if (DEBUG) {
+                               System.out.println("Creating params from root: " +
+                                       root);
+                           }
+                           //3. 调用generateLayoutParams()f方法生成布局参数，如果attachToRoot为false，即不添加到根容器里，为View设置布局参数
+                           params = root.generateLayoutParams(attrs);
+                           if (!attachToRoot) {
+                               // Set the layout params for temp if we are not
+                               // attaching. (If we are, we use addView, below)
+                               temp.setLayoutParams(params);
+                           }
+                       }
+   
+                       if (DEBUG) {
+                           System.out.println("-----> start inflating children");
+                       }
+   
+                       //4. 调用rInflateChildren()方法解析当前View下面的所有子View
+                       rInflateChildren(parser, temp, attrs, true);
+   
+                       if (DEBUG) {
+                           System.out.println("-----> done inflating children");
+                       }
+   
+                       //如果根容器不为空，且attachToRoot为true，则将解析出来的View添加到根容器中
+                       if (root != null && attachToRoot) {
+                           root.addView(temp, params);
+                       }
+   
+                       //如果根布局为空或者attachToRoot为false，那么解析出来的额View就是返回结果
+                       if (root == null || !attachToRoot) {
+                           result = temp;
+                       }
+                   }
+   
+               } catch (XmlPullParserException e) {
+                   final InflateException ie = new InflateException(e.getMessage(), e);
+                   ie.setStackTrace(EMPTY_STACK_TRACE);
+                   throw ie;
+               } catch (Exception e) {
+                   final InflateException ie = new InflateException(parser.getPositionDescription()
+                           + ": " + e.getMessage(), e);
+                   ie.setStackTrace(EMPTY_STACK_TRACE);
+                   throw ie;
+               } finally {
+                   // Don't retain static reference on context.
+                   mConstructorArgs[0] = lastContext;
+                   mConstructorArgs[1] = null;
+   
+                   Trace.traceEnd(Trace.TRACE_TAG_VIEW);
+               }
+   
+               return result;
+           }
+     }
+}
+```
 
-上面我们已经提到View树的解析是有rInflate()方法来完成的。
+上面我们已经提到View树的解析是有rInflate()方法来完成的，我们接着来看看View树是如何被解析的。
+
+### 2.1 解析View树
 
 ```java
 public abstract class LayoutInflater {
@@ -299,7 +458,7 @@ public abstract class LayoutInflater {
 
 你可以看到，负责解析单个View的正是createViewFromTag()方法，我们再来分析下这个方法。
 
-## 二 View解析
+#@# 2.2 创建View
 
 ```java
 public abstract class LayoutInflater {

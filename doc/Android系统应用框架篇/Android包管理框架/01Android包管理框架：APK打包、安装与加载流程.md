@@ -63,22 +63,7 @@ res资源包含了我们开发中使用的各种资源，具体说来：
 用到的每一个字符串，包括XML元素标签、属性名称、属性值，以及其它的一切文本值所使用到的字符串。这样原来在文本格式的XML文件中的每一个放置字符串的地方在二进制格式的XML文件中都被替换成一个索引到字符串资源池的整数值，这写整数值统一保存在
 R.java类中，R.java会和其他源文件一起编译到APK中去。
 
-既然说到这里，我们再简单看一下Android是如何这些资源的，我们知道Android设备数以亿计、遍布全球，那么对于Android设备最大的一个问题就是适配。为了做好设备，Android将资源的组织方式划分为19个纬度，这一块的内容[Android资源官方文档](https://developer.android.com/guide/topics/resources/providing-resources.html)讲
-的很清楚，这里也不再赘述。
-
-我们可以利用资源的组织方式达到最佳的设备兼容性，那么问题来了，Android是如何查找到对应的资源的呢？🤔
-
-Android会先获取自己的设备信息，然后根据设备信息去查找对应的资源，如下所示：
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/resource/android_resource_search_flow.png"/>
-
-1. 淘汰与设备配置冲突的资源文件。
-2. 选择优先级最高的限定符。（先从 MCC 开始，然后下移。）
-3. 是否有资源目录包括此限定符？若无，返回到第 2 步，看看下一个限定符。若有，请继续执行第 4 步。
-4. 淘汰不含此限定符的资源目录。在该示例中，系统会淘汰所有不含语言限定符的目录。
-5. 返回并重复第 2 步、第 3 步和第 4 步，直到只剩下一个目录为止。
-
-前面我们提到xml编写的Android资源文件都会编译成二进制格式的xml文件，资源的打包都是由AAPT工具来完成的，资源打包主要有以下操作：
+前面我们提到xml编写的Android资源文件都会编译成二进制格式的xml文件，资源的打包都是由AAPT工具来完成的，资源打包主要有以下流程：
 
 1. 解析AndroidManifest.xml，获得应用程序的包名称，创建资源表。
 2. 添加被引用资源包，被添加的资源会以一种资源ID的方式定义在R.java中。
@@ -89,17 +74,9 @@ Android会先获取自己的设备信息，然后根据设备信息去查找对�
 7. 编译xml资源文件，编译的流程分为：① 解析xml文件 ② 赋予属性名称资源ID ③ 解析属性值 ④ 将xml文件从文本格式转换为二进制格式，四步。
 8. 生成资源索引表resources.arsc。
 
-资源ID是一个4字节的无符整数，如下所示：
+#### 1.1.1 资源ID
 
-- 最高字节是Package ID表示命名空间，标明资源的来源，
-- 次字节是Type ID，表示资源的类型，例如：anim、color、string等。
-- 最低两个字节是Entry ID，表示资源在其所属资源类型中所出现的次序。
-
-**关于Package ID**
-
->Android系统自己定义了两个Package ID，系统资源命名空间：0x01 和 应用资源命名空间：0x7f。
-
-所有处于这两个值之间的空间都是合法的，我们可以从R.java文件中看到应用资源命令空间0x7f，如下所示：
+每个Android项目里都有有一个R.java文件，如下所示：
 
 ```java
 public final class R {
@@ -116,6 +93,50 @@ public final class R {
      //...
 }
 ```
+
+每个资源项后的整数就是资源ID，资源ID是一个4字节的无符整数，如下所示：
+
+- 最高字节是Package ID表示命名空间，标明资源的来源，Android系统自己定义了两个Package ID，系统资源命名空间：0x01 和 应用资源命名空间：0x7f。
+- 次字节是Type ID，表示资源的类型，例如：anim、color、string等。
+- 最低两个字节是Entry ID，表示资源在其所属资源类型中所出现的次序。
+
+#### 1.1.2 资源索引
+
+上面提到，最终生成的是资源索引表resources.arsc，Android正是利用这个索引表根据资源ID进行资源的查找，为不同语言、不同地区、不同设备提供相对应的最佳资源。查找和通过Resources和
+AssetManger来完成的，这个我们下面会讲。
+
+我们先来看看resources.arsc的文件格式，它是一个编译后的二进制文件，在Android Stduio里打开以后是这样的，如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/resource/resources_arsc_file.png"/>
+
+可以看到resources.arsc里存放了各类资源的资源ID，resources.arsc的文件格式如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/resource/resources_arsc_structure.png"/>
+
+注：整个文件都是有一系列chuck（块）构成的，chuck是整个文件的划分单位，每个模块都是一个chuck，chuck最前面是一个ResChunk_header的结构体，用来描述整个chunk的信息，如下所示：
+
+更多关于索引表格式的细节，可以查阅源码：
+
+👉 [ResourceTypes.h](https://android.googlesource.com/platform/frameworks/base/+/56a2301/include/androidfw/ResourceTypes.h)
+
+resources.arsc索引表从上至下文件格式依次为：
+
+- 文件头：数据结构用ResTable_header来描述，用来描述整个文件的信息，包括文件头大小，文件大小，资源包Package的数量等信息。
+- 全局字符串池：存放所有的字符串，所以资源复用这些字符串，字符串里存放的是资源文件的路径名和资源值等信息。全局字符串池分为资源类型（type）字符串池和
+- 资源包：会有多个（例如：系统资源包、应用资源包）。
+
+资源包也被划分为以下几个部分：
+
+- 包头：描述资源包相关信息。
+- 资源类型字符串池：存放资源的类型。
+- 资源名称字符串池：存放资源的名称。
+- 配置列表：存放语音、位置等手机配置信息，用来作为查找资源的标准。
+
+从这里可以看到resources.arsc索引表存在很多常量池，常量池的使用目的也很明显，就是提供资源的复用率，减少resources.arsc索引表的体积，提高索引效率。关于资源池在Java层
+和C++层的实现，我们下面会讲。
+
+### 1.2 代码的编译和打包
+
 ## 二 APK安装流程
 
 我们来思考一下Android系统是如何安装一个APK文件的，从直观的流程上，当我们点击一个APK文件或者从应用商店下载一个APK文件，会弹起一个安装对话框，点击安装就可以安装应用。
@@ -643,6 +664,7 @@ public final class AssetManager implements AutoCloseable {
                 + ": " + num);
         for (int i=0; i<num; i++) {
             if (i < seedNum) {
+                //系统预加载资源的时候，已经解析过framework-res.apk中的resources.arsc
                 mStringBlocks[i] = seed[i];
             } else {
                 //调用getNativeStringBlock(i)方法读取字符串资源池
@@ -656,50 +678,30 @@ public final class AssetManager implements AutoCloseable {
 }
 ```
 
-首先解释一下什么是StringBlocks，StringBlocks描述的是一个字符串资源池，Android里每一个资源索引表resources.arsc都包含一个字符串资源池。
+首先解释一下什么是StringBlocks，StringBlocks描述的是一个字符串资源池，Android里每一个资源索引表resources.arsc都包含一个字符串资源池。 getStringBlockCount()
+方法返回的也就是这种资源池的个数。
 
-我们看看这两个native方法的底层实现，如下所示：
-
-
-```java
-static jint android_content_AssetManager_getStringBlockCount(JNIEnv* env, jobject clazz)
-{
-    AssetManager* am = assetManagerForJavaObject(env, clazz);
-    if (am == NULL) {
-        return 0;
-    }
-    return am->getResources().getTableCount();
-}
-
-static jlong android_content_AssetManager_getNativeStringBlock(JNIEnv* env, jobject clazz,
-                                                           jint block)
-{
-    AssetManager* am = assetManagerForJavaObject(env, clazz);
-    if (am == NULL) {
-        return 0;
-    }
-    return reinterpret_cast<jlong>(am->getResources().getTableStringBlock(block));
-}
-
-const ResTable& AssetManager::getResources(bool required) const
-{
-    const ResTable* rt = getResTable(required);
-    return *rt;
-}
-```
-AssetManager的getResources()方法获取的是ResourceTable，正如它的名字那样，它是一个资源表。
-
-👉 [ ResourceTable.cpp](https://android.googlesource.com/platform/frameworks/base.git/+/android-4.2.2_r1/tools/aapt/ResourceTable.cpp)
-
-getNativeStringBlock()方法实际上就是将每一个资源包里面的resources.arsc的数据项值的字符串资源池数据块读取出来，并封装在C++层的StringPool对象中，然后Java层的makeStringBlocks()方法
+上面我们已经说了resources.arsc的文件格式，接下来就会调用native方法getNativeStringBlock()去解析resources.arsc文件的内容，获取字符串
+常量池，getNativeStringBlock()方法实际上就是将每一个资源包里面的resources.arsc的数据项值的字符串资源池数据块读取出来，并封装在C++层的StringPool对象中，然后Java层的makeStringBlocks()方法
 再将该StringPool对象封装成Java层的StringBlock中。
 
-如此，AssetManager和Resources对象的创建流程便分析完了，这两个对象构成了Android应用程序资源管理器的核心基础，APK资源的加载就是借由这两个对象来完成的。
+关于C++层的具体实现，可以参考罗哥的这两篇博客：
 
-### 3.3 资源的查找流程
+- [resources.arsc的数据格式](http://blog.csdn.net/luoshengyang/article/details/8744683)
+- [resources.arsc的解析流程](http://blog.csdn.net/luoshengyang/article/details/8806798)
+
+如此，AssetManager和Resources对象的创建流程便分析完了，这两个对象构成了Android应用程序资源管理器的核心基础，资源的加载就是借由这两个对象来完成的。
+
+### 3.3 资源的查找与解析流程
 
 前面我们分析了AssetManager和Resources对象的创建流程，AssetManager根据文件名来查找资源，Resouces根据资源ID查找资源，如果资源ID对应的是个文件，那么会Resouces先根据资源ID查找
 出文件名，AssetManger再根据文件名查找出具体的资源。
 
-整个流程还是比较简单的，具体序列图如下所示：
+整个流程还是比较简单的，我们以layout.xml文件的查找流程为例来说明一下，具体序列图如下所示：
+
+
+
+
+讲到这里一个资源文件的查找和解析流程就分析完了。
+
 
