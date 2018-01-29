@@ -254,7 +254,7 @@ mNative指向的是C++层的ResXMLTree对象的地址，native方法nativeCreate
 等获取了XmlResourceParser对象以后就可以调用inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) 方法进行View的解析了，在解析View时
 ，会先去调用rInflate()方法解析View树，然后再调用createViewFromTag()方法创建具体的View，我们来详细的看一看。
 
-## 二 解析View
+## 二 解析View树
 
 1. 解析merge标签，rInflate()方法会将merge下面的所有子View直接添加到根容器中，这里我们也理解了为什么merge标签可以达到简化布局的效果。
 2. 不是merge标签那么直接调用createViewFromTag()方法解析成布局中的视图，这里的参数name就是要解析视图的类型，例如：ImageView。
@@ -379,8 +379,6 @@ public abstract class LayoutInflater {
 
 上面我们已经提到View树的解析是有rInflate()方法来完成的，我们接着来看看View树是如何被解析的。
 
-### 2.1 解析View树
-
 ```java
 public abstract class LayoutInflater {
     
@@ -458,7 +456,7 @@ public abstract class LayoutInflater {
 
 你可以看到，负责解析单个View的正是createViewFromTag()方法，我们再来分析下这个方法。
 
-#@# 2.2 创建View
+## 三 解析View
 
 ```java
 public abstract class LayoutInflater {
