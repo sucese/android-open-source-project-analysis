@@ -13,7 +13,7 @@
         <activity android:name=".app_framwork.ApplicationActivity" />
         <activity android:name=".program_idea.ProgramActivity" />
         <activity android:name=".native_framwork.SystemActivity" />
-        <activity android:name=".app_framwork.component_framwork.activity.StartActivity"></activity>
+        <activity android:name=".app_framwork.component_framwork.activity.StartActivity" />
         <activity
             android:name=".app_framwork.component_framwork.activity.SubInProcessActivity"
             android:process="com.guoxiaoxing.main.process" />
@@ -39,16 +39,25 @@
         <activity android:name=".app_framwork.ui_framwork.RecyclerActivity" />
         <activity
             android:name=".app_practice.performance_optimization.PerformanceActivity"
-            android:screenOrientation="sensor">
+            android:screenOrientation="sensor" />
+        <activity android:name=".native_framwork.thread.ThreadActivity">
 
         </activity>
-        <activity android:name=".native_framwork.thread.ThreadActivity">
+        <activity
+            android:name=".native_framwork.process.ClientActivity"
+            android:process="ClientActivity.Process">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".native_framwork.process.RemoteService"
+            android:enabled="true"
+            android:exported="true"
+            android:process="RemoteService.Process" />
     </application>
 
 </manifest>

@@ -269,18 +269,4 @@ public class AidlActivity extends AppCompatActivity {
 
 好了，我们针对上面的流程来总结一下AIDL。
 
->AIDL目的是为了实现跨进程访问，即获得另一个进程的对象，并访问其方法。它本质上是一个接口，它会自动生成一个继承Binder的接口和Stub、Proxy两个类。
-其中Proxy是Stub的内部类。
-
-Stub：它继承于Binder，同样也实现了IMyAidlInterface接口，读取Proxy传递过来的参数，并写入返回给Proxy的值。
-
-获取Stub有两种方式：
-
-````
-1 通过BbindService方式，绑定一个服务，绑定后，服务会返回给客户端一个Binder，该Binder可以继承自Stub，从而把Stub传递给客户端。
-2 把继承自Stub实现的的类提升为系统服务，然后我们可以通过ServiceManager获取该系统服务，并把它传递个客户端。
-````
-
-Proxy：它是Stub的内部类，实现了我们定义的IMyAidlInterface接口，写入传递给Stub的参数，读取Stub返回的值。它本身是私有的，通过Stub的asInterface()
-方法暴露自己给外部使用。
 
