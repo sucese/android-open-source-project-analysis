@@ -6,8 +6,12 @@
 
 **文章目录**
 
+- 一 资源的编译和打包
+- 二 代码的编译和打包
 
-APK的打包流程如下图所示：
+Android的包文件APK分为两个部分：代码和资源，所以打包方面也分为资源打包和代码打包两个方面，这篇文章就来分析资源和代码的编译打包原理。
+
+APK整体的的打包流程如下图所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/apk_package_flow.png"/>
 
@@ -22,13 +26,70 @@ APK的打包流程如下图所示：
 7. 如果是正式版的APK，还会利用ZipAlign工具进行对齐处理，对齐的过程就是将APK文件中所有的资源文件举例文件的起始距离都偏移4字节的整数倍，这样通过内存映射访问APK文件
 的速度会更快。
 
-事实上，整个打包的过程中还有许多细节需要处理，例如NDK的处理、Proguard的处理、Render Script的处理等等，我们来看一张更加详细的图：
+上述流程都是Android Studio在编译时调用各种编译命令自动完成的，具体说来，如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/apk_package_flow_detail.png"/>
+1. 创建Android工程。
 
-流程虽然长，但是并不难理解，通过上面这两张图，相信读者对整个流程有了整体的把握，我们接着来看这些流程实现的细节。
+> android  create project \
+    -n packageTest2 \
+    -a MainActivity \
+    -k com.package.test2 \
+    -t android-23 \
+    -p ./PackageTest2
+    
+2. 编译R文件
 
-## 一资源的编译和打包
+> aapt  package \
+   -f \
+   -J ./gen \
+   -M ./AndroidManifest.xml \
+   -S ./res/ \
+   -I /Users/RadAsm/Library/AndroidSDK/sdk/platforms/android-23/android.jar
+ 
+3. 编译源代码文件
+
+> javac -source 1.6 \
+   -target 1.6 \
+   -cp /Users/RadAsm/Library/AndroidSDK/sdk/platforms/android-23/android.jar \
+   ./src/com/packtest/test1/MainActivity.java ./src/com/packtest/test1/R.java \
+   -d ./gen/classes
+
+4. 编译DEX文件
+
+>  dx --dex \
+    --verbose \
+    --output ./gen/dex/packtest1.dex 
+    ./gen/classes/
+
+5. 生成APK文件
+
+> aapt package 
+     -f \
+     -J ./gen \
+     -M ./AndroidManifest.xml \
+     -S ./res/ \
+     -I /Users/RadAsm/Library/AndroidSDK/sdk/platforms/android-23/android.jar \
+     -F ./output/res.apk
+  
+6. APK文件对齐
+ 
+> zipalign -v -p 4 packagetest_unsigned.apk packagetest_aligned_unsigned.apk
+
+7. APK签名
+
+> apksigner sign --ks my-release-key.jks my-app.apk
+
+以上便是APK打包的整个流程，我们再来总结一下：
+
+1. 除了assets和res/raw资源被原装不动地打包进APK之外，其它的资源都会被编译或者处理；
+2. 除了assets资源之外，其它的资源都会被赋予一个资源ID；
+3. 打包工具负责编译和打包资源，编译完成之后，会生成一个resources.arsc文件和一个R.java，前者保存的是一个资源索引表，后者定义了各个资源ID常量。
+4. 应用程序配置文件AndroidManifest.xml同样会被编译成二进制的XML文件，然后再打包到APK里面去。
+5. 应用程序在运行时通过AssetManager来访问资源，或通过资源ID来访问，或通过文件名来访问。
+
+理解了整体的流程，我们再来看看具体的细节。
+
+## 一 资源的编译和打包
 
 在分析资源的编译和打包之前，我们先来了解一下Android程序包里有哪些资源。
 
@@ -99,7 +160,7 @@ public final class R {
 - 次字节是Type ID，表示资源的类型，例如：anim、color、string等。
 - 最低两个字节是Entry ID，表示资源在其所属资源类型中所出现的次序。
 
-### 1.2资源索引
+### 1.2 资源索引
 
 上面提到，最终生成的是资源索引表resources.arsc，Android正是利用这个索引表根据资源ID进行资源的查找，为不同语言、不同地区、不同设备提供相对应的最佳资源。查找和通过Resources和
 AssetManger来完成的，这个我们下面会讲。
@@ -133,9 +194,18 @@ resources.arsc索引表从上至下文件格式依次为：
 - 资源名称字符串池：存放资源的名称。
 - 配置列表：存放语音、位置等手机配置信息，用来作为查找资源的标准。
 
-从这里可以看到resources.arsc索引表存在很多常量池，常量池的使用目的也很明显，就是提供资源的复用率，减少resources.arsc索引表的体积，提高索引效率。关于资源池在Java层
-和C++层的实现，我们下面会讲。
+从这里可以看到resources.arsc索引表存在很多常量池，常量池的使用目的也很明显，就是提供资源的复用率，减少resources.arsc索引表的体积，提高索引效率。
 
 ## 二 代码的编译和打包
 
+
+
+
+
+
+## 附录
+
+Android打包流程详图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/vm/apk_package_flow_detail.png"/>
 
