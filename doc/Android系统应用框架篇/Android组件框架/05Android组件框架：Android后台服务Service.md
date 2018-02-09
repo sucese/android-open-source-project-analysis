@@ -1,4 +1,4 @@
-# Android组件框架：Android广播接收者Broadcast Receiver.
+# Android组件框架：Android后台服务Service
 
 **关于作者**
 
@@ -17,27 +17,40 @@
 应用通过startService()或者bindService()方法去启动或者绑定Service的过程主要是通过ActivityManagerService来完成，Service启动的过程除了Service组件的创建
 还包括Service所在进程（如果没有创建的话）的创建，具体流程如下图所示：
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_create_structure.png" height="600"/>
+
 1. ActivityManagerService通过Socket方式向Zygote进程请求生成（fork）新的进程用来承载Service。
 2. Zygote进程调用fork()方法创建新的进程，并将ActivityThread相关资源加载到新进程。
 3. 新进程创建完成以后，ActivityMangerService通过Binder方式向新生成的ActivityThread进程请求创建Service。
 4. Service创建完成以后，ActivityThread启动Service。
 
-
 Service启动流程序列图如下图所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_start_sequence.png" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_start_sequence.png"/>
 
-1. 向ActivityManagerService发送一个启动Service组件的请求。
-2. ActivityManagerService发现用来运行Service组件的进程不存在，它会先保存Service组件的信息，接着再创建一个新的应用进程。
-3. 新的应用进程创建完成后，就会向ActivityManagerService发送一个启动完成的进程间通信请求，以便ActivityManagerService可
-以继续执行启动Service组件的的操作。
-4. ActivityManagerService将第2步保存的Service组件信息发送给新床架的应用进程，以便它可以将Service组件启动起来。
+从整个序列图我们还可以看出，Service的启动流程涉及到4个进程，按颜色划分，如下所示：
+
+- 启动者Activity所在进程
+- 被启动者Service所在进程
+- ActivityServiceManager所在进程（system_server进程）
+- Zygote进程
+
+Service的启动流程如下所示：
+
+1. Activity所在进程进程采用Binder IPC向system_server进程发起startService请求；
+2. system_server进程接收到请求后，向zygote进程发送创建进程的请求；
+3. zygote进程fork出新的子进程Remote Service进程；
+4. Remote Service进程，通过Binder IPC向sytem_server进程发起attachApplication请求；
+5. system_server进程在收到请求后，进行一系列准备工作后，再通过binder IPC向remote Service进程发送scheduleCreateService请求；
+6. Remote Service进程的binder线程在收到请求后，通过handler向主线程发送CREATE_SERVICE消息；
+7. 主线程在收到Message后，通过发射机制创建目标Service，并回调Service.onCreate()方法。
+
 
 ## 三 Service绑定流程
 
 Service绑定流程序列图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_bind_sequence.png" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_bind_sequence.png"/>
 
 1. ClientActivity组件向ActivityManagerService发送一个绑定ServerService组件的进程间通信请求。
 2. ActivityManagerService发现用来运行ServerService组件与ClientActivity组件运行在同一个进程里，它
