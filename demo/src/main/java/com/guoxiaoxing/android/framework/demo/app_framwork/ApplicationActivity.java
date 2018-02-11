@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.guoxiaoxing.android.framework.demo.R;
 import com.guoxiaoxing.android.framework.demo.app_framwork.component_framwork.activity.StartActivity;
-import com.guoxiaoxing.android.framework.demo.app_framwork.component_framwork.service.ClientActivity;
 import com.guoxiaoxing.android.framework.demo.app_practice.ui_develop.UIActivity;
 
 public class ApplicationActivity extends AppCompatActivity implements View.OnClickListener {

@@ -21,13 +21,6 @@
             android:name=".app_framwork.component_framwork.activity.SubInNewProcessActivity"
             android:process="com.guoxiaoxing.new.process"
             android:windowSoftInputMode="adjustNothing" />
-
-        <service
-            android:name=".app_framwork.component_framwork.service.ServerService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".app_framwork.component_framwork.service.ClientActivity" />
         <activity android:name=".app_practice.ui_develop.UIActivity" />
         <activity android:name=".app_practice.ui_develop.DrawActivity" />
         <activity android:name=".app_framwork.component_framwork.activity.SimpleActivity" />
@@ -40,9 +33,7 @@
         <activity
             android:name=".app_practice.performance_optimization.PerformanceActivity"
             android:screenOrientation="sensor" />
-        <activity android:name=".native_framwork.thread.ThreadActivity">
-
-        </activity>
+        <activity android:name=".native_framwork.thread.ThreadActivity" />
         <activity
             android:name=".native_framwork.process.ClientActivity"
             android:process="ClientActivity.Process">
@@ -58,6 +49,13 @@
             android:enabled="true"
             android:exported="true"
             android:process="RemoteService.Process" />
+
+        <activity android:name=".app_framwork.component_framwork.service.ClientActivity" />
+
+        <service
+            android:name=".app_framwork.component_framwork.service.RemoteService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
