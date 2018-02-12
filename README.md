@@ -78,7 +78,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 **Androidy应用优化**
 
 - [01Android应用优化：性能优化实践指南](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android应用优化/01Android应用优化：兼容适配实践指南.md)
-- [02Android应用优化：性能优化实践指南](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android应用优化/02Androidy应用优化：性能优化实践指南.md)
+- [02Android应用优化：性能优化实践指南](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android应用优化/02Android应用优化：性能优化实践指南.md)
 
 ## Android系统应用框架篇
 
@@ -114,8 +114,8 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - [01Android进程框架：进程的创建、启动与调度流程](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的创建、启动与调度流程.md)
 - [02Android进程框架：线程与线程池](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/02Android进程框架：线程与线程池.md)
 - [03Android进程框架：线程通信的桥梁Handler](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/03Android进程框架：线程通信的桥梁Handler.md)
-- 04Android进程框架：进程通信的桥梁Binder
-- 05Android进程框架：进程通信的桥梁Socket
+- [04Android进程框架：线程通信的桥梁Binder](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/04Android进程框架：线程通信的桥梁Binder.md)
+- [05Android进程框架：线程通信的桥梁Socket](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android进程框架/05Android进程框架：线程通信的桥梁Socket.md)
 
 **Android内存框架**
 
@@ -128,8 +128,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 - [01Android虚拟机框架：类加载机制](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android虚拟机框架/01Android虚拟机框架：类加载机制.md)
 - 02Android虚拟机框架：资源加载机制
-- 03Android虚拟机框架：APK打包流程
-- 04Android虚拟机框架：APK安装流程
 
 ## Android系统编程思想篇
 
