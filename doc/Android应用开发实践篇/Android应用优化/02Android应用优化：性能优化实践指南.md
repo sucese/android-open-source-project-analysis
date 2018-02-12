@@ -127,13 +127,12 @@ Complete
 ```java
 adb shell screenrecord --bugreport /sdcard/test.mp4
 ```
-App刚刚启动
+App开始启动到App启动完成如下所示：
 
+<p>
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/performance/app_start_record_1.png" width="250"/>
-
-App启动完成
-
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/performance/app_start_record_2.png" width="250"/>
+<p/>
 
 我们可以借助播放器的满放功能，利用右上角的时间戳逐帧的去分析整个启动流程，这样我们就可以知道哪个环节出现了性能问题。
 
@@ -194,7 +193,6 @@ public class InitIntentService extends IntentService {
          // TODO do some work
     }
 ```
-
 
 #### 界面预加载
 
