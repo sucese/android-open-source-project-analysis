@@ -1,4 +1,4 @@
-# Android应用优化：兼容适配实践指南
+# Android应用优化：性能优化实践指南
 
 **关于作者**
 
@@ -17,19 +17,18 @@
 - 低配设备：与性能相关的测试主要应该覆盖低配机型，这样才能把性能问题暴露的更明显。
 - 权衡利弊：性能优化的问题事实上是权衡的问题，当你优化了一个东西，可能损害了另一个东西，优化也不是绝对的，要做好取舍。
 
-
 性能指标
 
-- 布局复杂度
-- 耗电量
+- 启动速度
+- 布局流畅度与响应速度
 - 内存占用
 - 网络流量
 - 程序执行效率
 
 ## 一 启动优化
 
-启动优化官方文档：https://developer.android.com/topic/performance/launch-time.html
-启动优化视频教程：https://www.youtube.com/watch?v=Vw1G1s73DsY&index=74&list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE
+- 启动优化官方文档：https://developer.android.com/topic/performance/launch-time.html
+- 启动优化视频教程：https://www.youtube.com/watch?v=Vw1G1s73DsY&index=74&list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE
 
 在App优化的诸多指标中，启动速度是一项非常重要的性能指标，很难想象当你打开一个应用，它经过了一分钟还是有将首页加载出来，这是一宗多么糟糕的体验，这种
 启动时间过长，很有可能导致用户不愿使用甚至卸载我们的应用。
@@ -42,7 +41,7 @@
 
 我们之前的文章也有分析过，当用户点击一个桌面上的图标，启动一个未经启动过的应用，其冷启动的流程如下图所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/performance/cold_start_flow.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/performance/app_start_structure.png"/>
 
 1. 加载和启动应用程序。
 2. 启动后立即显示应用程序的空白开始窗口。
@@ -68,10 +67,6 @@
 首先，要学会如何计算冷启动时间，找出冷启动的性能瓶颈。
 
 ### 1.1 启动时间分析
-
-App冷启动流程如下所示：
-
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/performance/cold_start_flow.png"/>
 
 从上面启动图可以看出启动时间分为两个部分，系统创建进程的时间和应用进程启动的时间，前者是由系统自行完成的，一般都会很快，我们也干预不了，我们能做的就是去优化应用进程启动，具体说来就是
 从发Application的onCreate()执行开始到MainActivity的onCreate()执行结束这一段时间。
