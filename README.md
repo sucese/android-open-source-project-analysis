@@ -132,6 +132,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - [01Android虚拟机框架：类加载机制](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android虚拟机框架/01Android虚拟机框架：类加载机制.md)
 - 02Android虚拟机框架：资源加载机制
 
-有兴趣参与 Android Framework 以及一些其他开源技术交流的小伙伴可以扫码入群，本群仅供大家讨论 Android 各大开源框架和工程化相关技术讨论，谢绝闲聊~
+有兴趣参与此项目的小伙伴可以扫码入群，本群主要讨论Android Framework、主流开源框架以及Android工程化相关技术，本群不是一个读者群，希望大家每个人都能成为项目的参与者。另外，为了营造一个
+良好的技术氛围，群里尽量不要灌水闲聊~
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG" width="400"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG" width="300"/>
