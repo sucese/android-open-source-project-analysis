@@ -134,4 +134,4 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 有兴趣参与 Android Framework 以及一些其他开源技术交流的小伙伴可以扫码入群，本群仅供大家讨论 Android 各大开源框架和工程化相关技术讨论，谢绝闲聊~
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG" width="400"/>
