@@ -59,6 +59,11 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 - [导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)
 
+除了导读之外，为了能更好理解Android源码的设计，读者还需要掌握一定的设计模式与编程思想。
+
+- [Android系统编程思想篇：设计模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/Android系统编程思想篇：设计模式.md)
+- [Android系统编程思想篇：软件设计原则](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/Android系统编程思想篇：软件设计原则.md)
+
 ## Android应用开发实践篇
 
 **Android界面开发**
@@ -127,33 +132,6 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 - [01Android虚拟机框架：类加载机制](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统底层框架篇/Android虚拟机框架/01Android虚拟机框架：类加载机制.md)
 - 02Android虚拟机框架：资源加载机制
 
-## Android系统编程思想篇
-
-- [1Android系统编程思想篇：单例模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/1Android系统编程思想篇：单例模式.md)
-- [2Android系统编程思想篇：建造者模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/2Android系统编程思想篇：建造者模式.md)
-- 3Android系统编程思想篇：原型模式
-- 4Android系统编程思想篇：工厂模式
-- 5Android系统编程思想篇：抽象工厂模式
-- 6Android系统编程思想篇：策略模式
-- 7Android系统编程思想篇：状态模式
-- 8Android系统编程思想篇：责任链模式
-- 9Android系统编程思想篇：解释器模式
-- 10Android系统编程思想篇：命令模式
-- 11Android系统编程思想篇：观察者模式
-- 12Android系统编程思想篇：备忘录模式
-- 13Android系统编程思想篇：迭代器模式
-- 14Android系统编程思想篇：模板方法模式
-- 15Android系统编程思想篇：访问者模式
-- 16Android系统编程思想篇：中介者模式
-- [17Android系统编程思想篇：代理模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统编程思想篇/17Android系统编程思想篇：代理模式.md)
-- 18Android系统编程思想篇：组合模式
-- 19Android系统编程思想篇：适配器模式
-- 20Android系统编程思想篇：装饰模式
-- 21Android系统编程思想篇：享元模式
-- 22Android系统编程思想篇：外观模式
-- 23Android系统编程思想篇：桥接模式
-- 24Android系统编程思想篇：软件设计原则
-
 有兴趣参与 Android Framework 以及一些其他开源技术交流的小伙伴可以扫码入群，本群仅供大家讨论 Android 各大开源框架和工程化相关技术讨论，谢绝闲聊~
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG"/>

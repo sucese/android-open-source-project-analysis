@@ -220,7 +220,7 @@
  <text x="12" y="3389" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityIdle (token: IBinder , config: Configuration ) void</text>
  <text x="12" y="3401" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityPaused (token: IBinder , icicle: Bundle ) void</text>
  <text x="12" y="3413" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.activityStopped (token: IBinder , thumbnail: Bitmap , description: CharSequence ) void</text>
- <text x="12" y="3425" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addErrorToDropBox (eventType: String , process: ProcessRecord , activity: ActivityRecord , parent: ActivityRecord , subject: String , report: String , logFile: File , crashInfo: ApplicationErrorReport.CrashInfo ) void</text>
+ <text x="12" y="3425" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.addErrorToDropBox (eventType: String , process: ProcessRecord , activity: ActivityRecord , parent: ActivityRecord , mSubject: String , report: String , logFile: File , crashInfo: ApplicationErrorReport.CrashInfo ) void</text>
  <text x="12" y="3437" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.attachApplication (thread: IApplicationThread ) void</text>
  <text x="12" y="3449" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.backupAgentCreated (agentPackageName: String , agent: IBinder ) void</text>
  <text x="12" y="3461" fill="#000000" font-family="Arial" font-size="10">+ ActivityManagerService.batteryNeedsCpuUpdate () void</text>
