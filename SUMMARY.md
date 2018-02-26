@@ -37,5 +37,5 @@
   * [Android应用优化：WebView实践](/doc/Android应用开发实践篇/其他/01Android混合编程：WebView实践.md)
   * [Android应用优化：网络编程实践](/doc/Android应用开发实践篇/其他/02Android网络编程：网络编程实践.md)
 * [Android系统软件设计篇]()
-  * [Android系统软件设计篇：设计模式](/doc/Android系统软件设计篇/01Android系统软件设计篇：设计模式.md)
-  * [Android系统软件设计篇：软件设计原则](/doc/Android系统软件设计篇/02Android系统软件设计篇：软件设计原则.md)
+  * [Android系统软件设计篇：软件设计原则](/doc/Android系统软件设计篇/01Android系统软件设计篇：软件设计原则.md)
+  * [Android系统软件设计篇：设计模式](/doc/Android系统软件设计篇/02Android系统软件设计篇：设计模式.md)
