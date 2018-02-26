@@ -136,12 +136,11 @@ Android系统架构图
 - [01Android系统软件设计篇：软件设计原则](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统软件设计篇/01Android系统软件设计篇：软件设计原则.md)
 - [02Android系统软件设计篇：设计模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统软件设计篇/02Android系统软件设计篇：设计模式.md)
 
-
 有兴趣参与此项目的小伙伴可以扫码入群，本群主要讨论Android Framework、主流开源框架以及Android工程化相关技术，本群不是一个读者群，希望大家每个人都能成为项目的参与者。另外，为了营造一个
 良好的技术氛围，群里尽量不要灌水闲聊，如果二维码过期可以加我微信allenwells邀请入群。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG" width="300"/>
 
-后续的技术文章和资源也会做成PDF发送给读者，为了方便群文件管理，这里也建立了一个QQ群。
+后续的技术文章和资料也会做成PDF发送给读者，为了方便群文件管理，这里也建立了一个QQ群。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/qq.JPG" width="300"/>
