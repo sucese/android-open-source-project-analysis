@@ -18,13 +18,13 @@
     - 2.1 Activity Context的创建流程
     - 2.2 Service Context的创建流程
     - 2.3 静态广播 Context的创建流程
-    - 2.4 Activity Context的创建流程
+    - 2.4 Content Provider Context的创建流程
     - 2.5 Application Context的创建流程
 - 三 Context的绑定流程
     - 3.1 Activity与Context的绑定流程
     - 3.2 Service与Context的绑定流程
     - 3.3 静态广播与Context的绑定流程
-    - 3.4 Activity与Context的绑定流程
+    - 3.4 Content Provider与Context的绑定流程
     - 3.5 Application与Context的绑定流程
 
 提到Context大家并不陌生，它是Android里的一个上帝类，启动四大组件、获取资源、获取类加载器等重要功能都通过Context
