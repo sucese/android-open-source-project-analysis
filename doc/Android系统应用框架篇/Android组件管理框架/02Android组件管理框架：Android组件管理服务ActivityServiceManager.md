@@ -1,4 +1,4 @@
-# Android组件框架：Android组件管理者ActivityManager
+# Android组件管理框架：Android组件管理服务ActivityServiceManager
 
 **关于作者**
 

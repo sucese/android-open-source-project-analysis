@@ -1,4 +1,4 @@
-# Android显示框架：Android布局解析者LayoutInflater
+# Android窗口管理框架：Android布局解析者LayoutInflater
 
 **关于作者**
 

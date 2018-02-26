@@ -8,6 +8,8 @@
 
 >Java与C++之间有一堵由内存动态分配和垃圾收集技术围成的高墙，墙外的人想进去，墙里的人想出来。
 
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/memory/process_priority_structure.png"/>
+
 ## 内存结构
 
 Java虚拟机在执行程序的时候会将内存划分为若干个不同的区域，这些区域有各自的用途以及创建、销毁时间，有些区域随着虚拟机进程启动而启动，有些则依赖用户线程的启动和结束

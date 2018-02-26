@@ -1,4 +1,4 @@
-# Android组件框架：Android视图容器Activity
+# Android组件管理框架：Android视图容器Activity
 
 **关于作者**
 
@@ -42,7 +42,7 @@ Activity的启动流程图（放大可查看）如下所示：
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_start_flow.png" />
 
-主要角色有：
+整个流程涉及的主要角色有：
 
 - Instrumentation: 监控应用与系统相关的交互行为。
 - AMS：组件管理调度中心，什么都不干，但是什么都管。
@@ -54,12 +54,23 @@ Activity的启动流程图（放大可查看）如下所示：
 注：这里单独提一下ActivityStackSupervisior，这是高版本才有的类，它用来管理多个ActivityStack，早期的版本只有一个ActivityStack对应着手机屏幕，后来高版本支持多屏以后，就
 有了多个ActivityStack，于是就引入了ActivityStackSupervisior用来管理多个ActivityStack。
 
-通过上面的流程图整个流程可以概括如下：
+整个流程主要涉及四个进程：
 
->Activity的启动请求由Activity发送，以Binder通信的方式发送给了AMS，AMS接收到启动请求后，交付ActivityStarter处理Intent和Flag等信息，然后再交给ActivityStackSupervisior/ActivityStack
-处理Activity进栈相关流程，最后交付ActivityThread利用ClassLoader去加载Activity、创建Activity实例，并回调Activity的onCreate()方法。这样便完成了Activity的启动。
+- 调用者进程，如果是在桌面启动应用就是Launcher应用进程。
+- ActivityManagerService等所在的System Server进程，该进程主要运行着系统服务组件。
+- Zygote进程，该进程主要用来fork新进程。
+- 新启动的应用进程，该进程就是用来承载应用运行的进程了，它也是应用的主线程（新创建的进程就是主线程），处理组件生命周期、界面绘制等相关事情。
 
-注：读者可以发现这上面有很多函数有Locked后缀，这代表这些函数需要进行多线程同步（synchronized）操作，它们会读写一些多线程共享的数据。
+有了以上的理解，整个流程可以概括如下：
+
+1. 点击桌面应用图标，Launcher进程将启动Activity（MainActivity）的请求以Binder的方式发送给了AMS。
+2. AMS接收到启动请求后，交付ActivityStarter处理Intent和Flag等信息，然后再交给ActivityStackSupervisior/ActivityStack
+处理Activity进栈相关流程。同时以Socket方式请求Zygote进程fork新进程。
+3. Zygote接收到新进程创建请求后fork出新进程。
+4. 在新进程里创建ActivityThread对象，新创建的进程就是应用的主线程，在主线程里开启Looper消息循环，开始处理创建Activity。
+5. ActivityThread利用ClassLoader去加载Activity、创建Activity实例，并回调Activity的onCreate()方法。这样便完成了Activity的启动。
+
+👉 注：读者可以发现这上面有很多函数有Locked后缀，这代表这些函数需要进行多线程同步（synchronized）操作，它们会读写一些多线程共享的数据。
 
 ## 二 Activity的回退栈
 
@@ -217,8 +228,11 @@ Activity的生命周期也是个老生常谈的问题，今天我们从源码的
 
 1. 比方说我们点击跳转一个新Activity，这个时候Activity会入栈，同时它的生命周期也会从onCreate()到onResume()开始变换，这个过程是在ActivityStack里完成的，ActivityStack
 是运行在Server进程里的，这个时候Server进程就通过ApplicationThread的代理对象ApplicationThreadProxy向运行在app进程ApplicationThread发起操作请求。
-2. ApplicationThread接收到操作请求后，因为它是运行在app进程里的其他线程里，所以ApplicationThread需要通过Handler向主线程发送操作消息。
-3. 主线程接收到ApplicationThread发出的消息后，执行响应的操作，并回调Activity相应的周期方法。
+2. ApplicationThread接收到操作请求后，因为它是运行在app进程里的其他线程里，所以ApplicationThread需要通过Handler向主线程ActivityThread发送操作消息。
+3. 主线程接收到ApplicationThread发出的消息后，调用主线程ActivityThread执行响应的操作，并回调Activity相应的周期方法。
+
+👉 注：这里提到了主线程ActivityThread，更准确来说ActivityThread不是线程，因为它没有继承Thread类或者实现Runnable接口，它是运行在应用主线程里的对象，那么应用的主线程
+到底是什么呢？从本质上来讲启动启动时创建的进程就是主线程，线程和进程处理是否共享资源外，没有其他的区别，对于Linux来说，它们都只是一个struct结构体。
 
 上述这个流程的函数调用链如下所示：
 
@@ -360,6 +374,15 @@ public static final int LOCAL_VOICE_INTERACTION_STARTED = 154;
 - FLAG_ACTIVITY_CLEAR_TOP：如果正在启动的 Activity 已在当前任务中运行，则会销毁当前任务顶部的所有 Activity，并通过 onNewIntent() 将此 Intent 传递给 Activity 已恢复的
 实例（现在位于顶部），而不是启动该 Activity 的新实例。
 
+什么情况下需要设置FLAG_ACTIVITY_NEW_TASK标志位呢？🤔
+
+一般说来，主要有以下四种情况：
+
+- 调用者不是Activity Context；
+- 调用者Activity调用single Instance；
+- 目标Activity设置的有single Instance或者single task；
+- 调用者处于finish状态；
+
 启动模式一共有四种：
 
 - standard：多实例模式，每次启动都会有创建一个实例，默认会进入启动它的那个Activity所属的任务栈的栈顶，读者以前可能使用过Application Context去启动Activity，这是情况下会报错，就是因为
@@ -386,14 +409,6 @@ public static final int LAUNCH_SINGLE_TOP = 1;
 public static final int LAUNCH_SINGLE_TASK = 2;
 public static final int LAUNCH_SINGLE_INSTANCE = 3;
 ```
-
-## 4.1 standard
-
->standard模式下Activity可以有多个实例，不同任务栈里可以有不同Activity的实例，同一个任务栈里也可以有多个Activity实例。
-
-## 4.1 singleTop
-## 4.1 singleTask
-## 4.1 singleInstance
 
 ## 五 Activity的通信方式
 

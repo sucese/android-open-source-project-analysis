@@ -1,4 +1,4 @@
-# Android显示框架：Android列表控件RecyclerView
+# Android窗口管理框架：Android列表控件RecyclerView
 
 **关于作者**
 

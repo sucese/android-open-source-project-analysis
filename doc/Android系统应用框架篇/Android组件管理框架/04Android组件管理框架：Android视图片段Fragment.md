@@ -1,4 +1,4 @@
-# Android组件框架：Android视图片段Fragment
+# Android组件管理框架：Android视图片段Fragment
 
 **关于作者**
 

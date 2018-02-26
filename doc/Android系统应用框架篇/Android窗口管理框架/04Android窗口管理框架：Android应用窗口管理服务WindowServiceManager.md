@@ -1,4 +1,4 @@
-## Android显示框架：Android应用窗口的管理者WindowManager
+## Android窗口管理框架：Android应用窗口的管理服务WindowServiceManager
 
 **关于作者**
 
@@ -12,23 +12,50 @@
 - 二 Window的删除流程
 - 三 Window的更新流程
 
->The interface that apps use to talk to the window manager.
-
-WindowManager是应用与窗口管理服务WindowManagerService交互的接口，WindowManagerService是位于Framework层的窗口管理服务，它的职责是管理系统中的所有窗口，也就是Window，
-关于Window的介绍，我们在文章[03Android显示框架：Android应用视图的管理者Window](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/03Android显示框架：Android应用视图管理者Window.md)已经
+WindowManagerService是位于Framework层的窗口管理服务，它的职责是管理系统中的所有窗口，也就是Window，关于Window的介绍，我们在文章[03Android显示框架：Android应用视图的管理者Window](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统应用框架篇/Android显示框架/03Android显示框架：Android应用视图管理者Window.md)已经
 详细分析过，通俗来说，Window就是手机上一块显示区域，也就是Android中的绘制画布Surface，添加一个Window的过程，也就是申请分配一块Surface的过程。而整个流程的管理者正是WindowManagerService。
 
 Window在WindowManagerService的管理下，有序的显示在屏幕上，构成了多姿多彩的用户界面，关于Android的整个窗口系统，可以用下图来表示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_class.png"/>
+
+Android窗口管理框架从窗口的创建到UI的绘制主要涉及以下角色：
 
 - WindowManager：应用与窗口管理服务WindowManagerService交互的接口
-- WindowManagerService：窗口管理服务，该服务运行在一个单独的进程中，因此WindowManager与WindowManagerService的交互也是一个IPC的过程。
+- WindowManagerService：窗口管理服务，继承于IWindowManager.Stub，是Binder的服务端，该服务运行在一个单独的进程中，因此WindowManager与WindowManagerService的交互也是一个IPC的过程。
 - SurfaceFlinger：SurfaceFlinger服务运行在Android系统的System进程中，它负责管理Android系统的帧缓冲区（Frame Buffer)，Android设备的显示屏被抽象为一个
 帧缓冲区，而Android系统中的SurfaceFlinger服务就是通过向这个帧缓冲区写入内容来绘制应用程序的用户界面的。
 - Surface：每个显示界面的窗口都是一个Surface。
+- PhoneWindowManager：实现了窗口的各种策略。
+- Choreographer：用于控制窗口动画、屏幕旋转等操作。
+- DisplayContent：用于描述多屏输出相关信息。
+- WindowState：描述窗口的状态信息以及和WindowManagerService进行通信，一般一个窗口对应一个WindowState。
+- WindowToken：窗口Token，用来做Binder通信。
+- Session：通信对象，App进程通过建立Session代理对象和Session对象通信，进而和WindowManagerService建立连接。
 
-WindowManager是一个接口，继承于ViewManager，实现类是WindowManagerImpl，实际上我们常用的功能，也是定义在ViewManager里的。
+前面说到窗口的管理服务WindowManagerService运行在System Server进程，所以应用进程与WindowManagerService的交互是一个IPC的过程，具体流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/ui/window_mansger_service_structure.png"/>
+
+如上图所示，Activity持有一个Window，负责UI的展示与用户交互，里保存了很多重要的信息，如下所示：
+
+- mWindow：PhoneWindow对象，继承于Window，是窗口对象。
+- mWindowManager：WindowManagerImpl对象，实现WindowManager接口。
+- mMainThread：Activity对象，并非真正的线程，是运行在主线程里的对象。
+- mUIThread：Thread对象，主线程。
+- mHandler：Handler对象，主线程Handler。
+- mDecor：View对象，用来显示Activity里的视图。
+
+ViewRootImpl负责管理DecorView与WindowManagerService的交互，每次调用WindowManager.addView()添加窗口时，都会创建一个ViewRootImpl对象，它内部也保存了一些重要信息，如下所示：
+
+- mWindowSession：IWindowSession对象，Session的代理对象，用来和Session进行通信，同一进程里的所有ViewRootImpl对象只对应同一个Session代理对象。
+- mWindow：IWindow.Stubd对象，每个窗口对应一个该对象。
+
+👉 注：每个Activity对应一个Window，每个Window对应一个ViewRootImpl。
+
+理解了以上内容，我们来看看Window的添加、更新和移除流程。
+
+窗口的操作被定义WindowManager中，WindowManager是一个接口，继承于ViewManager，实现类是WindowManagerImpl，实际上我们常用的功能，也是定义在ViewManager里的。
 
 ```java
 public interface ViewManager{

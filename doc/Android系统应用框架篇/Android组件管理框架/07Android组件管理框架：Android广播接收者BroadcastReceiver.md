@@ -1,4 +1,4 @@
-# Android组件框架：Android后台服务Service
+# Android组件管理框架：Android后台服务Service
 
 **关于作者**
 

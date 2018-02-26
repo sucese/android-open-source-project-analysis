@@ -1,4 +1,4 @@
-# Android组件框架：Android组件框架概述
+# Android组件管理框架：Android组件管理框架概述
 
 **关于作者**
 

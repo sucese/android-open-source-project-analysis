@@ -287,8 +287,6 @@ public final class Installer {
 
 APK安装完成以后会在桌面生成一个快捷图标，点击图标就可以启动应用了。
 
-预校验问题
-
 
 
 

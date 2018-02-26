@@ -1,4 +1,4 @@
-## Android显示框架：Android应用视图的管理者Window
+## Android窗口管理框架：Android应用视图的管理者Window
 
 **关于作者**
 
