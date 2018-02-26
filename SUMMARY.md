@@ -17,7 +17,7 @@
   * [Android包管理框架：APK的打包流程](/doc/Android系统应用框架篇/Android包管理框架/01Android包管理框架：APK的打包流程r.md)
   * [Android包管理框架：APK的安装流程](/doc/Android系统应用框架篇/Android包管理框架/02Android包管理框架：APK的安装流程.md)
   * [Android包管理框架：APK的加载流程](/doc/Android系统应用框架篇/Android包管理框架/03Android包管理框架：APK的加载流程.md)
-  - [Android资源管理框架：资源管理器AssetManager](/doc/Android系统应用框架篇/Android资源管理管理框架/01Android资源管理框架：资源管理器AssetManager.md)
+  * [Android资源管理框架：资源管理器AssetManager](/doc/Android系统应用框架篇/Android资源管理管理框架/01Android资源管理框架：资源管理器AssetManager.md)
 * [Android系统底层框架篇]()
   * [Android进程框架：进程的创建、启动与调度流程](/doc/Android系统底层框架篇/Android进程框架/01Android进程框架：进程的创建、启动与调度流程.md)
   * [Android进程框架：线程与线程池](/doc/Android系统底层框架篇/Android进程框架/02Android进程框架：线程与线程池.md)
