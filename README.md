@@ -53,7 +53,7 @@ Android系统架构图
 - 应用框架层
 - 进程通信层
 - 系统服务层
-- Android运行时
+- Android运行时层
 - 硬件抽象层
 - Linux内核层
 
