@@ -141,3 +141,7 @@ Android系统架构图
 良好的技术氛围，群里尽量不要灌水闲聊，如果二维码过期可以加我微信allenwells邀请入群。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/wechat.JPG" width="300"/>
+
+后续的技术文章和资源也会做成PDF发送给读者，为了方便群文件管理，这里也建立了一个QQ群。
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/qq.JPG" width="300"/>
