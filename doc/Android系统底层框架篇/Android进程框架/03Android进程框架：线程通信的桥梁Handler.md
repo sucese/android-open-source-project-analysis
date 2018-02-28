@@ -20,7 +20,7 @@ Android是一个消息驱动型的系统，消息机制在Android系统中扮演
 
 Android消息循环流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_handler_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_handler_structure.png"/>
 
 主要涉及的角色如下所示：
 
@@ -37,7 +37,7 @@ Android消息循环流程图如下所示：
 
 事实上，在整个消息循环的流程中，并不只有Java层参与，很多重要的工作都是在C++层来完成的。我们来看下这些类的调用关系。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_handler_class.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_handler_class.png"/>
 
 注：虚线表示关联关系，实线表示调用关系。
 

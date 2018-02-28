@@ -307,7 +307,47 @@ Java内存模型规定了所有字段（这些字段包括实例字段、静态�
 2. 某种任务虽然耗时但是不消耗CPU，例如：磁盘IO，可以开启新线程来做，可以显著的提高效率。
 3. 优先级比较低的任务，但是需要经常去做，例如：GC，可以开启新线程来做。
 
-### 线程如何关闭，如何避免线程内存泄漏？
+### 了解线程的生命周期吗，描述一下？
+
+线程状态流程图图
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/java_thread_state.png"/>
+
+- NEW：创建状态，线程创建之后，但是还未启动。
+- RUNNABLE：运行状态，处于运行状态的线程，但有可能处于等待状态，例如等待CPU、IO等。
+- WAITING：等待状态，一般是调用了wait()、join()、LockSupport.spark()等方法。
+- TIMED_WAITING：超时等待状态，也就是带时间的等待状态。一般是调用了wait(time)、join(time)、LockSupport.sparkNanos()、LockSupport.sparkUnit()等方法。
+- BLOCKED：阻塞状态，等待锁的释放，例如调用了synchronized增加了锁。
+- TERMINATED：终止状态，一般是线程完成任务后退出或者异常终止。 
+
+NEW、WAITING、TIMED_WAITING都比较好理解，我们重点说一说RUNNABLE运行态和BLOCKED阻塞态。
+
+线程进入RUNNABLE运行态一般分为五种情况：
+
+- 线程调用sleep(time)后查出了休眠时间
+- 线程调用的阻塞IO已经返回，阻塞方法执行完毕
+- 线程成功的获取了资源锁
+- 线程正在等待某个通知，成功的获得了其他线程发出的通知
+- 线程处于挂起状态，然后调用了resume()恢复方法，解除了挂起。
+
+线程进入BLOCKED阻塞态一般也分为五种情况：
+
+- 线程调用sleep()方法主动放弃占有的资源
+- 线程调用了阻塞式IO的方法，在该方法返回前，该线程被阻塞。
+- 线程视图获得一个资源锁，但是该资源锁正被其他线程锁持有。
+- 线程正在等待某个通知
+- 线程调度器调用suspend()方法将该线程挂起
+
+我们再来看看和线程状态相关的一些方法。
+
+- sleep()方法让当前正在执行的线程在指定时间内暂停执行，正在执行的线程可以通过Thread.currentThread()方法获取。
+- yield()方法放弃线程持有的CPU资源，将其让给其他任务去占用CPU执行时间。但放弃的时间不确定，有可能刚刚放弃，马上又获得CPU时间片。
+- wait()方法是当前执行代码的线程进行等待，将当前线程放入预执行队列，并在wait()所在的代码处停止执行，知道接到通知或者被中断为止。该方法可以使得调用该方法的线程释放共享资源的锁，
+然后从运行状态退出，进入等待队列，直到再次被唤醒。该方法只能在同步代码块里调用，否则会抛出IllegalMonitorStateException异常。
+- wait(long millis)方法等待某一段时间内是否有线程对锁进行唤醒，如果超过了这个时间则自动唤醒。
+- notify()方法用来通知那些可能等待该对象的对象锁的其他线程，该方法可以随机唤醒等待队列中等同一共享资源的一个线程，并使该线程退出等待队列，进入可运行状态。
+- notifyAll()方法可以是所有正在等待队列中等待同一共享资源的全部线程从等待状态退出，进入可运行状态，一般会是优先级高的线程先执行，但是根据虚拟机的实现不同，也有可能是随机执行。
+- join()方法可以让调用它的线程正常执行完成后，再去执行该线程后面的代码，它具有让线程排队的作用。
 
 ### 线程池了解吗，有几种线程池，应用场景是什么？
 
@@ -330,7 +370,79 @@ ThreadLocal是一个关于创建线程局部变量的类。使用场景如下所
 
 ### wait和notify机制，手写一下生产者和消费者模型？
 
-### 描述一下线程的几种状态？
+生成者消费者模型
+
+生产者和消费者在同一时间段内共用同一个存储空间，生产者往存储空间中添加产品，消费者从存储空间中取走产品，当存储空间为空时，消费者阻塞，当存储空间满时，生产者阻塞。
+
+wait()和notify()方法的实现生成者消费者模型，缓冲区满和为空时都调用wait()方法等待，当生产者生产了一个产品或者消费者消费了一个产品之后会唤醒所有线程。
+
+```java
+public class ProducerAndCustomerModel {
+    
+    private static Integer count = 0;
+    private static final Integer FULL = 10;
+    private static String LOCK = "lock";
+    
+    public static void main(String[] args) {
+        Test1 test1 = new Test1();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+        new Thread(test1.new Producer()).start();
+        new Thread(test1.new Consumer()).start();
+    }
+    class Producer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                synchronized (LOCK) {
+                    while (count == FULL) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    count++;
+                    System.out.println(Thread.currentThread().getName() + "生产者生产，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+    class Consumer implements Runnable {
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (LOCK) {
+                    while (count == 0) {
+                        try {
+                            LOCK.wait();
+                        } catch (Exception e) {
+                        }
+                    }
+                    count--;
+                    System.out.println(Thread.currentThread().getName() + "消费者消费，目前总共有" + count);
+                    LOCK.notifyAll();
+                }
+            }
+        }
+    }
+}
+```
 
 ### 死锁是如何发生的，如何避免死锁？
 
@@ -490,7 +602,7 @@ public class BreakDeadLockDemo {
 
 ### 了解Java注解的原理吗？
 
-注解相当于一种标记，在程序中加了注解就等于为程序打上了某种标记。程序可以利用Java的反射机制来了解你的类及各种元素上有无何种标记，针对不同的标记，就去做相
+注解相当于一种标记，在程序中加了注解就等于为程序打上了某种标记。程序可以利用ava的反射机制来了解你的类及各种元素上有无何种标记，针对不同的标记，就去做相
 应的事件。标记可以加在包，类，字段，方法，方法的参数以及局部变量上。
 
 ### String为什么要设计成不可变，StringBuffer与StringBuilder有什么区别？
@@ -626,7 +738,7 @@ Activity的启动流程图（放大可查看）如下所示：
 
 Android消息循环流程图如下所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_handler_structure.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_handler_structure.png"/>
 
 主要涉及的角色如下所示：
 
@@ -643,7 +755,7 @@ Android消息循环流程图如下所示：
 
 事实上，在整个消息循环的流程中，并不只有Java层参与，很多重要的工作都是在C++层来完成的。我们来看下这些类的调用关系。
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/android_handler_class.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/android_handler_class.png"/>
 
 注：虚线表示关联关系，实线表示调用关系。
 
@@ -775,9 +887,25 @@ Android的进程主要分为以下几种：
 
 ActivityManagerService负责根据各种策略算法计算进程的adj值，然后交由系统内核进行进程的管理。
 
-### OOM如何发生的，是否可以try catch？
+### SharePreference性能优化，可以做进程同步吗？
 
-### SharePreference性能优化，进程同步。
+在Android中, SharePreferences是一个轻量级的存储类，特别适合用于保存软件配置参数。使用SharedPreferences保存数据，其背后是用xml文件存放数据，文件
+存放在/data/data/ < package name > /shared_prefs目录下.
+
+之所以说SharedPreference是一种轻量级的存储方式，是因为它在创建的时候会把整个文件全部加载进内存，如果SharedPreference文件比较大，会带来以下问题：
+
+1. 第一次从sp中获取值的时候，有可能阻塞主线程，使界面卡顿、掉帧。
+2. 解析sp的时候会产生大量的临时对象，导致频繁GC，引起界面卡顿。
+3. 这些key和value会永远存在于内存之中，占用大量内存。
+
+优化建议
+
+1. 不要存放大的key和value，会引起界面卡、频繁GC、占用内存等等。
+2. 毫不相关的配置项就不要放在在一起，文件越大读取越慢。
+3. 读取频繁的key和不易变动的key尽量不要放在一起，影响速度，如果整个文件很小，那么忽略吧，为了这点性能添加维护成本得不偿失。
+4. 不要乱edit和apply，尽量批量修改一次提交，多次apply会阻塞主线程。
+5. 尽量不要存放JSON和HTML，这种场景请直接使用JSON。
+6. SharedPreference无法进行跨进程通信，MODE_MULTI_PROCESS只是保证了在API 11以前的系统上，如果sp已经被读取进内存，再次获取这个SharedPreference的时候，如果有这个flag，会重新读一遍文件，仅此而已。
 
 ### 如何做SQLite升级？
 
@@ -905,9 +1033,82 @@ adb backup -noapk com.your.packagename
 
 ## 网络编程
 
-- Https请求慢的解决办法，哪里用了对称加密，哪里用了非对称加密。
-- TCP与UDP的区别
-- WebSocket与Socket的区别
+### TCP与UDP的区别
+
+1. TCP面向连接（如打电话要先拨号建立连接）;UDP是无连接的，即发送数据之前不需要建立连接
+2. TCP提供可靠的服务。也就是说，通过TCP连接传送的数据，无差错，不丢失，不重复，且按序到达;UDP尽最大努力交付，即不保证可靠交付
+3. TCP面向字节流，实际上是TCP把数据看成一连串无结构的字节流;UDP是面向报文的UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如IP电话，实时视频会议等）
+4. 每一条TCP连接只能是点到点的;UDP支持一对一，一对多，多对一和多对多的交互通信
+5. TCP首部开销20字节;UDP的首部开销小，只有8个字节
+6. TCP的逻辑通信信道是全双工的可靠信道，UDP则是不可靠信道
+
+### TCP三次握手与四次分手
+
+TCP用[三次握手](https://zh.wikipedia.org/wiki/%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6%E5%8D%8F%E8%AE%AE#建立通路)（three-way handshake）过程创建一个连接，使用四次分手
+关闭一个连接。
+
+三次握手与四次分手的流程如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/three_way_handshake.jpeg" width="500"/>
+
+三次握手
+
+- 第一次握手：建立连接。客户端发送连接请求报文段，将SYN位置为1，Sequence Number为x；然后，客户端进入SYN_SEND状态，等待服务器的确认；
+- 第二次握手：服务器收到SYN报文段。服务器收到客户端的SYN报文段，需要对这个SYN报文段进行确认，设置Acknowledgment Number为x+1(Sequence Number+1)；同时，自己自己还要发送SYN请求信息，将SYN位置为1，Sequence Number为y；服务器端将上述所有信息放到一个报文段（即SYN+ACK报文段）中，一并发送给客户端，此时服务器进入SYN_RECV状态；
+- 第三次握手：客户端收到服务器的SYN+ACK报文段。然后将Acknowledgment Number设置为y+1，向服务器发送ACK报文段，这个报文段发送完毕以后，客户端和服务器端都进入ESTABLISHED状态，完成TCP三次握手。
+完成了三次握手，客户端和服务器端就可以开始传送数据。以上就是TCP三次握手的总体介绍。
+
+四次分手
+
+- 第一次分手：主机1（可以使客户端，也可以是服务器端），设置Sequence Number和Acknowledgment Number，向主机2发送一个FIN报文段；此时，主机1进入FIN_WAIT_1状态；这表示主机1没有数据要发送给主机2了；
+- 第二次分手：主机2收到了主机1发送的FIN报文段，向主机1回一个ACK报文段，Acknowledgment Number为Sequence Number加1；主机1进入FIN_WAIT_2状态；主机2告诉主机1，我“同意”你的关闭请求；
+- 第三次分手：主机2向主机1发送FIN报文段，请求关闭连接，同时主机2进入LAST_ACK状态；
+- 第四次分手：主机1收到主机2发送的FIN报文段，向主机2发送ACK报文段，然后主机1进入TIME_WAIT状态；主机2收到主机1的ACK报文段以后，就关闭连接；此时，主机1等待2MSL后依然没有收到回复，则证明Server端已正常关闭，那好，主机1也可以关闭连接了。
+
+三次握手与四次分手也是个老生常谈的概念，举个简单的例子说明一下。
+
+三次握手
+
+>例如你小时候出去玩，经常玩忘了回家吃饭。你妈妈也经常过来喊你。如果你没有走远，在门口的小土堆上玩泥巴，你妈妈会喊："小新，回家吃饭了"。你听到后会回应："知道了，一会就回去"。妈妈听
+到你的回应后又说："快点回来，饭要凉了"。这样你妈妈和你就完成了三次握手的过程。😁说到这里你也可以理解三次握手的必要性，少了其中一个环节，另一方就会陷入等待之中。
+
+三次握手的目的是为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误.
+
+四次分手
+
+>例如偶像言情剧干净利落的分手，女主对男主说：我们分手吧🙄，男主说：分就分吧😰。女主说：你果然是不爱我了，你只知道让我多喝热水🙄。男主说：事到如今也没什么好说的了，祝你幸福🙃。四次分手完成。说到这里你可以理解
+了四次分手的必要性，第一次是女方（客户端）提出分手，第二次是男主（服务端）同意女主分手，第三次是女主确定男主不再爱她，也同意男主分手。第四次两人彻底拜拜（断开连接）。
+
+因为TCP是全双工模式，所以四次分手的目的就是为了可靠地关闭连接。
+
+### HTTP与HTTPS
+
+>[HTTPS](https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE)是一种通过计算机网络进行安全通信的传输协议。HTTPS经由HTTP进行通信，但利用SSL/TLS来加密数据包。HTTPS开发的主要目的，是提供对网站服务器的身份
+认证，保护交换数据的隐私与完整性。
+
+如下图所示，可以很明显的看出两个的区别：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/network/http_https.png" width="500"/>
+
+注：TLS是SSL的升级替代版，具体发展历史可以参考[传输层安全性协议](https://zh.wikipedia.org/wiki/%E5%82%B3%E8%BC%B8%E5%B1%A4%E5%AE%89%E5%85%A8%E6%80%A7%E5%8D%94%E5%AE%9A)。
+
+HTTP与HTTPS在写法上的区别也是前缀的不同，客户端处理的方式也不同，具体说来：
+
+- 如果URL的协议是HTTP，则客户端会打开一条到服务端端口80（默认）的连接，并向其发送老的HTTP请求。
+- 如果URL的协议是HTTPS，则客户端会打开一条到服务端端口443（默认）的连接，然后与服务器握手，以二进制格式与服务器交换一些SSL的安全参数，附上加密的
+HTTP请求。
+
+所以你可以看到，HTTPS比HTTP多了一层与SSL的连接，这也就是客户端与服务端SSL握手的过程，整个过程主要完成以下工作：
+
+- 交换协议版本号
+- 选择一个两端都了解的密码
+- 对两端的身份进行认证
+- 生成临时的会话密钥，以便加密信道。
+
+SSL握手是一个相对比较复杂的过程，更多关于SSL握手的过程细节可以参考[TLS/SSL握手过程](https://www.wosign.com/faq/faq2016-0309-04.htm)
+
+SSL/TSL的常见开源实现是OpenSSL，OpenSSL是一个开放源代码的软件库包，应用程序可以使用这个包来进行安全通信，避免窃听，同时确认另一端连接者的身份。这个包广泛被应用在互联网的网页服务器上。
+更多源于OpenSSL的技术细节可以参考[OpenSSL](https://www.openssl.org/)。
 
 ## 应用优化
 
@@ -1713,23 +1914,3 @@ public class RadixSort {
 <p>基于比较排序下限的证明是通过决策树证明的，决策树的高度Ω（nlgn），这样就得出了比较排序的下限。</p>
 <p><img src="http://static.codeceo.com/images/2016/03/b4d51a192d469b833a46695c0a7668f6.jpg" alt="" /></p>
 <p>首先要引入决策树。 首先决策树是一颗二叉树，每个节点表示元素之间一组可能的排序，它予以京进行的比较相一致，比较的结果是树的边。 先来说明一些二叉树的性质，令T是深度为d的二叉树，则T最多有2^片树叶。 具有L片树叶的二叉树的深度至少是logL。 所以，对n个元素排序的决策树必然有n!片树叶（因为n个数有n!种不同的大小关系），所以决策树的深度至少是log(n!)，即至少需要log(n!)次比较。 而 log(n!)=logn+log(n-1)+log(n-2)+&#8230;+log2+log1 &gt;=logn+log(n-1)+log(n-2)+&#8230;+log(n/2) &gt;=(n/2)log(n/2) &gt;=(n/2)logn-n/2 =O(nlogn) 所以只用到比较的排序算法最低时间复杂度是O(nlogn)。</p>
-<p><strong>参考资料：</strong></p>
-<ul>
-<li>《数据结构》 严蔚敏 吴伟民 编著</li>
-<li>桶排序分析：http://hxraid.iteye.com/blog/647759</li>
-<li>部分排序算法分析与介绍：http://www.cnblogs.com/weixliu/archive/2012/12/23/2829671.html</li>
-</ul>
-<script type="text/javascript">
-var strBatchView = 37731</script>
-
-<a id="soft-link" name="soft-link"></a>
-
-<div style="width:336px;height:280px;margin:40px auto">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- codeceo-bottom-big -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:336px;height:280px"
-     data-ad-client="ca-pub-3171310320403916"
-     data-ad-slot="5138981789"></ins>
-<script>
-```
