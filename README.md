@@ -136,7 +136,8 @@ Android系统架构图
 - [01Android系统软件设计篇：软件设计原则](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统软件设计篇/01Android系统软件设计篇：软件设计原则.md)
 - [02Android系统软件设计篇：设计模式](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android系统软件设计篇/02Android系统软件设计篇：设计模式.md)
 
-有兴趣参与此项目的小伙伴可以扫码入群，本群主要讨论Android Framework、主流开源框架以及Android工程化相关技术，本群不是一个读者群，希望大家每个人都能成为项目的参与者。如果微信群提示满额了可以加我微信 allenwells 邀请入群。
+有兴趣参与此项目的小伙伴可以扫码入群，本群主要讨论Android Framework、主流开源框架以及Android工程化相关技术，本群不是一个读者群，希望大家每个人都能成为项目的参与者。如果微信群提示满额了可以
+加我微信 allenwells 邀请入群。
 
 <img src="https://user-gold-cdn.xitu.io/2018/2/26/161d0b402e9616a6?w=674&h=896&f=jpeg&s=118219" width="300"/>
 
@@ -146,7 +147,5 @@ Android系统架构图
 
 **关于此项目后续的计划**
 
-> 一个人的力量是有限的，后续此项目会做成一个团体项目，在Github建立新的工作组和新的Repo，设计新的名字和Logo，每篇文章会在文章头部注明作者的名字和Github账号。希望有更多的小伙伴参与进来，不仅仅是学习源码原理，也可以提升自己的技术品牌。
-
-文章的最后再聊一聊工作这几年来的感悟，其实我一向是比较少的去聊这些事情，因为觉得这些东西讲多了，有点夸夸其谈的感觉，但是这几年工作下来，有几点东西确实是感触颇深的，这里
-简单总结一下。
+> 一个人的力量是有限的，后续此项目会做成一个团体项目，在Github建立新的工作组和新的Repo，设计新的名字和Logo，每篇文章会在文章头部注明作者的名字和Github账号。希望有更多的小伙伴参与进来，不仅仅
+是学习源码原理，也可以提升自己的技术品牌。
