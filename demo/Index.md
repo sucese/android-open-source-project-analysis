@@ -344,6 +344,12 @@ StringBuffer是线程安全的，StringBuilder是非线程安全的。
 
 ### 描述一下View的绘制原理？
 
+View的绘制流程主要分为三步：
+
+1. onMeasure：测量视图的大小，从顶层父View到子View递归调用measure()方法，measure()调用onMeasure()方法，onMeasure()方法完成绘制工作。
+2. onLayout：确定视图的位置，从顶层父View到子Viewdi'gu
+3. onDraw：
+
 ### 了解APK的打包流程吗，描述一下？
 
 ### 了解APK的安装流程吗，描述一下？
