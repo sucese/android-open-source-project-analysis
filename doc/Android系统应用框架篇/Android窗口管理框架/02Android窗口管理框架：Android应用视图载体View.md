@@ -402,7 +402,7 @@ padding，以及子View自身大小childDimension共同来决定的。
 - 当View采用固定宽高的时候，不管父容器的MeasureSpec是什么，resultSize都是指定的宽高，resultMode都是MeasureSpec.EXACTLY。
 - 当View的宽高是match_parent，当父容器是MeasureSpec.EXACTLY，则View也是MeasureSpec.EXACTLY，并且其大小就是父容器的剩余空间。当父容器是MeasureSpec.AT_MOST
 则View也是MeasureSpec.AT_MOST，并且大小不会超过父容器的剩余空间。
-- 当View的宽高是wrap_content时，不管父容器的模式是MeasureSpec.EXACTLY还是MeasureSpec.AT_MOST，View的模式总是MeasureSpec.AT_MOST，并且大小都不会超过芙蓉的剩余空间。
+- 当View的宽高是wrap_content时，不管父容器的模式是MeasureSpec.EXACTLY还是MeasureSpec.AT_MOST，View的模式总是MeasureSpec.AT_MOST，并且大小都不会超过父类的剩余空间。
 
 
 了解了MeasureSpec的概念之后，我就就可以开始分析测量流程了。
@@ -410,7 +410,7 @@ padding，以及子View自身大小childDimension共同来决定的。
 - 对于顶级View（DecorView）其MeasureSpec由窗口的尺寸和自身的LayoutParams共同确定的。
 - 对于普通View其MeasureSpec由父容器的Measure和自身的LayoutParams共同确定的。
 
-View的绘制会先调用View的measure()方法，measure()方法用来测量View的大小，实际的测量工作是由ziView的onMeasure()来完成的。我们来看看
+View的绘制会先调用View的measure()方法，measure()方法用来测量View的大小，实际的测量工作是由View的onMeasure()来完成的。我们来看看
 onMeasure(int widthMeasureSpec, int heightMeasureSpec)方法的实现。
 
 **关键点1：View.onMeasure(int widthMeasureSpec, int heightMeasureSpec)**
