@@ -82,7 +82,7 @@ Activity的启动流程图（放大可查看）如下所示：
 
 - ActivityRecord：描述栈里的Activity相关信息，对应着一个用户界面，是Activity管理的最小单位。
 - TaskRecord：是一个栈式管理结构，每个TaskRecord可能包含一个或多个ActivityRecord，栈顶的ActivityRecord表示当前用户可见的页面。
-- ActivityStack：是一个栈式管理结构，每个TaskRecord可能包含一个或多个TaskRecord，栈顶的TaskRecord表示当前用户可见的任务。
+- ActivityStack：是一个栈式管理结构，每个ActivityStack可能包含一个或多个TaskRecord，栈顶的TaskRecord表示当前用户可见的任务。
 - ActivityStackSupervisior：管理者多个ActivityStack，当前只会有一个获取焦点（focused）的ActivityStack。
 - ProcessReocord：保存着属于用一个进程的所有ActivityRecord，我们知道同一个应用的Activity可以运行在不同的进程里，同一个TaskRecord里的ActivityRecord
 可能属于不同ProcessRecord，反之，运行在不同TaskRecord的ActivityRecord可能属于同一个ProcessRecord。
