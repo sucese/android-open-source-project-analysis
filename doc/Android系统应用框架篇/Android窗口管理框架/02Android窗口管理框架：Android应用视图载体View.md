@@ -276,7 +276,7 @@ padding，否则它不会生效，这一块的内容我们会在View自定义实
 
 View外边距
 
->View内边距：View的内边距用margin来表示，它表示View的边缘离它相邻的View的距离。
+>View内边距：View的外边距用margin来表示，它表示View的边缘离它相邻的View的距离。
 
 >Measure过程决定了View的宽高，该过程完成后，通常都可以通过getMeasuredWith()/getMeasuredHeight()获得宽高。
 
