@@ -6,6 +6,16 @@
 
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
+## 一 Android内存管理流程
+
+Android内存的管理流程如下所示：
+
+1. ActivityManagerService负责根据各种策略算法计算进程的adj值，也就是进程的优先级评分，它告诉内核这些进程的优先级是怎样的，内核根据这些优先级就行进程的kill和内存的回收。
+2. Linux内核内存管理系统根据进程的adj值进行进程的管理。
+
+
+
+
 >Java与C++之间有一堵由内存动态分配和垃圾收集技术围成的高墙，墙外的人想进去，墙里的人想出来。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/memory/process_priority_structure.png"/>
