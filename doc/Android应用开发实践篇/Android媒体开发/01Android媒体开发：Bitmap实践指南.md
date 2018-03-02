@@ -15,7 +15,6 @@
     - 3.1 邻近采样
     - 3.2 双线性采样
 
-
 本篇文章用来介绍Android平台的图像压缩方案以及图像编解码的通识性理解，事实上Android平台对图像的处理最终都交由底层实现，篇幅有限，我们这里不会去过多的分析底层的细节实现细节，但是
 我们会提一下底层的实现方案概览，给向进一步扩展的同学提供一些思路。
 
@@ -35,6 +34,15 @@
 - Alpha_8: 只保存透明度，共8位，1字节；
 
 ## 一 Bitmap内存管理
+
+Bitmap是我们应用里使用内存的大户，很多OOM都是由于不当的图像使用造成内存过多占用而造成的，Bitmap在Android虚拟机内存存储的结构图如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/bitmap_vm_structure.png" width="500"/>
+
+从上图可以看出：
+
+- Andrroid 3.0 以前：Bitmap存储在Native Heap中，不收GC管理，需要手动调用Bitmap的recycle()方法。
+- Andrroid 3.0 以前：Bitmap存储在Java Heap中，收GC管理，无需手动调用Bitmap的recycle()方法。
 
 如何计算Bitmap占用内存的大小呢？🤔
 
@@ -57,16 +65,201 @@
 - private final boolean mIsMutable：图像是否是可变的，这么说有点抽象，它就像String与StringBuffer的关系一样，String是不可修改的，StringBuffer是可以修改的。
 - private boolean mRecycled：图像是否已经被回收，图像的回收也是在C++层完成的。
 
-了解完基本的概念，我们来分析压缩图像的方法。
+从上面的分析可以看出，不管是在哪个Android版本是虚拟机进程所在内存大小16M这一点是没有改变的，我们要有节制的去使用内存。
+
+可以从以下几个方面来考虑：
+
+1. 缓存图片。
+2. 复用图片。
+3. UC黑科技 - 偷用Native内存
+4. 图片压缩。
+
+**缓存图片**
+
+可以使用LruCache来缓存图片。
+
+```java
+Set<SoftReference<Bitmap>> mReusableBitmaps;
+private LruCache<String, BitmapDrawable> mMemoryCache;
+
+// If you're running on Honeycomb or newer, create a
+// synchronized HashSet of references to reusable bitmaps.
+if (Utils.hasHoneycomb()) {
+    mReusableBitmaps =
+            Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
+}
+
+mMemoryCache = new LruCache<String, BitmapDrawable>(mCacheParams.memCacheSize) {
+
+    // Notify the removed entry that is no longer being cached.
+    @Override
+    protected void entryRemoved(boolean evicted, String key,
+            BitmapDrawable oldValue, BitmapDrawable newValue) {
+        if (RecyclingBitmapDrawable.class.isInstance(oldValue)) {
+            // The removed entry is a recycling drawable, so notify it
+            // that it has been removed from the memory cache.
+            ((RecyclingBitmapDrawable) oldValue).setIsCached(false);
+        } else {
+            // The removed entry is a standard BitmapDrawable.
+            if (Utils.hasHoneycomb()) {
+                // We're running on Honeycomb or later, so add the bitmap
+                // to a SoftReference set for possible use with inBitmap later.
+                mReusableBitmaps.add
+                        (new SoftReference<Bitmap>(oldValue.getBitmap()));
+            }
+        }
+    }
+....
+}
+```
+
+**复用图片**
+
+使用BitmapFactory.Option的inBitmap标志位来复用图片。
+
+```java
+public static Bitmap decodeSampledBitmapFromFile(String filename,
+        int reqWidth, int reqHeight, ImageCache cache) {
+
+    final BitmapFactory.Options options = new BitmapFactory.Options();
+    ...
+    BitmapFactory.decodeFile(filename, options);
+    ...
+
+    // If we're running on Honeycomb or newer, try to use inBitmap.
+    if (Utils.hasHoneycomb()) {
+        addInBitmapOptions(options, cache);
+    }
+    ...
+    return BitmapFactory.decodeFile(filename, options);
+}
+
+rivate static void addInBitmapOptions(BitmapFactory.Options options,
+        ImageCache cache) {
+    // inBitmap only works with mutable bitmaps, so force the decoder to
+    // return mutable bitmaps.
+    options.inMutable = true;
+
+    if (cache != null) {
+        // Try to find a bitmap to use for inBitmap.
+        Bitmap inBitmap = cache.getBitmapFromReusableSet(options);
+
+        if (inBitmap != null) {
+            // If a suitable bitmap has been found, set it as the value of
+            // inBitmap.
+            options.inBitmap = inBitmap;
+        }
+    }
+}
+
+// This method iterates through the reusable bitmaps, looking for one
+// to use for inBitmap:
+protected Bitmap getBitmapFromReusableSet(BitmapFactory.Options options) {
+        Bitmap bitmap = null;
+
+    if (mReusableBitmaps != null && !mReusableBitmaps.isEmpty()) {
+        synchronized (mReusableBitmaps) {
+            final Iterator<SoftReference<Bitmap>> iterator
+                    = mReusableBitmaps.iterator();
+            Bitmap item;
+
+            while (iterator.hasNext()) {
+                item = iterator.next().get();
+
+                if (null != item && item.isMutable()) {
+                    // Check to see it the item can be used for inBitmap.
+                    if (canUseForInBitmap(item, options)) {
+                        bitmap = item;
+
+                        // Remove from reusable set so it can't be used again.
+                        iterator.remove();
+                        break;
+                    }
+                } else {
+                    // Remove from the set if the reference has been cleared.
+                    iterator.remove();
+                }
+            }
+        }
+    }
+    return bitmap;
+}
+
+static boolean canUseForInBitmap(
+        Bitmap candidate, BitmapFactory.Options targetOptions) {
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        // From Android 4.4 (KitKat) onward we can re-use if the byte size of
+        // the new bitmap is smaller than the reusable bitmap candidate
+        // allocation byte count.
+        int width = targetOptions.outWidth / targetOptions.inSampleSize;
+        int height = targetOptions.outHeight / targetOptions.inSampleSize;
+        int byteCount = width * height * getBytesPerPixel(candidate.getConfig());
+        return byteCount <= candidate.getAllocationByteCount();
+    }
+
+    // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
+    return candidate.getWidth() == targetOptions.outWidth
+            && candidate.getHeight() == targetOptions.outHeight
+            && targetOptions.inSampleSize == 1;
+}
+
+/**
+ * A helper function to return the byte usage per pixel of a bitmap based on its configuration.
+ */
+static int getBytesPerPixel(Config config) {
+    if (config == Config.ARGB_8888) {
+        return 4;
+    } else if (config == Config.RGB_565) {
+        return 2;
+    } else if (config == Config.ARGB_4444) {
+        return 2;
+    } else if (config == Config.ALPHA_8) {
+        return 1;
+    }
+    return 1;
+}
+
+```
+
+**UC黑科技 - 偷用Native内存**
+
+👉 注：由于Bitmap解码是由底层Skia库来完成的，这么做可能会有兼容性问题，但这个方法对于需要大量使用图像的App可以考虑这个方法，当然
+你需要定义自己的Skia库解决兼容性问题。
+
+```java
+public Bitmap decodeFile (String filePath){
+    Bitmap bitmap = null;
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inPurgeable = true;
+    try {
+        BitmapFactory.Options.class.getField("inNativeAlloc").setBoolean(options, true);
+    } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+    } catch (SecurityException e) {
+        e.printStackTrace();
+    } catch (IllegalAccessException e) {
+        e.printStackTrace();
+    } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+    }
+    if (mFilePath != null) {
+        bitmap = BitmapFactory.decodeFile(mFilePath, options);
+        return bitmap;
+    }
+}
+```
+
+接下来我们来重点分析图像压缩相关知识，知识保证图像低内存占用的重要手段。
 
 Android平台压缩图像的手段通常有两种：
 
 - 质量压缩
 - 尺寸压缩
 
-## 一 质量压缩
+## 二 质量压缩
 
-### 1.1 实现方法
+### 2.1 实现方法
 
 >质量压缩的关键在于Bitmap.compress()函数，该函数不会改变图像的大小，但是可以降低图像的质量，从而降低存储大小，进而达到压缩的目的。
 
@@ -131,7 +324,7 @@ quality = 0
 
 可以看到随着quality的降低，图像质量发生了明显的变化，但是图像的尺寸没有发生变化。
 
-### 1.2 实现原理
+### 2.2 实现原理
 
 Android图片的编码是由Skia库来完成的。
 
@@ -280,11 +473,11 @@ PowerPC系统上的基准JPEG压缩和解压缩。 在这样的系统上，libjp
 可以胜过libjpeg。 在许多情况下，libjpeg-turbo的性能与专有的高速JPEG编解码器相媲美。
 - [mozilla/mozjpeg](https://github.com/mozilla/mozjpeg)：基于libjpeg-turbo.实现，保证不降低图像质量且兼容主流编解码器的情况下进行jpeg压缩。
 
-## 二 尺寸压缩
+## 三 尺寸压缩
 
 >尺寸压缩本质上就是一个重新采样的过程，放大图像称为上采样，缩小图像称为下采样，Android提供了两种图像采样方法，邻近采样和双线性采样。
 
-### 2.1 邻近采样
+### 3.1 邻近采样
 
 >邻近采样采用邻近点插值算法，用一个像素点代替邻近的像素点，
 
@@ -589,7 +782,7 @@ jobject GraphicsJNI::createBitmap(JNIEnv* env, SkBitmap* bitmap, jbyteArray buff
 
 可以看到最终C++层调用JNI方法创建了Java层的Bitmap对象，至此，整个BitmapFactory的解码流程我们就分析完了。
 
-### 2.2 双线性采样
+### 3.2 双线性采样
 
 >双线性采样采用双线性插值算法，相比邻近采样简单粗暴的选择一个像素点代替其他像素点，双线性采样参考源像素相应位置周围2x2个点的值，根据相对位置取对应的权重，经过计算得到目标图像。
 

@@ -48,6 +48,15 @@ Java虽然自带垃圾回收机制，但是错误的编码方式会导致引用�
 
 leakcanary：https://github.com/square/leakcanary
 
+我们还可以通过观察Log里的GC日志来判断程序的运行情况，如下所示：
+
+> D/dalvikvm( 745): GC_CONCURRENT freed 199K, 53% free 3023K/6343K,external 0K/0K, paused 2ms+2ms
+
+- GC_MALLOC, 内存分配失败时触发
+- GC_CONCURRENT，当分配的对象大小超过384K时 触发
+- GC_EXPLICIT，对垃圾收集的显式调用(System.gc)
+- GC_EXTERNAL_ALLOC，外部内存分配失败时触发
+
 ## 三 内存使用优化
 
 内存优化在应用上主要体现在两个方面，如下所示：
@@ -71,8 +80,6 @@ leakcanary：https://github.com/square/leakcanary
 > 利用广播拉活Activity。
 
 但是这些方式都不是正途，减少应用进程不必要的内存使用才有我们优化内存的康庄大道。
-
-
 
 1. 使用LeakCanary监测内存泄漏。
 
