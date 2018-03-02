@@ -308,19 +308,19 @@ quality = 100
 
 1823x1076 1.16m
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_100.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_100.jpg" width="500"/>
 
 quality = 50
 
 1823x1076 124.52k
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_50.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_50.jpg" width="500"/>
 
 quality = 0
 
 1823x1076 35.80k
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_0.png" width="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/practice/media/timo_compress_quality_0.jpg" width="500"/>
 
 可以看到随着quality的降低，图像质量发生了明显的变化，但是图像的尺寸没有发生变化。
 
