@@ -4,6 +4,13 @@
 
 >郭孝星，程序员，吉他手，主要从事Android平台基础架构方面的工作，欢迎交流技术方面的问题，可以去我的[Github](https://github.com/guoxiaoxing)提issue或者发邮件至guoxiaoxingse@163.com与我交流。
 
+**文章目录**
+
+- 一 Service生命周期
+- 二 Service启动流程
+- 三 Service绑定流程
+- 四 Service与IntentService
+
 第一次阅览本系列文章，请参见[导读](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/导读.md)，更多文章请参见[文章目录](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/README.md)。
 
 本篇文章开始来分析Service相关原理，Service在开发中使用的相对较少，它主要用来处理后台任务。我们来看看官方对它的定义，如下所示：
@@ -31,34 +38,7 @@ onBind() 允许组件绑定服务。如果同时实现了这两种回调方法�
 - 如果组件通过调用 startService() 启动服务（这会导致对 onStartCommand() 的调用），则服务将一直运行，直到服务使用 stopSelf() 自行停止运行，或由其他组件通过调用 stopService() 停止它为止。
 - 如果组件是通过调用 bindService() 来创建服务（且未调用 onStartCommand()，则服务只会在该组件与其绑定时运行。一旦该服务与所有客户端之间的绑定全部取消，系统便会销毁它。
 
-另外，Service也是允许在主线程里的，所以它和Activity一样，如果在里面执行一些耗时操作，也是会引起ANR的，所以Service里的耗时操作也需要单独开新线程来处理。
-
-Service从功能上划分也可以分为两种，如下所示：
-
-- Service
-
-> 这是适用于所有服务的基类。扩展此类时，必须创建一个用于执行所有服务工作的新线程，因为默认情况下，服务将使用应用的主线程，这会降低应用正在运行的所有 Activity 的性能。
-
-- IntentService
-
-> 这是 Service 的子类，它内部创建了一个HandlerThread来逐一处理所有启动请求，使用的时候只需要实现onHandleIntent()方法即可，该方法会接收每个启动的请求的Intent，IntentService
-可以用来处理耗时操作。
-
-IntentService相比Service，多做了以下处理，如下所示：
-
-- 创建默认的工作线程，用于在应用的主线程外执行传递给 onStartCommand() 的所有 Intent。
-- 创建工作队列，用于将 Intent 逐一传递给 onHandleIntent() 实现，这样您就永远不必担心多线程问题。
-- 在处理完所有启动请求后停止服务，因此无需调用 stopSelf()。
-- 提供 onBind() 的默认实现（返回 null）。
-- 提供 onStartCommand() 的默认实现，可将 Intent 依次发送到工作队列和 onHandleIntent() 实现。
-
-
-
-👉 注：我们在使用Service时通常会执行一些耗时的后台任务，为了不阻塞主线程，通常会使用IntentService。
-
-- 一 Service生命周期
-- 二 Service启动流程
-- 三 Service绑定流程
+另外，Service也是运行在主线程里的，所以它和Activity一样，如果在里面执行一些耗时操作，也是会引起ANR的，所以Service里的耗时操作也需要单独开新线程来处理。
 
 我们接着来看看Service的生命周期。👇
 
@@ -74,8 +54,10 @@ Service和Activity一样也有自己的生命周期，只不过没有那么复�
 
 nStartCommand()的返回值用来表示系统如何在Service停止的情况下继续运行Service，如下所示：
 
-- START_NOT_STICKY：如果系统在 onStartCommand() 返回后终止服务，则除非有挂起 Intent 要传递，否则系统不会重建服务。这是最安全的选项，可以避免在不必要时以及应用能够轻松重启所有未完成的作业时运行服务。
-- START_STICKY：如果系统在 onStartCommand() 返回后终止服务，则会重建服务并调用 onStartCommand()，但不会重新传递最后一个 Intent。相反，除非有挂起 Intent 要启动服务（在这种情况下，将传递这些 Intent ），否则系统会通过空 Intent 调用 onStartCommand()。这适用于不执行命令、但无限期运行并等待作业的媒体播放器（或类似服务）。
+- START_NOT_STICKY：如果系统在 onStartCommand() 返回后终止服务，则除非有挂起 Intent 要传递，否则系统不会重建服务。这是最安全的选项，可以避免在不必要时以及应用
+能够轻松重启所有未完成的作业时运行服务。
+- START_STICKY：如果系统在 onStartCommand() 返回后终止服务，则会重建服务并调用 onStartCommand()，但不会重新传递最后一个 Intent。相反，除非有挂起 Intent 要启动服务（在这种情况下，将传递这些 Intent ），否则系统会通过空 Intent 调用 onStartCommand()。这适用
+于不执行命令、但无限期运行并等待作业的媒体播放器（或类似服务）。
 - START_REDELIVER_INTENT：如果系统在 onStartCommand() 返回后终止服务，则会重建服务，并通过传递给服务的最后一个 Intent 调用 onStartCommand()。任何挂起 Intent 均依次传递。这适用于主动执行应该立即恢复的作业（例如下载文件）的服务。
 
 ## 二 Service启动流程
@@ -83,7 +65,7 @@ nStartCommand()的返回值用来表示系统如何在Service停止的情况下�
 应用通过startService()或者bindService()方法去启动或者绑定Service的过程主要是通过ActivityManagerService来完成，Service启动的过程除了Service组件的创建
 还包括Service所在进程（如果没有创建的话）的创建，具体流程如下图所示：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_create_structure.png" height="500"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/service_create_structure.png" height="400"/>
 
 1. ActivityManagerService通过Socket方式向Zygote进程请求生成（fork）新的进程用来承载Service。
 2. Zygote进程调用fork()方法创建新的进程，并将ActivityThread相关资源加载到新进程。
@@ -193,3 +175,117 @@ ClientActivity组件可以通过这个Binder对象与ServerService组件建立�
 5. ClientActivity获得到ActivityManagerService发送给它的Binder对象后，它就可以通过这个BInder对象
 获得ServerService组件的一个访问接口，从而获得ServerService的服务，这样便相当于ServerService组件
 绑定在ClientActivity组件内部了。
+
+## 四 Service与IntentService
+
+前面我们说到Service也是运行在主线程的，所以Service里的耗时操作也会阻塞主线程，通常我们在处理耗时任务的时候会选用IntentService，它们的区别如下所示：
+
+- Service
+
+> 这是适用于所有服务的基类。扩展此类时，必须创建一个用于执行所有服务工作的新线程，因为默认情况下，服务将使用应用的主线程，这会降低应用正在运行的所有 Activity 的性能。
+
+- IntentService
+
+> 这是 Service 的子类，它内部创建了一个HandlerThread来逐一处理所有启动请求，使用的时候只需要实现onHandleIntent()方法即可，该方法会接收每个启动的请求的Intent，IntentService
+可以用来处理耗时操作。
+
+IntentService相比Service，多做了以下处理，如下所示：
+
+- 创建默认的工作线程，用于在应用的主线程外执行传递给 onStartCommand() 的所有 Intent。
+- 创建工作队列，用于将 Intent 逐一传递给 onHandleIntent() 实现，这样您就永远不必担心多线程问题。
+- 在处理完所有启动请求后停止服务，因此无需调用 stopSelf()。
+- 提供 onBind() 的默认实现（返回 null）。
+- 提供 onStartCommand() 的默认实现，可将 Intent 依次发送到工作队列和 onHandleIntent() 实现。
+
+👉 注：我们在使用Service时通常会执行一些耗时的后台任务，为了不阻塞主线程，通常会使用IntentService。
+
+关于IntentService的实现非常简单，我们来看一下，如下所示：
+
+```java
+public abstract class IntentService extends Service {
+    // 获取消息的Looper，被volatile休书，说明做了线程同步。
+    private volatile Looper mServiceLooper;
+    // 处理消息的Handler，被volatile休书，说明做了线程同步。
+    private volatile ServiceHandler mServiceHandler;
+    private String mName;
+    private boolean mRedelivery;
+
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            // 回调onHandleIntent
+            onHandleIntent((Intent)msg.obj);
+            // 关闭自己，说明IntentService执行完任务后会关闭自己。
+            stopSelf(msg.arg1);
+        }
+    }
+
+    // 构造函数，name表示的是worker线程的名字
+    public IntentService(String name) {
+        super();
+        mName = name;
+    }
+
+    // 设置Intent是否会重新分发，
+    // ① 如果为true，则onStartCommand返回START_REDELIVER_INTENT，
+    // 说明如果系统在 onStartCommand() 返回后终止服务，则会重建服务，并通过传递给服务的最后一个 Intent 
+    // 调用 onStartCommand()。任何挂起 Intent 均依次传递。这适用于主动执行应该立即恢复的作业（例如下载文件）的服务。
+    // ② 如果为false（默认），则onStartCommand会返回START_NOT_STICKY，说明如果系统在 onStartCommand() 返回后终
+    // 止服务，则除非有挂起 Intent 要传递，否则系统不会重建服务。这是最安全的选项，可以避免在不必要时以及应用能够轻松重启所有未完成的作业时运行服务。
+    public void setIntentRedelivery(boolean enabled) {
+        mRedelivery = enabled;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // 创建HandlerThread，HandlerThread是一种带有消息循环的线程。
+        HandlerThread thread = new HandlerThread("IntentService[" + mName + "]");
+        thread.start();
+
+        // 获取HandlerThread里的Looper
+        mServiceLooper = thread.getLooper();
+        // 构建该Looper的Handler
+        mServiceHandler = new ServiceHandler(mServiceLooper);
+    }
+
+    @Override
+    public void onStart(@Nullable Intent intent, int startId) {
+        // 发送消息
+        Message msg = mServiceHandler.obtainMessage();
+        msg.arg1 = startId;
+        msg.obj = intent;
+        mServiceHandler.sendMessage(msg);
+    }
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        onStart(intent, startId);
+        // 根据mRedelivery判定是否重发INTENT（即重建服务）
+        return mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        mServiceLooper.quit();
+    }
+
+    @Override
+    @Nullable
+    public IBinder onBind(Intent intent) {
+        // 通过startService()启动，不需要提供绑定的Binder代理对象。
+        return null;
+    }
+
+    // 覆写次方法在Worker线程处理任务
+    @WorkerThread
+    protected abstract void onHandleIntent(@Nullable Intent intent);
+}
+
+```
+
+IntentService整体的实现还是比较简单的。

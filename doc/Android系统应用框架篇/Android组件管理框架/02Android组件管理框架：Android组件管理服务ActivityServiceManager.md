@@ -10,7 +10,8 @@
 
 - 一 组件管家ActivityManagerService
     - 1.1 ActivityManagerService启动流程
-    - 1.1 ActivityManagerService工作流程
+    - 1.2 ActivityManagerService工作流程
+    - 1.3 ActivityManagerService组件信息管理
 - 二 应用主线程ActivityThread
     - 2.1 ActivityThread启动流程
     - 2.2 ActivityThread工作
@@ -223,6 +224,27 @@ ActivityManager定义了很多静态内部类来描述这些信息，具体说�
 关于ActivityManagerNative与ActivityManagerProxy
 
 >这两个类其实涉及的是Android的Binder通信原理，后面我们会有专门的文章来分析Binder相关实现。
+
+### 1.3 ActivityManagerService组件信息管理
+
+我们知道四大组件的启动依赖于进程，如果该进程没有启动，会先启动该进程，再进行attach，描述进程信息的是ProcessRecord，还有很多其他以Record结尾的类用来描述组件信息，如下所示：
+
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/app/component/activity_,anager_service_reocrd_class.png" width="600"/>
+
+- ProcessRecord：描述进程信息。
+- ActivityRecord：描述Activity组件信息。
+- ServiceRecord：描述Service组件信息。
+- BroadcastRecord：描述Broadcast组件信息。
+- ReceiverRecord：描述Broadcast Receiver信息。
+- ContentProviderRecord：描述ContentProvider组件信息。
+- ContentProviderConnection：描述ContentProviderConnection信息。
+
+那么这些组件的信息都存储在哪里呢？🤔
+
+- Activity的信息记录在ActivityStack、ActivityStackSupervisor和AM中。
+- Service的信息记录在BroadcastQueue和AMS中。
+- Broadcast的信息记录在ActiveServices和AMS中。
+- Provider的信息记录在ProviderMap和AMS中。
 
 ## 二 应用主线程ActivityThread
 
