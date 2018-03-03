@@ -28,14 +28,18 @@
 - 安全性：我们知道Android为每个应用分配了UID，用来作为鉴别进程的重要标志，Android内部也依赖这个UID进行权限管理，包括6.0以前的固定权限和6.0以后的动态权限，传荣IPC只能由用户在数据包里填入UID/PID，这个标记完全
 是在用户空间控制的，没有放在内核空间，因此有被恶意篡改的可能，因此Binder的安全性更高。
 
-我们再来看看Binder通信机制的整体框架，如下图所示：
+Binder是一套相对比较复杂的设计，如何去理解它呢？🤔
+
+最好的方式就是去从不同层次，不同角度去理解它。
+
+**从内核空间与用户空间角度**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/binder_structure.png" width="600"/>
 
 我们知道每一个Android应用都是一个独立的Android进程，它们拥有自己独立的虚拟地址空间，应用进程处于用户空间之中，彼此之间相互独立，不能共享。但是内核空间却是可以共享的，Client
 进程向Server进程通信，就是利用进程间可以共享的内核地址空间来完成底层的通信的工作的。Client进程与Server端进程往往采用ioctl等方法跟内核空间的驱动进行交互。
 
-整体框架的实现思路还是比较简单的额，我们再来看看在具体的实现中，都有哪些角色参与进来，如下图所示：
+**从Java与C++分层的角度**
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/binder_detail_structure.png" width="600"/>
 
