@@ -162,11 +162,11 @@ public class ClientActivity extends AppCompatActivity {
 
 RemoteService.Process进程：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/remote_service_log.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/remote_service_log.png"/>
 
 ClientActivity.Process进程：
 
-<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/progress/client_activity_log.png"/>
+<img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/process/client_activity_log.png"/>
 
 可以发现ClientActivity与RemoteService处于两个不同的进程中，但ClientActivity却获得了RemoteService返回的消息，这就是跨进程通信实现的效果。
 
