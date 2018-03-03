@@ -121,7 +121,7 @@ Android系统架构图
 - [03Android界面开发：View自定义实践绘制篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android界面开发/03Android界面开发：View自定义实践绘制篇.md)
 - [04Android界面开发：View自定义实践交互篇](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android界面开发/04Android界面开发：View自定义实践交互篇.md)
 
-**Android界面开发**
+**Android应用优化**
 
 - [01Android应用优化：优化概述](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android应用优化/01Android应用优化：优化概述.md)
 - [02Android应用优化：启动优化](https://github.com/guoxiaoxing/android-open-source-project-analysis/blob/master/doc/Android应用开发实践篇/Android应用优化/02Android应用优化：启动优化.md)
