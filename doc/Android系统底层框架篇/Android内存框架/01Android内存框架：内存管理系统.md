@@ -15,7 +15,6 @@ Android内存的管理流程如下所示：
 
 
 
-
 >Java与C++之间有一堵由内存动态分配和垃圾收集技术围成的高墙，墙外的人想进去，墙里的人想出来。
 
 <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/native/memory/process_priority_structure.png"/>
