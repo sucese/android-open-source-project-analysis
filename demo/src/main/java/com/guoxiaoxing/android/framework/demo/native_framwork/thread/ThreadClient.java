@@ -1,5 +1,8 @@
 package com.guoxiaoxing.android.framework.demo.native_framwork.thread;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * For more information, you can visit https://github.com/guoxiaoxing or contact me by
  * guoxiaoxingse@163.com
@@ -13,10 +16,10 @@ public class ThreadClient {
     private Object lock2 = new Object();
 
     public static void main(String[] args) {
-        new ThreadClient().deadLock();
+        new ThreadClient().threadMethod();
     }
 
-    private void deadLock() {
+    private void deadLock1() {
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,6 +56,45 @@ public class ThreadClient {
                     synchronized (lock1) {
                         System.out.println("get lock1");
                     }
+                }
+            }
+        });
+        thread2.start();
+    }
+
+    private void deadLock2() {
+        Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            System.out.println("A exception happened");
+            throw new Throwable("A exception happened");
+        } catch (Exception e) {
+            // 不应该在此处释放锁，假如发生无法捕获的异常，会导致锁无法释放，可能会导致死锁
+            lock.unlock();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            // 应该在此处释放锁
+//            lock.unlock();
+        }
+    }
+
+    private void threadMethod(){
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    System.out.println("I am thread1");
+                }
+            }
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    System.out.println("I am thread2");
                 }
             }
         });
