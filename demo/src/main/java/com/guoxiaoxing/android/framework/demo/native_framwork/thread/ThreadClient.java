@@ -80,22 +80,27 @@ public class ThreadClient {
     }
 
     private void threadMethod(){
+
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    System.out.println("I am thread1");
+                System.out.println("I am thread1");
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                System.out.println("thread2 notify thread1");
             }
         });
         thread1.start();
 
+        int j = 0;
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    System.out.println("I am thread2");
-                }
+                System.out.println("I am thread2");
+                notify();
             }
         });
         thread2.start();
