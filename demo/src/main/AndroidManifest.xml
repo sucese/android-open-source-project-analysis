@@ -11,11 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".app_framwork.ApplicationActivity" />
         <activity android:name=".program_idea.ProgramActivity" />
@@ -43,7 +39,7 @@
         <activity android:name=".native_framwork.thread.ThreadActivity" />
         <activity
             android:name=".native_framwork.process.ClientActivity"
-            android:process="ClientActivity.Process"/>
+            android:process="ClientActivity.Process" />
 
         <service
             android:name=".native_framwork.process.RemoteService"
@@ -62,7 +58,19 @@
             android:name=".app_framwork.component_framwork.provider.DataContentProvider"
             android:authorities="com.guoxiaoxing"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity
+            android:name=".app_framwork.component_framwork.activity.LifeCydiaActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensor">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

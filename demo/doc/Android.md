@@ -13,6 +13,11 @@ Android系统架构图
 - 硬件抽象层
 - Linux内核层
 
+### Activity如与Service通信？
+
+可以通过bindService的方式，先在Activity里实现一个ServiceConnection接口，并将该接口传递给bindService()方法，在ServiceConnection接口的onServiceConnected()方法
+里执行相关操作。
+
 ### 描述一下Android的事件分发机制？
 
 Android事件分发机制的本质：事件从哪个对象发出，经过哪些对象，最终由哪个对象处理了该事件。此处对象指的是Activity、Window与View。
