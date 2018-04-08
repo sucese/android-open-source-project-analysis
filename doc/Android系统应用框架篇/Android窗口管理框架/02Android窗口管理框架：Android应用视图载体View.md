@@ -478,7 +478,7 @@ View的onMeasure()方法实现比较简单，它调用setMeasuredDimension()方�
 
 通过上面的描述我们知道，当LayoutParams为wrap_content时，SpecMode为AT_MOST，而在
 
-关于getDefaultSize(int size, int measureSpec) 方法需要说明一下，通过上面的描述我们知道etDefaultSize()方法中AT_MOST与EXACTLY模式下，返回的
+关于getDefaultSize(int size, int measureSpec) 方法需要说明一下，通过上面的描述我们知道getDefaultSize()方法中AT_MOST与EXACTLY模式下，返回的
 都是specSize，这个specSize是父View当前可以使用的大小，如果不处理，那wrap_content就相当于match_parent。
 
 如何处理？🤔
