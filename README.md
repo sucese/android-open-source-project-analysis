@@ -42,7 +42,7 @@ Android是一个庞大的系统，Android Framework只是对系统的一个封�
 
 好了，让我们开始我们的寻宝之旅吧~😆
 
-**Android系统架构图**
+**Android系统架构图**  //android platform
 
 Android系统架构图
 
