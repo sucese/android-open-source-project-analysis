@@ -663,7 +663,7 @@ public ThreadPoolExecutor(int corePoolSize,
 ```java
 /**
 * CPU核心数，注意该方法并不可靠，它返回的有可能不是真实的CPU核心数，因为CPU在某些情况下会对某些核
-* 心进行睡眠处理，这种情况返回的知识已激活的CPU核心数。
+* 心进行睡眠处理，这种情况返回的只是已激活的CPU核心数。
 */
 private static final int NUMBER_OF_CPU = Runtime.getRuntime().availableProcessors();
 
