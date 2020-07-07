@@ -1,5 +1,7 @@
 # <img src="https://github.com/guoxiaoxing/android-open-source-project-analysis/raw/master/art/logo.png" alt="Android open source project analysis" width="80" height="80" align="bottom"/> Android open source project analysis
 
+**Note: The project has been moved to https://github.com/BeesAndroid/BeesAndroid.**
+
 ## 功能介绍
 
 [![License](https://img.shields.io/github/license/guoxiaoxing/android-open-source-project-analysis.svg)](https://jitpack.io/#guoxiaoxing/android-open-source-project-analysis) 
